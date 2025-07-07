@@ -1,0 +1,403 @@
+/* Basic Reset & Body Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Header Styles */
+.main-header {
+    background-color: #004D40; /* Dark Teal */
+    color: #fff;
+    padding: 10px 0;
+    border-bottom: 5px solid #FFC107; /* Amber accent */
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 50px; /* Adjust logo size */
+    margin-right: 10px;
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 1.8em;
+    color: #fff;
+}
+
+.logo a {
+    text-decoration: none;
+    color: inherit;
+    display: flex; /* Ensure logo and text align */
+    align-items: center;
+}
+
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center nav items on smaller screens */
+}
+
+.main-nav ul li {
+    margin-left: 20px;
+}
+
+.main-nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+.main-nav ul li a:hover {
+    color: #FFC107; /* Amber on hover */
+}
+
+/* Main Content Area */
+.main-content {
+    padding: 40px 0;
+}
+
+/* Footer Styles */
+.main-footer {
+    background-color: #263238; /* Dark Grey */
+    color: #ddd;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-links a {
+    color: #FFC107;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* General Styling for headings, paragraphs, etc. */
+h1, h2, h3 {
+    color: #004D40;
+}
+
+a {
+    color: #1a73e8; /* Default link color */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Hero Section (for home.html) */
+.hero-section {
+    position: relative;
+    color: #fff;
+    text-align: center;
+    padding: 100px 20px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    animation: fadeIn 1s ease-out;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Dark overlay for text readability */
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+}
+
+.hero-content h2 {
+    font-size: 3em;
+    margin-bottom: 15px;
+    color: #fff; /* Override default heading color for hero */
+}
+
+.hero-content p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.hero-content .announcement {
+    background-color: rgba(255, 193, 7, 0.8); /* Amber with transparency */
+    color: #333;
+    padding: 15px 25px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+/* Sections for home.html */
+.section-title {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    color: #004D40;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #FFC107;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.card-content h3 {
+    margin-top: 0;
+    font-size: 1.5em;
+}
+
+.card-content p {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.card-content .read-more {
+    display: inline-block;
+    background-color: #00796B; /* Darker Teal */
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.card-content .read-more:hover {
+    background-color: #004D40;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .main-nav ul {
+        margin-top: 15px;
+    }
+
+    .main-nav ul li {
+        margin: 0 10px;
+        margin-bottom: 10px;
+    }
+
+    .hero-content h2 {
+        font-size: 2.2em;
+    }
+}
+
+/* ... (your existing CSS) ... */
+
+/* About Page Specific Styles */
+.about-hero {
+    background-color: #00796B; /* Darker Teal */
+    color: #fff;
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.about-hero h1 {
+    color: #fff;
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.about-hero .lead {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+.section-spacing {
+    margin-bottom: 60px; /* Consistent spacing between major sections */
+}
+
+.content-block {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.content-block h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2em;
+    color: #004D40;
+}
+
+.content-block .content-text {
+    font-size: 1.1em;
+    line-height: 1.8;
+}
+
+.content-block ul {
+    list-style-type: disc;
+    padding-left: 25px;
+}
+
+.content-block ul li {
+    margin-bottom: 10px;
+}
+
+/* Partners Section in About Page */
+.partner-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.partner-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.partner-logo {
+    max-width: 120px;
+    height: auto;
+    margin-bottom: 15px;
+    filter: grayscale(100%); /* Make logos grayscale until hovered */
+    transition: filter 0.3s ease;
+}
+
+.partner-item:hover .partner-logo {
+    filter: grayscale(0%); /* Full color on hover */
+}
+
+.partner-item h3 {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+    color: #004D40;
+}
+
+.partner-item p {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* Utility to split lines in template, add this to a custom templatetag later for production */
+/* For development, we'll just use a simple filter in the template, but this is a reminder */
+/* For now, ensure your `about_content.objectives` are entered with proper line breaks in the admin */
+/* If `splitlines` filter doesn't work, you'll need to define a custom filter for it. */
+/* Or, even simpler, just use `{{ about_content.objectives|linebreaksbr }}` for all of them. */
+
+
+/* kuai_club/static/kuai_club/css/style.css */
+
+/* ... (your existing CSS) ... */
+
+/* New styles for general page hero section (used on About, Communities etc.) */
+.page-hero {
+    background-color: #00796B; /* Darker Teal */
+    color: #fff;
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-hero h1 {
+    color: #fff;
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.page-hero .lead {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+

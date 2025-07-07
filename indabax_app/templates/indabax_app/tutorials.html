@@ -1,0 +1,40 @@
+{% extends "indabax_app/base.html" %}
+{% load static %} {# Make sure static is loaded if you link custom CSS here #}
+{% load tutorial_filters %} {# Load your custom template filters #}
+
+{% block content %}
+<div class="tutorials-container"> {# Added a container for styling #}
+    <h2>AI & Python Tutorials</h2>
+
+    {% for category in categories %}
+        <h3>{{ category.name }}</h3>
+        <div class="tutorial-grid"> {# Container for the 2x2 grid for each category #}
+            {% for tutorial in category.tutorial_set.all %} {# Use tutorial_set.all to access related tutorials #}
+                {% comment %} Extract YouTube video ID using the custom filter {% endcomment %}
+                {% with tutorial.video_url|youtube_video_id as video_id %}
+                {% if video_id %}
+                    <div class="tutorial-item">
+                        <h4>{{ tutorial.title }}</h4>
+                        <div class="video-wrapper">
+                            <iframe
+                                src="http://www.youtube.com/embed/{{ video_id }}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p>{{ tutorial.description }}</p>
+                    </div>
+                {% else %}
+                    <div class="tutorial-item">
+                        <h4>{{ tutorial.title }}</h4>
+                        <p>Could not load video. Invalid URL: {{ tutorial.video_url }}</p>
+                        <p>{{ tutorial.description }}</p>
+                    </div>
+                {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

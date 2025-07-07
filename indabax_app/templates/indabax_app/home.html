@@ -1,0 +1,27 @@
+{% extends "indabax_app/base.html" %}
+{% load static %}
+{% block content %}
+
+<div style="max-width: 1100px; margin: auto;">
+  <h2 style="text-align: center; margin: 20px 0;">
+    Welcome to IndabaX Kabale AI Club
+  </h2>
+
+  <div class="slider-container">
+    <button class="slide-arrow prev">&#10094;</button>
+
+    <div class="slider" id="slider">
+      {% for image in slider_images %}
+        <div class="slide">
+          <img src="{{ image.image.url }}" alt="{{ image.title }}">
+          <p>{{ image.title }}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button class="slide-arrow next">&#10095;</button>
+  </div>
+</div>
+
+<script src="{% static 'core/js/slider.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IndabaX Kabale AI Club</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'core/css/slider.css' %}">
+</head>
+<body>
+
+<!-- Header with logo and navbar side by side -->
+<header class="navbar">
+  <div class="nav-container">
+    <!-- Logo -->
+    <div class="logo">
+      <a href="{% url 'indabax_app:home' %}">
+        <img src="{% static 'core/images/logo.png' %}" alt="IndabaX Logo">
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="{% url 'indabax_app:home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+        <li><a href="{% url 'indabax_app:about' %}" class="{% if request.path == '/about/' %}active{% endif %}">About</a></li>
+        <li><a href="{% url 'indabax_app:tutorials' %}" class="{% if request.path == '/tutorials/' %}active{% endif %}">Tutorials</a></li>
+        <li><a href="{% url 'indabax_app:leaders' %}" class="{% if request.path == '/leaders/' %}active{% endif %}">Leaders</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<hr>
+
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <p>&copy; {% now "Y" %} IndabaX Kabale AI Club. All rights reserved.</p>
+    
+    <p>Email: 
+      <a href="mailto:indabaxkabale@gmail.com">indabaxkabale@gmail.com</a>
+    </p>
+    
+    <p>
+      <i class="fa-solid fa-location-dot"></i>
+      <a href="https://maps.app.goo.gl/oYS4H6jdTXxcNnY26" target="_blank">
+        Kabale University, Kikungiri Hill, Kabale, Uganda
+      </a>
+    </p>
+
+    <div class="social-links">
+      <a href="https://github.com/indabaXug" target="_blank" aria-label="GitHub">
+        <i class="fa-brands fa-github"></i>
+      </a>
+      <a href="https://twitter.com/indabaX_ug" target="_blank" aria-label="Twitter">
+        <i class="fa-brands fa-x-twitter"></i>
+      </a>
+      <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+        <i class="fa-brands fa-linkedin"></i>
+      </a>
+    </div>
+  </div>
+</footer>
+
+
+
+<script>
+  function toggleMenu() {
+    document.getElementById("navLinks").classList.toggle("show");
+  }
+</script>
+
+</body>
+</html>

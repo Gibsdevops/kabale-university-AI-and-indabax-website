@@ -1,0 +1,76 @@
+{% extends 'kuai_club/base.html' %}
+{% load static %}
+
+{% block title %}About Us{% endblock title %}
+
+{% block content %}
+<section class="about-hero">
+    <div class="container text-center">
+        <h1>About Kabale University AI Club</h1>
+        <p class="lead">Discover our purpose, values, and what drives our community.</p>
+    </div>
+</section>
+
+<section class="mission-vision-objectives container section-spacing">
+    {% if about_content %}
+        <div class="mission-section content-block">
+            <h2 class="section-title">Our Mission</h2>
+            <div class="content-text">
+                {{ about_content.mission|linebreaksbr }} {# linebreaksbr converts newlines to <br> tags #}
+            </div>
+        </div>
+
+        <div class="vision-section content-block">
+            <h2 class="section-title">Our Vision</h2>
+            <div class="content-text">
+                {{ about_content.vision|linebreaksbr }}
+            </div>
+        </div>
+
+        <div class="objectives-section content-block">
+            <h2 class="section-title">Our Objectives</h2>
+            <div class="content-text">
+                {# Display objectives as an unordered list, assuming they are line-separated in the admin #}
+                <ul>
+                     {# Display objectives as a single block for now, converted from newlines to breaks #}
+                    <div class="content-text">
+                        {{ about_content.objectives|linebreaksbr }}
+                    </div>
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        <div class="container text-center">
+            <p>About Us content is not yet available. Please add it via the admin panel.</p>
+        </div>
+    {% endif %}
+</section>
+
+{# You can optionally add a section for partners/affiliations here if you want #}
+<section class="about-partners container section-spacing">
+    <h2 class="section-title">Our Valued Partners</h2>
+    {% if partners %} {# 'partners' context needs to be passed from the view, we'll add this next #}
+        <div class="partner-grid">
+            {% for partner in partners %}
+                <div class="partner-item">
+                    {% if partner.logo %}
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }} Logo" class="partner-logo">
+                    {% else %}
+                        <img src="{% static 'kuai_club/images/default_partner_logo.png' %}" alt="Default Partner Logo" class="partner-logo">
+                    {% endif %}
+                    <h3>{{ partner.name }}</h3>
+                    <p>{{ partner.description|default:"" }}</p>
+                    {% if partner.website_url %}
+                        <a href="{{ partner.website_url }}" target="_blank" class="read-more">Visit Website</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">No partners currently listed.</p>
+    {% endif %}
+</section>
+
+{# You could also add dynamic content for Club Achievements or Testimonials here if you create models for them #}
+
+{% endblock content %}

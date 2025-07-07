@@ -1,0 +1,28 @@
+{% extends "indabax_app/base.html" %}
+{% block content %}
+<h2>Current Leaders</h2>
+<div class="leaders">
+  {% for leader in current_leaders %}
+    <div class="leader-card">
+      <img src="{{ leader.photo.url }}" alt="{{ leader.name }}" width="150">
+      <h4>{{ leader.position }}</h4>
+      <p>{{ leader.name }}</p>
+      <p>Term: {{ leader.term_start|date:"Y" }} - Present</p>
+    </div>
+  {% endfor %}
+</div>
+
+<hr>
+
+<h2>Past Leaders</h2>
+<div class="leaders">
+  {% for leader in past_leaders %}
+    <div class="leader-card">
+      <img src="{{ leader.photo.url }}" alt="{{ leader.name }}" width="150">
+      <h4>{{ leader.position }}</h4>
+      <p>{{ leader.name }}</p>
+      <p>Term: {{ leader.term_start|date:"Y" }} - {{ leader.term_end|date:"Y" }}</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

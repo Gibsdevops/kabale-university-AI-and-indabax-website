@@ -1,0 +1,93 @@
+{% extends 'kuai_club/base.html' %}
+{% load static %} {# Load static here again just in case, though it's loaded in base #}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+    {# Hero Section #}
+    <section class="hero-section" style="background-image: url('{% if site_config.homepage_background_image %}{{ site_config.homepage_background_image.url }}{% else %}{% static 'kuai_club/images/default_hero_bg.jpg' %}{% endif %}');">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2>{{ site_config.main_tagline|default:"Empowering the Next Generation of AI Innovators" }}</h2>
+            {% if site_config.featured_announcement %}
+                <p class="announcement">{{ site_config.featured_announcement }}</p>
+            {% else %}
+                <p>Welcome to the official website of the Kabale University AI Club!</p>
+            {% endif %}
+            <a href="{% url 'kuai_club:about' %}" class="read-more">Learn More About Us</a>
+        </div>
+    </section>
+
+    {# Latest News Section #}
+    <section class="section-latest-news container">
+        <h2 class="section-title">Latest News & Announcements</h2>
+        {% if latest_news %}
+            <div class="cards-grid">
+                {% for post in latest_news %}
+                    <div class="card">
+                        {% if post.featured_image %}
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="card-image">
+                        {% else %}
+                            <img src="{% static 'kuai_club/images/default_news_image.jpg' %}" alt="Default News Image" class="card-image">
+                        {% endif %}
+                        <div class="card-content">
+                            <h3>{{ post.title }}</h3>
+                            <p class="date">{{ post.published_date|date:"F d, Y" }}</p>
+                            <p>{{ post.content|truncatechars:150 }}</p>
+                            <a href="{% url 'kuai_club:news_detail' post.slug %}" class="read-more">Read More</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{% url 'kuai_club:news_list' %}" class="read-more">View All News</a>
+            </div>
+        {% else %}
+            <p style="text-align: center;">No recent news to display. Please check back soon!</p>
+        {% endif %}
+    </section>
+
+    {# Upcoming Events Section #}
+    <section class="section-upcoming-events container">
+        <h2 class="section-title">Upcoming Events</h2>
+        {% if upcoming_events %}
+            <div class="cards-grid">
+                {% for event in upcoming_events %}
+                    <div class="card">
+                        {% if event.event_image %}
+                            <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="card-image">
+                        {% else %}
+                            <img src="{% static 'kuai_club/images/default_event_image.jpg' %}" alt="Default Event Image" class="card-image">
+                        {% endif %}
+                        <div class="card-content">
+                            <h3>{{ event.title }}</h3>
+                            <p class="date">{{ event.date|date:"F d, Y" }} at {{ event.time }}</p>
+                            <p>Location: {{ event.location|default:"TBD" }}</p>
+                            <p>{{ event.description|truncatechars:150 }}</p>
+                            <a href="{% url 'kuai_club:event_detail' event.pk %}" class="read-more">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{% url 'kuai_club:event_list' %}" class="read-more">View All Events</a>
+            </div>
+        {% else %}
+            <p style="text-align: center;">No upcoming events planned at the moment. Stay tuned!</p>
+        {% endif %}
+    </section>
+
+    {# Placeholder for Image Slider - This requires a dedicated model/view #}
+    {# For now, you can uncomment this section and add static images or integrate a dynamic slider later #}
+    {#
+    <section class="image-slider container">
+        <h2 class="section-title">Club Highlights</h2>
+        <div class="slider-wrapper">
+            {# Example static images - replace with dynamic content later #}
+            {# <img src="{% static 'kuai_club/images/slider1.jpg' %}" alt="Slider Image 1" class="slider-image"> #}
+            {# <img src="{% static 'kuai_club/images/slider2.jpg' %}" alt="Slider Image 2" class="slider-image"> #}
+        </div>
+    </section>
+    #}
+
+{% endblock content %}
