@@ -1,3 +1,6 @@
+
+
+
 Project Structure
 This Django web application, IndabaX Kabale AI Club, is organized into a main project and several distinct Django applications, each handling specific functionalities.
 
