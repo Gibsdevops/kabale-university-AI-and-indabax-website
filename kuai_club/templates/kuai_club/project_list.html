@@ -1,0 +1,55 @@
+{% extends 'kuai_club/base.html' %}
+{% load static %}
+
+{% block title %}Our Projects{% endblock title %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container text-center">
+        <h1>Our Projects</h1>
+        <p class="lead">Explore the exciting projects developed by our club members, showcasing practical applications of AI and machine learning.</p>
+    </div>
+</section>
+
+<section class="projects-list container section-spacing">
+    {% if projects %}
+        <div class="cards-grid">
+            {% for project in projects %}
+                <div class="card project-card {% if project.is_featured %}featured-project{% endif %}">
+                    {# Wrap the entire card (or main clickable parts) in an anchor tag #}
+                    <a href="{% url 'kuai_club:project_detail' pk=project.pk %}"> {# <-- THIS IS THE KEY LINK #}
+                        {% if project.project_image %}
+                            <img src="{{ project.project_image.url }}" alt="{{ project.title }}" class="card-image">
+                        {% else %}
+                            <img src="{% static 'kuai_club/images/default_project_image.jpg' %}" alt="Default Project Image" class="card-image">
+                        {% endif %}
+                    </a>
+                    <div class="card-content">
+                        <a href="{% url 'kuai_club:project_detail' pk=project.pk %}"> {# Optional: Link title too #}
+                            <h3>{{ project.title }}</h3>
+                        </a>
+                        {% if project.research_area %}
+                            <p class="project-area">{{ project.research_area.name }}</p>
+                        {% endif %}
+                        <p class="project-status status-{{ project.status|lower }}">{{ project.status }}</p>
+                        <div class="project-description-summary">
+                            {# Using truncatechars as description is TextField. If RichTextField, use truncatechars_html #}
+                            {{ project.description|striptags|truncatechars:150 }}
+                        </div>
+                        {# This "View Project on GitHub" link goes directly to GitHub if available #}
+                        {% if project.github_link %}
+                            <a href="{{ project.github_link }}" target="_blank" class="read-more">View Project on GitHub</a>
+                        {% else %}
+                            {# If no GitHub link, you can provide a "Read More" link to the detail page #}
+                            <a href="{% url 'kuai_club:project_detail' pk=project.pk %}" class="read-more">Read More</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">No projects are currently listed. Check back soon for exciting new developments!</p>
+    {% endif %}
+</section>
+
+{% endblock content %}

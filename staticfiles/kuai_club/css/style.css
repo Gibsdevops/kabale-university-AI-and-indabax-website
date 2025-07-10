@@ -274,7 +274,6 @@ a:hover {
     }
 }
 
-/* ... (your existing CSS) ... */
 
 /* About Page Specific Styles */
 .about-hero {
@@ -370,8 +369,3 @@ a:hover {
     margin-bottom: 15px;
 }
 
-/* Utility to split lines in template, add this to a custom templatetag later for production */
-/* For development, we'll just use a simple filter in the template, but this is a reminder */
-/* For now, ensure your `about_content.objectives` are entered with proper line breaks in the admin */
-/* If `splitlines` filter doesn't work, you'll need to define a custom filter for it. */
-/* Or, even simpler, just use `{{ about_content.objectives|linebreaksbr }}` for all of them. */

@@ -1,0 +1,57 @@
+{% extends 'kuai_club/base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - Project Details{% endblock title %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container text-center">
+        <h1>{{ project.title }}</h1>
+        {% if project.research_area %}
+            <p class="lead">Category: {{ project.research_area.name }}</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="project-detail container section-spacing">
+    <div class="row">
+        {# Using a column layout (assuming Bootstrap-like CSS or flexbox) to center content #}
+        <div class="col-md-8 offset-md-2">
+            {% if project.project_image %}
+                <img src="{{ project.project_image.url }}" alt="{{ project.title }}" class="img-fluid mb-4 project-detail-image">
+            {% else %}
+                <img src="{% static 'kuai_club/images/default_project_image.jpg' %}" alt="Default Project Image" class="img-fluid mb-4 project-detail-image">
+            {% endif %}
+
+            <h2 class="mb-3">About This Project</h2>
+
+            <p class="project-status status-{{ project.status|lower }} mb-3">{{ project.status }}</p>
+
+            <div class="project-description">
+                {# Use |safe if project.description will contain HTML (e.g., from RichTextField) #}
+                {{ project.description|safe }}
+            </div>
+
+            <div class="project-meta mt-4">
+                {% if project.start_date %}
+                    <p><strong>Start Date:</strong> {{ project.start_date|date:"F j, Y" }}</p>
+                {% endif %}
+                {% if project.end_date %}
+                    <p><strong>End Date:</strong> {{ project.end_date|date:"F j, Y" }}</p>
+                {% endif %}
+                {% if project.github_link %}
+                    <p><strong>GitHub Repository:</strong> <a href="{{ project.github_link }}" target="_blank">{{ project.github_link }}</a></p>
+                {% endif %}
+                {% if project.is_featured %}
+                    <p class="featured-tag">✨ Featured Project ✨</p>
+                {% endif %}
+            </div>
+
+            <div class="back-link mt-5">
+                <a href="{% url 'kuai_club:project_list' %}" class="btn btn-primary">&larr; Back to All Projects</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

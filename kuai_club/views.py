@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from .models import (
     SiteConfig, AboutPageContent, NewsPost, ClubEvent,
     ExecutiveLeader, ResearchArea, ClubProject, Community,
-    ResourceLink, Partner
+    ResourceCategory, Partner
 ) # Import all necessary models
 from datetime import date # For current/past leaders/events logic
 
@@ -31,26 +31,47 @@ class AboutPageView(TemplateView):
         return context
 
 # News List View
-class NewsListView(ListView):
+class NewsPostListView(ListView):
     model = NewsPost
-    template_name = "kuai_club/news_list.html" # Placeholder template
-    context_object_name = "news_posts"
-    queryset = NewsPost.objects.filter(is_published=True).order_by('-published_date')
+    template_name = "kuai_club/news_list.html"
+    context_object_name = 'news_posts' # Variable name in template
+    queryset = NewsPost.objects.filter(is_published=True).order_by('-published_date') # Show only published posts
     paginate_by = 10
 
 # News Detail View
-class NewsDetailView(DetailView):
+class NewsPostDetailView(DetailView):
     model = NewsPost
-    template_name = "kuai_club/news_detail.html" # Placeholder template
-    context_object_name = "post"
+    template_name = "kuai_club/news_detail.html"
+    context_object_name = 'news_post' # Variable name in template
+    slug_field = 'slug' # Tell DetailView to use the 'slug' field
+    slug_url_kwarg = 'slug' # The URL keyword argument will also be 'slug'
+    # Optional: ensure only published posts can be viewed
+    def get_queryset(self):
+        return super().get_queryset().filter(is_published=True)
 
 # Event List View
-class EventListView(ListView):
+class ClubEventListView(ListView):
     model = ClubEvent
-    template_name = "kuai_club/event_list.html" # Placeholder template
-    context_object_name = "events"
-    queryset = ClubEvent.objects.all().order_by('-date')
-    paginate_by = 10
+    template_name = "kuai_club/event_list.html" # We'll create this template next
+    context_object_name = 'events' # Variable name in template
+    
+    def get_queryset(self):
+        # By default, show upcoming events ordered by date (soonest first)
+        queryset = ClubEvent.objects.filter(is_upcoming=True).order_by('date', 'time')
+
+        # Allow filtering for past events via a URL parameter (e.g., /events/?status=past)
+        status = self.request.GET.get('status')
+        if status == 'past':
+            queryset = ClubEvent.objects.filter(is_upcoming=False).order_by('-date', '-time') # Show most recent past events first
+        elif status == 'all':
+            queryset = ClubEvent.objects.all().order_by('-date', '-time') # Show all, most recent first
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_status'] = self.request.GET.get('status', 'upcoming') # Pass current filter to template
+        return context
 
 # Event Detail View
 class EventDetailView(DetailView):
@@ -116,16 +137,28 @@ class CommunityListView(ListView):
     queryset = Community.objects.filter(is_active=True).order_by('order', 'name')
 
 # Resource Link List View
-class ResourceLinkListView(ListView):
-    model = ResourceLink
-    template_name = "kuai_club/resource_list.html" # Placeholder template
-    context_object_name = "resources"
-    queryset = ResourceLink.objects.all().order_by('category__order', 'title')
+class ResourcePageView(TemplateView):
+    template_name = "kuai_club/resource_list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['resource_categories'] = ResourceLink.objects.values('category__name', 'category__order').distinct().order_by('category__order')
+        # Fetch all active categories and their active links, ordered by display_order
+        categories = ResourceCategory.objects.all().order_by('display_order', 'name')
+        
+        # Create a list of dictionaries, each containing a category and its active links
+        # This pre-fetches links to optimize database queries
+        resource_data = []
+        for category in categories:
+            active_links = category.links.filter(is_active=True).order_by('display_order', 'title')
+            if active_links.exists(): # Only include categories that have active links
+                resource_data.append({
+                    'category': category,
+                    'links': active_links
+                })
+        
+        context['resource_data'] = resource_data
         return context
+
 
 # Partner List View
 class PartnerListView(ListView):

@@ -1,0 +1,59 @@
+{% extends 'kuai_club/base.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }} - Event Details{% endblock title %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container text-center">
+        <h1>{{ event.title }}</h1>
+        {% if event.event_type %}
+            <p class="lead">Event Type: {{ event.event_type.name }}</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="event-detail container section-spacing">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            {% if event.event_image %}
+                <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="img-fluid mb-4 event-detail-image">
+            {% else %}
+                <img src="{% static 'kuai_club/images/default_event_image.jpg' %}" alt="Default Event Image" class="img-fluid mb-4 event-detail-image">
+            {% endif %}
+
+            <h2 class="mb-3">Event Information</h2>
+
+            <p class="event-status status-{{ event.is_upcoming|yesno:'upcoming,past' }} mb-3">
+                {% if event.is_upcoming %}Upcoming{% else %}Past Event{% endif %}
+            </p>
+
+            <div class="event-meta mt-4">
+                <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> {{ event.date|date:"F j, Y" }}</p>
+                {% if event.time %}<p><i class="fas fa-clock"></i> <strong>Time:</strong> {{ event.time }}</p>{% endif %}
+                {% if event.location %}<p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ event.location }}</p>{% endif %}
+            </div>
+
+            <h3 class="mt-4">Description:</h3>
+            <div class="event-description">
+                {{ event.description|safe }} {# Use |safe if description contains HTML #}
+            </div>
+
+            {% if event.is_upcoming and event.registration_link %}
+                <div class="mt-4 text-center">
+                    <a href="{{ event.registration_link }}" target="_blank" class="btn btn-success btn-lg">Register for this Event</a>
+                </div>
+            {% elif not event.is_upcoming and event.registration_link %}
+                <div class="mt-4 text-center">
+                    <a href="{{ event.registration_link }}" target="_blank" class="btn btn-secondary btn-lg">View Archived Details / Photos</a>
+                </div>
+            {% endif %}
+
+            <div class="back-link mt-5">
+                <a href="{% url 'kuai_club:event_list' %}" class="btn btn-primary">&larr; Back to All Events</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

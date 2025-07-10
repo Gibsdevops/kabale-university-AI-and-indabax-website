@@ -1,0 +1,51 @@
+{% extends 'kuai_club/base.html' %}
+{% load static %}
+
+{% block title %}Our Leaders{% endblock title %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container text-center">
+        <h1>Our Executive Board</h1>
+        <p class="lead">Meet the dedicated individuals guiding the Kabale University AI Club.</p>
+    </div>
+</section>
+
+<section class="leaders-list container section-spacing">
+    {% if leaders %}
+        <div class="leader-grid">
+            {% for leader in leaders %}
+                <div class="leader-card">
+                    <div class="leader-photo-container">
+                        {% if leader.photo %}
+                            <img src="{{ leader.photo.url }}" alt="{{ leader.name }}" class="leader-photo">
+                        {% else %}
+                            {# Use a default image if no photo is uploaded #}
+                            <img src="{% static 'kuai_club/images/default_leader_photo.jpg' %}" alt="Default Leader Photo" class="leader-photo">
+                        {% endif %}
+                    </div>
+                    <div class="leader-info">
+                        <h3>{{ leader.name }}</h3>
+                        {% if leader.position %}
+                            <p class="leader-position">{{ leader.position.name }}</p>
+                        {% endif %}
+                        {% if leader.bio %}
+                            <p class="leader-bio-summary">{{ leader.bio|truncatechars:100 }}</p>
+                        {% endif %}
+                        {% if leader.is_current %}
+                             <span class="leader-status current">Current Member</span>
+                        {% else %}
+                             <span class="leader-status past">Past Member</span>
+                        {% endif %}
+                        {# You might add a detail link here if you want individual leader profiles #}
+                        {# <a href="{% url 'kuai_club:leader_detail' pk=leader.pk %}" class="read-more">View Profile</a> #}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">No executive leaders are currently listed.</p>
+    {% endif %}
+</section>
+
+{% endblock content %}

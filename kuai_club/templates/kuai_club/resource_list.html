@@ -1,0 +1,45 @@
+{% extends 'kuai_club/base.html' %}
+{% load static %}
+
+{% block title %}Club Resources{% endblock title %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container text-center">
+        <h1>Valuable Resources</h1>
+        <p class="lead">Explore a curated collection of links, tools, and learning materials for AI enthusiasts.</p>
+    </div>
+</section>
+
+<section class="resources-section container section-spacing">
+    {% if resource_data %}
+        <div class="row">
+            {% for data in resource_data %}
+                <div class="col-md-6 col-lg-4 mb-4"> {# Grid layout for categories #}
+                    <div class="resource-category-card">
+                        <h2 class="category-title">{{ data.category.name }}</h2>
+                        {% if data.category.description %}
+                            <p class="category-description">{{ data.category.description }}</p>
+                        {% endif %}
+                        <ul class="resource-links-list">
+                            {% for link in data.links %}
+                                <li>
+                                    <a href="{{ link.url }}" target="_blank" class="resource-link">
+                                        <i class="fas fa-external-link-alt"></i> {{ link.title }}
+                                    </a>
+                                    {% if link.description %}
+                                        <p class="resource-link-description">{{ link.description }}</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">No resources are currently available. Check back soon!</p>
+    {% endif %}
+</section>
+
+{% endblock content %}

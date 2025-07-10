@@ -41,12 +41,24 @@ class AboutPageContent(models.Model):
 class Partner(models.Model):
     name = models.CharField(max_length=200)
     logo = models.ImageField(upload_to='partners/', help_text="Upload partner logo (recommended size: 150x150 pixels)")
-    website_url = models.URLField(blank=True, null=True, help_text="Link to the partner's website.")
+    website_link = models.URLField(blank=True, null=True, help_text="Link to the partner's website.")
     description = models.TextField(blank=True)
     order = models.IntegerField(default=0, help_text="Order in which partners are displayed.")
 
+
+    PARTNER_TYPES = (
+        ('sponsor', 'Sponsor'),
+        ('collaborator', 'Collaborator'),
+        ('academic', 'Academic Partner'),
+        ('other', 'Other'),
+    )
+    partner_type = models.CharField(max_length=50, choices=PARTNER_TYPES, default='collaborator')
+    is_active = models.BooleanField(default=True) # To easily toggle visibility on the frontend
+    display_order = models.IntegerField(default=0, help_text="Lower numbers appear first on the page.")
+
     class Meta:
-        ordering = ['order', 'name']
+        ordering = ['display_order', 'name']
+        verbose_name_plural = "Partners"
 
     def __str__(self):
         return self.name
@@ -226,26 +238,33 @@ class Community(models.Model):
 # 9. Resource Links
 class ResourceCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    order = models.IntegerField(default=0)
+    description = models.TextField(blank=True)
+    slug = models.SlugField(unique=True, max_length=100, blank=True) # <-- ADD THIS
+    display_order = models.IntegerField(default=0, help_text="Lower numbers appear first.") # <-- ADD THIS
 
     class Meta:
-        ordering = ['order', 'name']
+        ordering = ['display_order', 'name']
         verbose_name_plural = "Resource Categories"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
 
 class ResourceLink(models.Model):
-    title = models.CharField(max_length=255)
+    category = models.ForeignKey(ResourceCategory, on_delete=models.CASCADE, related_name='links')
+    title = models.CharField(max_length=200)
     url = models.URLField()
-    category = models.ForeignKey(ResourceCategory, on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(blank=True)
-    is_featured = models.BooleanField(default=False)
-    date_added = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True) # <-- ADD THIS
+    display_order = models.IntegerField(default=0, help_text="Lower numbers appear first within their category.") # <-- ADD THIS
 
     class Meta:
-        ordering = ['category__order', 'title']
-        verbose_name_plural = "Resource Links"
+        ordering = ['category__display_order', 'display_order', 'title'] # Order by category, then link order
+        unique_together = ('category', 'title') # A link title should be unique within a category
 
     def __str__(self):
         return self.title
