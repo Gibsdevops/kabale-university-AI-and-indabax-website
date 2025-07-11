@@ -4,19 +4,37 @@ from . import views
 app_name = 'kuai_club' # Namespacing for this app
 
 urlpatterns = [
-    # Main website pages
-    path('', views.HomePageView.as_view(), name='home'),
-    path('about/', views.AboutPageView.as_view(), name='about'),
-    path('news/', views.NewsPostListView.as_view(), name='news_list'),
-    path('news/<slug:slug>/', views.NewsPostDetailView.as_view(), name='news_detail'),
-    path('events/', views.ClubEventListView.as_view(), name='event_list'),
-    path('events/<int:pk>/', views.EventDetailView.as_view(), name='event_detail'), # Using PK for simplicity for now
-    path('research-areas/', views.ResearchAreaListView.as_view(), name='research_area_list'),
-    path('research-areas/<slug:slug>/', views.ResearchAreaDetailView.as_view(), name='research_area_detail'),
-    path('projects/', views.ProjectListView.as_view(), name='project_list'),
-    path('projects/<int:pk>/', views.ProjectDetailView.as_view(), name='project_detail'), # Using PK for simplicity for now
-    path('leaders/', views.ExecutiveLeaderListView.as_view(), name='executive_leaders'),
-    path('communities/', views.CommunityListView.as_view(), name='community_list'),
-    path('resources/', views.ResourcePageView.as_view(), name='resource_list'),
-    path('partners/', views.PartnerListView.as_view(), name='partner_list'),
+    
+    # Home
+    path('', views.home, name='home'),
+
+    # About
+    path('about/', views.about_pages_processor, name='about_pages_processor'),
+    path('about/<int:page_id>/', views.about_detail, name='about_detail'),
+
+    # Leaders
+    path('leaders/category/<str:category>/', views.leaders_by_category, name='leaders_by_category'),
+    path('leader/<int:leader_id>/', views.leader_detail, name='leader_detail'),
+
+    # News detail page
+    path('news/<int:page_id>/', views.news_page, name='news_page'),
+
+
+    # Event 
+    path('event/<int:page_id>/', views.event_page, name='event_page'),
+
+    # Research
+    path('research/<int:page_id>/', views.research_page, name='research_page'),
+
+    # Resources
+    path('resources/<int:page_id>/', views.resource_page, name='resource_page'),
+
+
+    # Community
+    path('community/<int:page_id>/', views.community_page, name='community_page'),
+
+    # Projects
+    path('projects/<int:page_id>/', views.project_page, name='project_page'),
+
+    
 ]

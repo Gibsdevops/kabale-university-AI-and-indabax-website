@@ -1,41 +1,467 @@
 from django.db import models
 from django.utils.text import slugify # Import slugify
 from datetime import date
+from django.utils.timezone import now
 
-# 1. Homepage & Site Configuration
-class SiteConfig(models.Model):
-    """
-    Model for general site-wide configuration and homepage content.
-    This model should ideally only have one instance.
-    """
-    site_name = models.CharField(max_length=200, default="Kabale University AI Club")
-    main_tagline = models.CharField(max_length=255, blank=True, help_text="A catchy tagline for the homepage hero section.")
-    featured_announcement = models.TextField(blank=True, help_text="A short announcement to display prominently on the homepage.")
-    homepage_background_image = models.ImageField(upload_to='site_config/backgrounds/', blank=True, null=True)
+
+
+class SiteSettings(models.Model):
+    """Global settings for the site."""
+
+    # Basic Info
+    site_name = models.CharField(max_length=100, default="Education Platform")
+    site_description = models.TextField(default="Welcome to our education platform where learning meets innovation.")
+    site_keywords = models.CharField(max_length=255, blank=True)
+    site_tagline = models.CharField(max_length=255, default="Empowering Minds, Transforming Futures")
+
+    #QUICKLINKS
+    quick_links = models.JSONField(default=list, blank=True, help_text="List of quick links in JSON format. Example: [{'name': 'Home', 'url': '/home'}, {'name': 'About Us', 'url': '/about'}]")  # FIXED: changed from CharField to JSONField for better structure
+
+    # Logos and Branding
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True, help_text="Recommended size: 200x200px")
+    favicon = models.ImageField(upload_to='favicons/', blank=True, null=True, help_text="Recommended size: 32x32px")
+    primary_color = models.CharField(max_length=7, default="#1e3a8a", help_text="Hex color code for primary theme color")  # FIXED typo: CahrField → CharField
+    secondary_color = models.CharField(max_length=7, default="#f59e0b", help_text="Hex color code for secondary theme color")  # FIXED typo: CahrField → CharField
+
+    # Contact
+    contact_email = models.EmailField(max_length=254, default="info@example.com", help_text="Primary contact email")
+    contact_phone = models.CharField(max_length=20, default="+256-456-7890", help_text="Primary phone number")
+    contact_address = models.TextField(default="Kampala, Uganda", help_text="Physical address")  # FIXED: added 'default' instead of wrongly placed argument
+    portal_url = models.URLField(max_length=200, blank=True, null=True, help_text="User portal URL")
+
+    # Social Media
+    facebook_url = models.URLField(max_length=200, blank=True, null=True)
+    twitter_url = models.URLField(max_length=200, blank=True, null=True)
+    instagram_url = models.URLField(max_length=200, blank=True, null=True)
+    linkedin_url = models.URLField(max_length=200, blank=True, null=True)
+    youtube_url = models.URLField(max_length=200, blank=True, null=True)
+    github_url = models.URLField(max_length=200, blank=True, null=True)
+    tiktok_url = models.URLField(max_length=200, blank=True, null=True)
+    whatsapp_url = models.URLField(max_length=200, blank=True, null=True)
+    telegram_url = models.URLField(max_length=200, blank=True, null=True)
+
+    # Hours
+    working_hours = models.CharField(max_length=100, default="Mon-Fri: 9:00 AM - 5:00 PM")
+
+    # Legal
+    privacy_policy_url = models.URLField(max_length=200, blank=True, null=True)
+    terms_of_service_url = models.URLField(max_length=200, blank=True, null=True)
+
+    # Feature Toggles
+    enable_sitemap = models.BooleanField(default=True)
+    enable_cookies = models.BooleanField(default=True)
+    enable_captcha = models.BooleanField(default=True)
+    enable_social_login = models.BooleanField(default=True)
+    enable_two_factor_auth = models.BooleanField(default=False)
+    enable_dark_mode = models.BooleanField(default=False)
+    enable_search = models.BooleanField(default=True)
+    enable_search_suggestions = models.BooleanField(default=True)
+    enable_user_profiles = models.BooleanField(default=True)
+    enable_user_roles = models.BooleanField(default=True)
+    enable_content_moderation = models.BooleanField(default=True)
+
+    # SEO & Integrations
+    google_analytics_id = models.CharField(max_length=20, blank=True, null=True)
+    google_tag_manager_id = models.CharField(max_length=20, blank=True, null=True)
+    google_adsense_id = models.CharField(max_length=20, blank=True, null=True)
+    google_maps_api_key = models.CharField(max_length=50, blank=True, null=True)
+
+    # Maintenance Mode
+    is_maintenance_mode = models.BooleanField(default=False)
+    maintenance_message = models.TextField(blank=True, null=True)
+    maintenance_image = models.ImageField(upload_to='maintenance/', blank=True, null=True)
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Site Configuration"
-        verbose_name_plural = "Site Configuration"
+        verbose_name = "Site Settings"
+        verbose_name_plural = "Site Settings"
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.site_name
+    def save(self, *args, **kwargs):
+      """Ensure only one SiteSettings instance exists."""
+      if not self.pk and SiteSettings.objects.exists():
+        raise ValueError("Only one instance of SiteSettings is allowed.")
+    
+      super().save(*args, **kwargs)
 
-# 2. About Us Page Content
-class AboutPageContent(models.Model):
-    """
-    Model for the main About Us page content.
-    This model should ideally only have one instance.
-    """
+    # Delete any other instances if they exist
+      SiteSettings.objects.exclude(pk=self.pk).delete()
+
+
+from django.db import models
+from django.utils.text import slugify
+
+# ===========================
+# About Us
+# ===========================
+
+class Aboutus(models.Model):
+    """Model for the About Us page content."""
+    title = models.CharField(max_length=100, default="About Us")
+    slug = models.SlugField(unique=True, blank=True)
+    content = models.TextField(default="Welcome to our education platform. We are dedicated to empowering minds and transforming futures through innovative learning solutions.")
+    image = models.ImageField(upload_to='about/', blank=True, null=True)
     mission = models.TextField()
     vision = models.TextField()
     objectives = models.TextField(help_text="Provide a general overview of objectives. Specific objectives can be broken down if needed.")
 
+    
+    COLUMN_CHOICES = (
+        ('left', 'Left'),
+        ('right', 'Right'),
+    )
+    column_position = models.CharField(max_length=5, choices=COLUMN_CHOICES, default='left', help_text="Position of the content column")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
-        verbose_name = "About Page Content"
-        verbose_name_plural = "About Page Content"
+        verbose_name = "About Us"
+        verbose_name_plural = "About Us"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return "About Page Content"
+        return self.title
+
+
+# ===========================
+# Leaders
+# ===========================
+
+class Leader(models.Model):
+    CATEGORY_CHOICES = [
+        ('student', 'Student Leader'),
+        ('executive', 'Executive Board'),
+        ('faculty', 'Faculty Mentor'),
+    ]
+
+    full_name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100, help_text="e.g., President, Technical Lead")
+    bio = models.TextField(blank=True, help_text="Short description about the leader")
+    photo = models.ImageField(upload_to='leaders_photos/', blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    linkedin_url = models.URLField(blank=True, null=True)
+    github_url = models.URLField(blank=True, null=True)
+    personal_website = models.URLField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+
+    # NEW FIELD: category/grouping
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default='student',
+        help_text="Select group type"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Leader"
+        verbose_name_plural = "Leaders"
+
+    def __str__(self):
+        return f"{self.full_name} - {self.position}"
+
+class News(models.Model):
+    """Comprehensive News model for all site content: news, announcements, updates, academic info, etc."""
+
+    title = models.CharField(max_length=150, unique=True, help_text="Headline or title of the news item")
+    slug = models.SlugField(max_length=160, unique=True, blank=True, help_text="URL-friendly slug")
+    summary = models.TextField(blank=True, help_text="Short summary or excerpt")
+    content = models.TextField(blank=True, help_text="Full detailed content for the news")
+    url = models.URLField(max_length=300, blank=True, help_text="Optional external link for news or resource")
+
+    image = models.ImageField(upload_to='news_images/', blank=True, null=True, help_text="Optional image for the news item")
+
+    is_published = models.BooleanField(default=True, help_text="Show or hide this news item on the site")
+    publish_date = models.DateTimeField(null=True, blank=True, help_text="Date when news was published or will be published")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "News"
+        verbose_name_plural = "News"
+        ordering = ['-publish_date', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        if not self.publish_date:
+            from django.utils.timezone import now
+            self.publish_date = now()
+        super().save(*args, **kwargs)
+
+
+
+# ===========================
+# Events
+# ===========================
+
+class Event(models.Model):
+    """Comprehensive model for events, workshops, seminars, conferences, and more."""
+
+    title = models.CharField(max_length=150, unique=True, help_text="Event title or headline")
+    slug = models.SlugField(max_length=160, unique=True, blank=True, help_text="URL-friendly slug for the event")
+
+    summary = models.TextField(blank=True, help_text="Short summary or excerpt of the event")
+    description = models.TextField(blank=True, help_text="Detailed description of the event")
+
+    event_url = models.URLField(max_length=300, blank=True, null=True, help_text="External link for the event, registration or info")
+    location = models.CharField(max_length=200, blank=True, help_text="Where the event is taking place")  # 👈 Add this line
+    image = models.ImageField(upload_to='event_images/', blank=True, null=True, help_text="Optional event image")
+
+    is_published = models.BooleanField(default=True, help_text="Publish or unpublish this event")
+    event_start = models.DateTimeField(null=True, blank=True, help_text="Event start date and time")
+    event_end = models.DateTimeField(null=True, blank=True, help_text="Event end date and time")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Event"
+        verbose_name_plural = "Events"
+        ordering = ['-event_start', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        if not self.event_start:
+            self.event_start = now()
+        super().save(*args, **kwargs)
+
+
+
+# ===========================
+# Research Links
+# ===========================
+
+from django.db import models
+from django.utils.text import slugify
+from django.utils.timezone import now
+
+class Research(models.Model):
+    """Professional Research model for all research projects, papers, teams, and initiatives."""
+
+    title = models.CharField(max_length=150, unique=True, help_text="Title of the research project or paper")
+    slug = models.SlugField(max_length=160, unique=True, blank=True, help_text="URL-friendly slug")
+    summary = models.TextField(blank=True, help_text="Short summary or abstract of the research")
+    content = models.TextField(blank=True, help_text="Full research description, findings, goals, etc.")
+    
+    researchers = models.CharField(max_length=255, blank=True, help_text="Names of lead researchers or contributors")
+    category = models.CharField(max_length=100, blank=True, help_text="E.g. AI, Robotics, Agriculture, Climate, etc.")
+    institution = models.CharField(max_length=150, blank=True, help_text="Institution or faculty involved")
+    document_url = models.URLField(max_length=300, blank=True, help_text="Optional external link to PDF or documentation")
+    
+    image = models.ImageField(upload_to='research_images/', blank=True, null=True, help_text="Main image or thumbnail")
+    is_published = models.BooleanField(default=True, help_text="Show or hide this research on the site")
+    publish_date = models.DateTimeField(null=True, blank=True, help_text="Date the research was published or announced")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Research"
+        verbose_name_plural = "Research"
+        ordering = ['-publish_date', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        if not self.publish_date:
+            self.publish_date = now()
+        super().save(*args, **kwargs)
+
+
+
+# ===========================
+# Resources
+# ===========================
+class Resource(models.Model):
+    """Professional model to manage downloadable tools and learning materials."""
+
+    RESOURCE_TYPES = [
+        ('learning', 'Learning Resource'),
+        ('tool', 'Tool / Download'),
+    ]
+
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, blank=True)
+    description = models.TextField(blank=True, help_text="Brief summary or purpose of the resource")
+    file = models.FileField(upload_to='resources/files/', blank=True, null=True, help_text="Optional downloadable file")
+    external_url = models.URLField(blank=True, null=True, help_text="Optional link to external resource")
+
+    resource_type = models.CharField(max_length=20, choices=RESOURCE_TYPES, default='learning')
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Resource"
+        verbose_name_plural = "Resources"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
+
+# ===========================
+# Community Outreach
+# ===========================
+
+class CommunityOutreach(models.Model):
+    """Model for community outreach links."""
+    title = models.CharField(max_length=50, default='Community Outreach')
+    url = models.URLField(max_length=200, blank=True, null=True, help_text="URL for the community outreach link")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Community Outreach"
+        verbose_name_plural = "Community Outreaches"
+
+    def __str__(self):
+        return self.title
+
+
+# ===========================
+# Projects
+# ===========================
+class Project(models.Model):
+    """Model representing club projects, initiatives, or contact-related campaigns."""
+
+    title = models.CharField(max_length=100, help_text="Project or Initiative title")
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    summary = models.TextField(blank=True, help_text="Short summary of the project")
+    description = models.TextField(help_text="Full details or body content")
+    
+    contact_email = models.EmailField(blank=True, null=True, help_text="Email to reach out about this project")
+    phone_number = models.CharField(max_length=20, blank=True, null=True, help_text="Phone number if applicable")
+    url = models.URLField(blank=True, null=True, help_text="External or internal project link")
+
+    image = models.ImageField(upload_to='project_images/', blank=True, null=True, help_text="Project image or banner")
+
+    is_published = models.BooleanField(default=True)
+    publish_date = models.DateTimeField(auto_now_add=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
+        ordering = ['-publish_date', '-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
+
+
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from PIL import Image  # Pillow library
+import os
+
+class HeroSlide(models.Model):
+    title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=200, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='hero_slides/')
+    button1_text = models.CharField(max_length=50, default='Apply Now')
+    button1_url = models.CharField(max_length=255, default='/apply/')
+    button1_style = models.CharField(max_length=50, default='primary')
+    button2_text = models.CharField(max_length=50, default='Virtual Tour')
+    button2_url = models.CharField(max_length=255, default='/virtual-tour/')
+    button2_style = models.CharField(max_length=50, default='outline-light')
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = _('Hero Slide')
+        verbose_name_plural = _('Hero Slides')
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.image:
+            image_path = self.image.path
+            try:
+                img = Image.open(image_path)
+
+                # Resize while maintaining aspect ratio
+                max_size = (1920, 800)
+                img.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+                # Save optimized image
+                img.save(image_path, format='JPEG', quality=85)
+            except Exception as e:
+                print(f"Error resizing image: {e}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 3. Partners/Affiliations
 class Partner(models.Model):
@@ -63,208 +489,3 @@ class Partner(models.Model):
     def __str__(self):
         return self.name
 
-# 4. Executive Board/Leaders (for the main KUAI Club)
-class ExecutivePosition(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    order = models.IntegerField(default=0, help_text="Order in which positions are displayed.")
-
-    class Meta:
-        ordering = ['order', 'name']
-        verbose_name = "Executive Position"
-        verbose_name_plural = "Executive Positions"
-
-    def __str__(self):
-        return self.name
-
-class ExecutiveLeader(models.Model):
-    name = models.CharField(max_length=100)
-    position = models.ForeignKey(ExecutivePosition, on_delete=models.SET_NULL, null=True, blank=True)
-    photo = models.ImageField(upload_to='kuai_club_leaders/', blank=True, null=True)
-    bio = models.TextField(blank=True)
-    term_start = models.DateField(default=date.today)
-    term_end = models.DateField(null=True, blank=True) # Null for current leaders
-
-    def is_current(self):
-        return self.term_end is None or self.term_end >= date.today()
-
-    def __str__(self):
-        return f"{self.name} ({self.position or 'No Position'})"
-
-    class Meta:
-        ordering = ['position__order', '-term_start', 'name']
-        verbose_name = "Executive Board Member"
-        verbose_name_plural = "Executive Board Members"
-
-
-# 5. News/Announcements
-class NewsPost(models.Model):
-    title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, max_length=255, blank=True, help_text="A unique slug for the URL, auto-generated if left blank.") # Added blank=True
-    author = models.CharField(max_length=100, blank=True, help_text="Name of the author or posting entity.")
-    content = models.TextField()
-    featured_image = models.ImageField(upload_to='news_images/', blank=True, null=True)
-    published_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=True)
-
-    class Meta:
-        ordering = ['-published_date']
-        verbose_name = "News Post"
-        verbose_name_plural = "News Posts"
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if not self.slug: # Only auto-generate if slug is not already set
-            base_slug = slugify(self.title)
-            slug_candidate = base_slug
-            counter = 1
-            # Ensure slug is unique
-            while NewsPost.objects.filter(slug=slug_candidate).exists():
-                slug_candidate = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = slug_candidate
-        super().save(*args, **kwargs)
-
-
-# 6. Club Events (General KUAI Club Events)
-class ClubEventType(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.name
-
-class ClubEvent(models.Model):
-    title = models.CharField(max_length=255)
-    event_type = models.ForeignKey(ClubEventType, on_delete=models.SET_NULL, null=True, blank=True)
-    description = models.TextField()
-    date = models.DateField()
-    time = models.CharField(max_length=50, blank=True, help_text="e.g., 10:00 AM - 12:00 PM")
-    location = models.CharField(max_length=255, blank=True)
-    registration_link = models.URLField(blank=True, null=True)
-    event_image = models.ImageField(upload_to='club_events/', blank=True, null=True)
-    is_upcoming = models.BooleanField(default=True, help_text="Uncheck for past events manually or update automatically.")
-
-    class Meta:
-        ordering = ['-date', '-time'] # Order by latest date first
-        verbose_name = "Club Event"
-        verbose_name_plural = "Club Events"
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        # Basic logic to set is_upcoming based on date. Can be more sophisticated.
-        self.is_upcoming = self.date >= date.today()
-        super().save(*args, **kwargs)
-
-# 7. Research & Projects
-class ResearchArea(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True)
-    slug = models.SlugField(unique=True, max_length=100, blank=True, help_text="A unique identifier for the URL, auto-generated if left blank.") 
-    order = models.IntegerField(default=0, help_text="Order in which research areas are displayed.")
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug: # Only auto-generate if slug is not already set
-            base_slug = slugify(self.name)
-            slug_candidate = base_slug
-            counter = 1
-            # Ensure slug is unique
-            while ResearchArea.objects.filter(slug=slug_candidate).exists():
-                slug_candidate = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = slug_candidate
-        super().save(*args, **kwargs)
-
-
-class ClubProject(models.Model):
-    title = models.CharField(max_length=255)
-    research_area = models.ForeignKey(ResearchArea, on_delete=models.SET_NULL, null=True, blank=True)
-    description = models.TextField()
-    status_choices = [
-        ('Ongoing', 'Ongoing'),
-        ('Completed', 'Completed'),
-        ('Planned', 'Planned'),
-    ]
-    status = models.CharField(max_length=20, choices=status_choices, default='Ongoing')
-    start_date = models.DateField(blank=True, null=True)
-    end_date = models.DateField(blank=True, null=True)
-    github_link = models.URLField(blank=True, null=True)
-    project_image = models.ImageField(upload_to='club_projects/', blank=True, null=True)
-    is_featured = models.BooleanField(default=False, help_text="Check to feature this project on the homepage or dedicated section.")
-
-    class Meta:
-        ordering = ['status', '-start_date', 'title']
-        verbose_name = "Club Project"
-        verbose_name_plural = "Club Projects"
-
-    def __str__(self):
-        return self.title
-
-# 8. Communities (to link to sub-apps like IndabaX)
-class Community(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, max_length=100, blank=True, help_text="Unique URL identifier (e.g., 'indabax').") # Added blank=True
-    description = models.TextField(blank=True)
-    logo = models.ImageField(upload_to='communities/', blank=True, null=True)
-    website_url = models.URLField(blank=True, null=True, help_text="URL to the community's section/app (e.g., /communities/indabax/).")
-    is_active = models.BooleanField(default=True)
-    order = models.IntegerField(default=0, help_text="Order in which communities are displayed.")
-
-    class Meta:
-        ordering = ['order', 'name']
-        verbose_name_plural = "Communities"
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug: # Only auto-generate if slug is not already set
-            base_slug = slugify(self.name)
-            slug_candidate = base_slug
-            counter = 1
-            # Ensure slug is unique
-            while Community.objects.filter(slug=slug_candidate).exists():
-                slug_candidate = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = slug_candidate
-        super().save(*args, **kwargs)
-
-# 9. Resource Links
-class ResourceCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True)
-    slug = models.SlugField(unique=True, max_length=100, blank=True) # <-- ADD THIS
-    display_order = models.IntegerField(default=0, help_text="Lower numbers appear first.") # <-- ADD THIS
-
-    class Meta:
-        ordering = ['display_order', 'name']
-        verbose_name_plural = "Resource Categories"
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
-
-class ResourceLink(models.Model):
-    category = models.ForeignKey(ResourceCategory, on_delete=models.CASCADE, related_name='links')
-    title = models.CharField(max_length=200)
-    url = models.URLField()
-    description = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True) # <-- ADD THIS
-    display_order = models.IntegerField(default=0, help_text="Lower numbers appear first within their category.") # <-- ADD THIS
-
-    class Meta:
-        ordering = ['category__display_order', 'display_order', 'title'] # Order by category, then link order
-        unique_together = ('category', 'title') # A link title should be unique within a category
-
-    def __str__(self):
-        return self.title

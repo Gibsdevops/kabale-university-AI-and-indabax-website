@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'kuai_club',
     'indabax_app',
+
+
+   
 ]
 
 MIDDLEWARE = [
@@ -64,6 +67,20 @@ TEMPLATES = [
                 'django.template.context_processors.tz', 
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+
+
+
+                'kuai_club.context_processors.site_settings',
+                'kuai_club.context_processors.about_pages_processor',
+                'kuai_club.context_processors.leader_processor',
+                'kuai_club.context_processors.news_processor',
+                'kuai_club.context_processors.events_processor',
+                'kuai_club.context_processors.research_processor',
+                'kuai_club.context_processors.resource_processor',
+                'kuai_club.context_processors.community_processor',
+                'kuai_club.context_processors.project_processor',
+                'kuai_club.context_processors.hero_processor',
             ],
         },
     },

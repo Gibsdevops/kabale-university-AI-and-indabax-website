@@ -1,142 +1,183 @@
 # kuai_club/admin.py
-
 from django.contrib import admin
-from .models import (
-    SiteConfig, AboutPageContent, Partner, ExecutivePosition,
-    ExecutiveLeader, NewsPost, ClubEventType, ClubEvent,
-    ResearchArea, ClubProject, Community, ResourceCategory,
-    ResourceLink
-)
+from .models import SiteSettings,Aboutus,Leader,Event,Resource,CommunityOutreach,News,Research,Project
+from .models import HeroSlide
 
 # Register your models here.
 
-# Simple registrations (no custom admin needed for these for now)
-admin.site.register(SiteConfig)
-admin.site.register(AboutPageContent)
-admin.site.register(ResearchArea)
-admin.site.register(Community)
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    list_display = ('site_name', 'contact_email', 'contact_phone', 'is_maintenance_mode', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
 
-
-
-# Add or update this block for ClubProject for better admin experience
-@admin.register(ClubProject) # This decorator automatically registers the model
-class ClubProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'research_area', 'status', 'is_featured', 'start_date', 'end_date')
-    list_filter = ('status', 'research_area', 'is_featured')
-    search_fields = ('title', 'description')
-    date_hierarchy = 'start_date' # Adds date-based navigation
     fieldsets = (
-        (None, {
-            'fields': ('title', 'research_area', 'description', 'project_image')
+        ('Basic Info', {
+            'fields': ('site_name', 'site_tagline', 'site_description', 'site_keywords')
         }),
-        ('Project Details', {
-            'fields': ('status', 'start_date', 'end_date', 'github_link', 'is_featured'),
-            'classes': ('collapse',), # Makes this section collapsible in the admin
+        ('Branding', {
+            'fields': ('logo', 'favicon', 'primary_color', 'secondary_color')
+        }),
+        ('Contact Information', {
+            'fields': ('contact_email', 'contact_phone', 'contact_address', 'portal_url')
+        }),
+        ('Social Media Links', {
+            'fields': (
+                'facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url',
+                'youtube_url', 'github_url', 'tiktok_url', 'whatsapp_url', 'telegram_url'
+            )
+        }),
+        ('Quick Links', {
+            'fields': ('quick_links',)
+        }),
+        ('Business Info', {
+            'fields': ('working_hours', 'privacy_policy_url', 'terms_of_service_url')
+        }),
+        ('Feature Toggles', {
+            'fields': (
+                'enable_sitemap', 'enable_cookies', 'enable_captcha', 'enable_social_login',
+                'enable_two_factor_auth', 'enable_dark_mode', 'enable_search',
+                'enable_search_suggestions', 'enable_user_profiles', 'enable_user_roles',
+                'enable_content_moderation'
+            )
+        }),
+        ('SEO & Integrations', {
+            'fields': (
+                'google_analytics_id', 'google_tag_manager_id', 'google_adsense_id', 'google_maps_api_key'
+            )
+        }),
+        ('Maintenance Mode', {
+            'fields': ('is_maintenance_mode', 'maintenance_message', 'maintenance_image')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at')
         }),
     )
 
 
-@admin.register(ExecutivePosition)
-class ExecutivePositionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'order')
-    list_editable = ('order',) # Allows changing order directly in the list view
+@admin.register(Aboutus)
+class AboutusAdmin(admin.ModelAdmin):
+    list_display = ('title', 'column_position', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+    prepopulated_fields = {'slug': ('title',)}
+    fieldsets = (
+        ('Content', {
+            'fields': ('title', 'slug', 'content', 'column_position', 'image')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+
+
+@admin.register(Leader)
+class LeaderAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'position', 'email', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+    search_fields = ('full_name', 'position', 'email')
+
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'publish_date', 'is_published', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+    search_fields = ('title', 'summary', 'content')
+    prepopulated_fields = {"slug": ("title",)}
+    list_filter = ('is_published', 'publish_date')
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'location', 'event_start', 'event_end', 'is_published', 'created_at')
+    list_filter = ('is_published', 'event_start')
+    search_fields = ('title', 'location', 'summary')
+    readonly_fields = ('created_at', 'updated_at')
+    prepopulated_fields = {'slug': ('title',)}
+    ordering = ('-event_start',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'slug', 'summary', 'description', 'image', 'event_url')
+        }),
+        ('Event Timing', {
+            'fields': ('event_start', 'event_end')
+        }),
+        ('Visibility & Status', {
+            'fields': ('is_published',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+
+
+@admin.register(Research)
+class ResearchAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'institution', 'is_published', 'publish_date')
+    search_fields = ('title', 'category', 'researchers', 'institution')
+    list_filter = ('category', 'is_published', 'institution')
+    readonly_fields = ('created_at', 'updated_at', 'slug')
+
+
+
+@admin.register(Resource)
+class ResourceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'resource_type', 'is_active', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+    prepopulated_fields = {'slug': ('title',)}
+
+    fieldsets = (
+        ('Resource Info', {
+            'fields': ('title', 'slug', 'description', 'resource_type', 'file', 'external_url', 'is_active')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+
+
+@admin.register(CommunityOutreach)
+class CommunityOutreachAdmin(admin.ModelAdmin):
+    list_display = ('title', 'url', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+    search_fields = ('title',)
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('title', 'contact_email', 'publish_date', 'is_published')
+    prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ('created_at', 'updated_at')
+
+    fieldsets = (
+        ('Basic Info', {
+            'fields': ('title', 'slug', 'summary', 'description', 'image')
+        }),
+        ('Contact Details', {
+            'fields': ('contact_email', 'phone_number', 'url')
+        }),
+        ('Status & Timestamps', {
+            'fields': ('is_published', 'created_at', 'updated_at')
+        }),
+    )
+
+@admin.register(HeroSlide)
+class HeroSlideAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subtitle', 'is_active', 'order')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'subtitle', 'description')
     ordering = ('order',)
-
-# Register ExecutiveLeader with custom admin for better display
-@admin.register(ExecutiveLeader)
-class ExecutiveLeaderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'position', 'is_current', 'term_start', 'term_end')
-    list_filter = ('position', 'term_start', 'term_end')
-    search_fields = ('name', 'bio')
-    date_hierarchy = 'term_start'
-    raw_id_fields = ('position',) # Useful if you have many positions
     fieldsets = (
         (None, {
-            'fields': ('name', 'position', 'photo', 'bio')
+            'fields': ('title', 'subtitle', 'description', 'image')
         }),
-        ('Term Details', {
-            'fields': ('term_start', 'term_end'),
-            'classes': ('collapse',),
+        ('Button 1', {
+            'fields': ('button1_text', 'button1_url', 'button1_style')
+        }),
+        ('Button 2', {
+            'fields': ('button2_text', 'button2_url', 'button2_style')
+        }),
+        ('Settings', {
+            'fields': ('is_active', 'order')
         }),
     )
 
-
-@admin.register(ClubEventType)
-class ClubEventTypeAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
-
-@admin.register(ClubEvent)
-class ClubEventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'event_type', 'date', 'time', 'location', 'is_upcoming')
-    list_filter = ('event_type', 'is_upcoming', 'date')
-    search_fields = ('title', 'description', 'location')
-    date_hierarchy = 'date'
-    fieldsets = (
-        (None, {
-            'fields': ('title', 'event_type', 'description', 'event_image')
-        }),
-        ('Event Details', {
-            'fields': ('date', 'time', 'location', 'registration_link', 'is_upcoming'),
-            'classes': ('collapse',),
-        }),
-    )
-
-
-@admin.register(NewsPost)
-class NewsPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'published_date', 'is_published', 'author')
-    list_filter = ('is_published', 'published_date')
-    search_fields = ('title', 'content', 'author')
-    date_hierarchy = 'published_date'
-    prepopulated_fields = {'slug': ('title',)} # Auto-fill slug from title
-    fieldsets = (
-        (None, {
-            'fields': ('title', 'slug', 'content', 'news_image', 'author')
-        }),
-        ('Publication Information', {
-            'fields': ('published_date', 'is_published'),
-            'classes': ('collapse',),
-        }),
-    )
-
-@admin.register(Partner)
-class PartnerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'website_link', 'is_active', 'partner_type', 'display_order')
-    list_filter = ('is_active', 'partner_type')
-    search_fields = ('name', 'description')
-    list_editable = ('display_order', 'is_active') # Allows quick editing from list
-    ordering = ('display_order', 'name') # Order by custom order then name
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'logo', 'description')
-        }),
-        ('Contact & Type', {
-            'fields': ('website_link', 'partner_type'),
-        }),
-        ('Display Settings', {
-            'fields': ('is_active', 'display_order'),
-            'classes': ('collapse',),
-        }),
-    )
-
-
-# For ResourceCategory
-@admin.register(ResourceCategory)
-class ResourceCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'display_order')
-    list_editable = ('display_order',)
-    search_fields = ('name',)
-    ordering = ('display_order', 'name')
-    prepopulated_fields = {'slug': ('name',)} # Add slug for cleaner URLs if needed later
-
-# For ResourceLink
-@admin.register(ResourceLink)
-class ResourceLinkAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'url', 'is_active', 'display_order')
-    list_filter = ('category', 'is_active')
-    search_fields = ('title', 'description', 'url')
-    list_editable = ('is_active', 'display_order')
-    ordering = ('category__display_order', 'category__name', 'display_order', 'title') # Order by category order, then link order
-    raw_id_fields = ('category',) # Use a raw ID field for category selection if many categories
 

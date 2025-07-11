@@ -1,0 +1,54 @@
+<!-- templates/includes/hero_slider.html -->
+ {% load static %}
+{% if hero_slides %}
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for slide in hero_slides %}
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                {% if forloop.first %}class="active"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for slide in hero_slides %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="hero-slide" style="background-image: url('{{ slide.image.url }}');">
+                    <div class="hero-overlay"></div>
+                    <div class="container">
+                        <div class="row align-items-center min-vh-100">
+                            <div class="col-lg-8 mx-auto text-center">
+                                <div class="hero-content">
+                                    <h1 class="hero-title">{{ slide.title }}</h1>
+                                    {% if slide.subtitle %}
+                                    <h3 class="hero-subtitle">{{ slide.subtitle }}</h3>
+                                    {% endif %}
+                                    <div class="hero-buttons mt-4">
+                                        <a href="{{ slide.button1_url }}" class="btn btn-{{ slide.button1_style }} btn-lg me-3">
+                                            {{ slide.button1_text }}
+                                        </a>
+                                        <a href="{{ slide.button2_url }}" class="btn btn-{{ slide.button2_style }} btn-lg">
+                                            {{ slide.button2_text }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" id="button1" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" id="button2" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+
+
+{% endif %}

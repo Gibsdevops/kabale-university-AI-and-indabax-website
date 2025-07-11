@@ -1,0 +1,282 @@
+/* static/css/hero.css */
+:root {
+    --primary-color: #0056b3;
+    --secondary-color: #1a3e72;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+.hero-section {
+    position: relative;
+    top: -10px;
+    overflow: hidden;
+    width: 100%;
+    height: 480px;
+}
+
+.hero-slide {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 480px;             /* More flexible than full screen */
+    min-height: 400px;        /* Ensures enough visibility on short screens */
+    max-height: 1000px;        /* Prevents image from being too tall */
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease;
+}
+
+.hero-subtitle {
+    font-size: 1.8rem;
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1.2s ease;
+}
+
+.hero-buttons {
+    animation: fadeInUp 1.4s ease;
+}
+
+.btn-primary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+    background-color: #142d57;
+    border-color: #142d57;
+}
+
+.btn-outline-light {
+    color: white;
+    border-color: white;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.carousel-indicators button {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    border: 2px solid white;
+    background-color: transparent;
+}
+
+
+.carousel-indicators .active {
+    background-color: white;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .hero-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .hero-buttons .btn.me-3 {
+        margin-right: 0 !important;
+    }
+}
+
+
+/* Zigzag Image Band Styles */
+.zigzag-image-band {
+  position: relative;
+  height: 40px; /* Match your image height */
+  overflow: hidden;
+  margin-top: -20px; /* Adjust to overlap hero image */
+}
+
+.zigzag-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 200%;
+  height: 100%;
+  animation: scrollImage 15s linear infinite;
+}
+
+.zigzag-pattern {
+  height: 100%;
+  width: auto;
+  min-width: 100%;
+  object-fit: cover;
+}
+
+/* Animation */
+@keyframes scrollImage {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Make sure hero section has proper z-index */
+.hero-section {
+  position: relative;
+  z-index: 1;
+}
+
+
+#button1{
+    position: absolute;
+    left: 10px;
+}
+
+#button2{
+    position: absolute;
+    right: 10px;
+}
+
+
+
+.about-teaser-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.section-title-wrapper h2 {
+    color: #0056b3;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.title-icon {
+    background-color: #FFD700;
+    padding: 0.25rem;
+    border-radius: 4px;
+}
+
+.section-description p {
+    color: #333;
+    font-family: 'Lato', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.btn-learn-more {
+    background-color: #0056b3;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-learn-more:hover {
+    background-color: white;
+    color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.2);
+}
+
+.teaser-image-wrapper {
+    transition: transform 0.3s ease;
+    height: 100%;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.teaser-image-wrapper:hover {
+    transform: scale(1.02);
+}
+
+.teaser-image-wrapper img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .section-title-wrapper h2 {
+        font-size: 1.75rem;
+    }
+    
+    .section-description p {
+        font-size: 1rem;
+    }
+    
+    .teaser-image-wrapper {
+        max-height: 350px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .about-teaser-section .row {
+        flex-direction: column-reverse;
+    }
+    
+    .teaser-image-wrapper {
+        margin-bottom: 1.5rem;
+        max-height: 300px;
+    }
+}

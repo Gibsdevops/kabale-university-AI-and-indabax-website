@@ -1,0 +1,380 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ page_title|default:"Welcome" }} - {{ site_settings.site_name }}{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'kuai_club/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/hero_section.css' %}">
+
+    {% if site_settings.favicon %}
+        <link rel="icon" href="{{ site_settings.favicon.url }}" type="image/x-icon" />
+    {% endif %}
+    <style>
+        :root {
+            --primary-color: {{ site_settings.primary_color|default:'#1e3a8a' }};
+            --secondary-color: {{ site_settings.secondary_color|default:"#f59e0b" }};
+            --primary-dark: #1e40af;
+            --secondary-dark: #d97706;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- 🔝 Top Site Content -->
+<div class="top_site_content py-2">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-start">
+                {% if site_settings.contact_email %}
+                    <span>
+                        <i class="fa-solid fa-envelope me-1 text-primary"></i>
+                        <a href="mailto:{{ site_settings.contact_email }}" class="contact-link text-primary">{{ site_settings.contact_email }}</a>
+                    </span>
+                {% endif %}
+                {% if site_settings.contact_phone %}
+                    <span class="ms-3">
+                        <i class="fa-solid fa-phone me-1 text-primary"></i>
+                        <a href="tel:{{ site_settings.contact_phone }}" class="contact-link text-primary">{{ site_settings.contact_phone }}</a>
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6 d-flex justify-content-end align-items-center gap-3">
+                <!-- Social Media Icons -->
+                <div class="social-media-links d-flex align-items-center gap-2">
+                    {% if site_settings.facebook_url %}
+                        <a href="{{ site_settings.facebook_url }}" target="_blank" class="text-black social-link"><i class="fab fa-facebook-f"></i></a>
+                    {% endif %}
+                    {% if site_settings.twitter_url %}
+                        <a href="{{ site_settings.twitter_url }}" target="_blank" class="text-black social-link"><i class="fab fa-twitter"></i></a>
+                    {% endif %}
+                    {% if site_settings.instagram_url %}
+                        <a href="{{ site_settings.instagram_url }}" target="_blank" class="text-black social-link"><i class="fab fa-instagram"></i></a>
+                    {% endif %}
+                    {% if site_settings.linkedin_url %}
+                        <a href="{{ site_settings.linkedin_url }}" target="_blank" class="text-black social-link"><i class="fab fa-linkedin-in"></i></a>
+                    {% endif %}
+                    {% if site_settings.youtube_url %}
+                        <a href="{{ site_settings.youtube_url }}" target="_blank" class="text-black social-link"><i class="fab fa-youtube"></i></a>
+                    {% endif %}
+                    {% if site_settings.whatsapp_url %}
+                        <a href="{{ site_settings.whatsapp_url }}" target="_blank" class="text-black social-link"><i class="fab fa-whatsapp"></i></a>
+                    {% endif %}
+                </div>
+
+                <!-- Quick Links Dropdown -->
+                {% if site_settings.quick_links %}
+                <div class="dropdown">
+                    <a href="#" class="btn btn-sm btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
+                        Quick Links
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end quick-links-dropdown">
+                        {% for link in site_settings.quick_links %}
+                        <li>
+                            <a class="dropdown-item" href="{{ link.url }}" target="_blank">{{ link.name }}</a>
+                        </li>
+                        {% empty %}
+                        <li><span class="dropdown-item text-muted">No links yet</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================= NAVBAR START ============================== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container-fluid">
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- COLLAPSIBLE NAV CONTENT -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+
+            <!-- NAVIGATION LINKS -->
+            <ul class="navbar-nav d-flex flex-row">
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'kuai_club:home' %}">Home</a>
+                </li>
+
+                <!-- About Us -->
+                <li class="nav-item nav-hover-content" data-hover-target="about-content">
+                    <a href="#" class="nav-link">About Us</a>
+                </li>
+
+                <!-- Leaders -->
+                <li class="nav-item nav-hover-content" data-hover-target="leaders-content">
+                    <a href="#" class="nav-link">Leaders</a>
+                </li>
+                <!-- News -->
+               <li class="nav-item nav-hover-content" data-hover-target="news-content">
+                    <a href="#" class="nav-link">News</a>
+                </li>
+
+                <!-- Events -->
+                <li class="nav-item nav-hover-content" data-hover-target="events-content">
+                    <a href="#" class="nav-link">Events</a>
+                </li>
+
+                <!-- Research -->
+                <li class="nav-item nav-hover-content" data-hover-target="research-content">
+                    <a href="#" class="nav-link">Research</a>
+                </li>
+
+                <!-- Resources -->
+                <li class="nav-item nav-hover-content" data-hover-target="resource-content">
+                    <a href="#" class="nav-link">Resources</a>
+                </li>
+
+                <!-- Community Outreach -->
+                <li class="nav-item nav-hover-content" data-hover-target="community-content">
+                    <a href="#" class="nav-link">Communities </a>
+                </li>
+
+                <!-- Contacts -->
+                <li class="nav-item nav-hover-content" data-hover-target="projects-content">
+                    <a href="#" class="nav-link">Projects</a>
+                </li>
+
+                <!-- Search Button -->
+                <li class="nav-item">
+                    <button class="btn btn-outline-light ms-3" type="button" data-bs-toggle="modal" data-bs-target="#searchModal">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- HOVER CONTENT PANELS (hidden by default, show on hover) -->
+
+<div id="about-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="dropdown-header">WHO WE ARE</h6>
+                <ul class="list-unstyled">
+                    {% for item in about_pages %}
+                        {% if item.column_position == 'left' %}
+                            <li><a href="{% url 'kuai_club:about_detail' item.id %}">{{ item.title }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6 class="dropdown-header">WHY WE EXIST</h6>
+                <ul class="list-unstyled">
+                    {% for item in about_pages %}
+                        {% if item.column_position == 'right' %}
+                            <li><a href="{% url 'kuai_club:about_detail' item.id %}">{{ item.title }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="leaders-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
+    <ul class="list-unstyled mb-0">
+        <li><a href="{% url 'kuai_club:leaders_by_category' 'student' %}">Student Leaders</a></li>
+        <li><a href="{% url 'kuai_club:leaders_by_category' 'executive' %}">Executive Board</a></li>
+        <li><a href="{% url 'kuai_club:leaders_by_category' 'faculty' %}">Faculty Mentors</a></li>
+    </ul>
+</div>
+
+
+
+<div id="news-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000; max-width:400px;">
+    <ul class="list-unstyled">
+        {% for item in news %}
+            <li class="d-flex align-items-center mb-3">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width:50px; height:50px; object-fit:cover; border-radius:4px; margin-right:10px;">
+                {% endif %}
+                <div>
+                    <a href="{% url 'kuai_club:news_page' item.id %}" class="fw-bold text-dark">{{ item.title }}</a>
+                    <p class="mb-0 text-muted" style="font-size: 0.85rem;">
+                        {{ item.summary|truncatewords:15 }}
+                    </p>
+                </div>
+            </li>
+        {% empty %}
+            <li>No news available at the moment.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="events-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
+    <ul class="list-unstyled">
+        {% for event in events %}
+            <li><a href="{% url 'kuai_club:event_page' event.id %}">{{ event.title }}</a></li>
+        {% empty %}
+            <li><em>No upcoming events available</em></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="research-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
+    <ul class="list-unstyled">
+        {% for researchlinks in research %}
+            <li><a href="{% url 'kuai_club:research_page' researchlinks.id %}">{{ researchlinks.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="resource-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
+    <div class="row">
+        <div class="col-md-6">
+            <h6 class="dropdown-header">LEARNING RESOURCES</h6>
+            <ul class="list-unstyled">
+                {% for resource in resources %}
+                    {% if resource.resource_type == 'learning' %}
+                        <li><a href="{% url 'kuai_club:resource_page' resource.id %}">{{ resource.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h6 class="dropdown-header">TOOLS & DOWNLOADS</h6>
+            <ul class="list-unstyled">
+                {% for resource in resources %}
+                    {% if resource.resource_type == 'tool' %}
+                        <li><a href="{% url 'kuai_club:resource_page' resource.id %}">{{ resource.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="community-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
+    <ul class="list-unstyled">
+        {% for outreach in community %}
+            <li><a href="{% url 'kuai_club:community_page' outreach.id %}">{{ outreach.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="projects-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
+    <ul class="list-unstyled">
+        {% for project in projects %}
+            <li><a href="{% url 'kuai_club:project_page' project.id %}">{{ project.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Search Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search" />
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ========================= NAVBAR END ============================== -->
+
+<!-- 📄 Main Content -->
+<main class="py-4">
+    {% block content %}
+    {% include 'hero_section.html' %}
+    {% endblock %}
+</main>
+
+<!-- JS Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'kuai_club/js/main.js' %}"></script>
+<script src="{% static 'kuai_club/js/hero_section.js' %}"></script>
+
+<script>
+    // Simple hover logic to show/hide content panels next to hovered nav items
+    document.addEventListener('DOMContentLoaded', function() {
+        const navItems = document.querySelectorAll('.nav-hover-content');
+        const panels = document.querySelectorAll('.hover-content-panel');
+
+        navItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                // Hide all panels first
+                panels.forEach(panel => panel.style.display = 'none');
+
+                // Show target panel
+                const targetId = item.getAttribute('data-hover-target');
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    // Position panel below the hovered nav item
+                    const rect = item.getBoundingClientRect();
+                    targetPanel.style.display = 'block';
+                    targetPanel.style.top = rect.bottom + window.scrollY + 'px';
+                    targetPanel.style.left = rect.left + window.scrollX + 'px';
+                }
+            });
+
+            item.addEventListener('mouseleave', () => {
+                // Hide panel after a short delay to allow hover on panel itself
+                setTimeout(() => {
+                    // Only hide if mouse is not over panel
+                    const targetId = item.getAttribute('data-hover-target');
+                    const targetPanel = document.getElementById(targetId);
+                    if (targetPanel && !targetPanel.matches(':hover')) {
+                        targetPanel.style.display = 'none';
+                    }
+                }, 200);
+            });
+        });
+
+        // Hide panel when mouse leaves panel itself
+        panels.forEach(panel => {
+            panel.addEventListener('mouseleave', () => {
+                panel.style.display = 'none';
+            });
+        });
+    });
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>
