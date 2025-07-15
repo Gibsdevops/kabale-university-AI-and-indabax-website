@@ -99,10 +99,10 @@ from django.utils.text import slugify
 # ===========================
 # About Us
 # ===========================
-
 from django.db import models
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
+from PIL import Image
 
 class Aboutus(models.Model):
     """Model for the About Us page content."""
@@ -115,11 +115,9 @@ class Aboutus(models.Model):
     vision = models.TextField()
     vision_image = models.ImageField(upload_to='about/', blank=True, null=True)
     objectives = models.TextField(help_text="Provide a general overview of objectives.")
-
     who_we_are_title = models.CharField(max_length=100, default="Who We Are")
     who_we_are_description = models.TextField(blank=True, null=True)
     who_we_are_image = models.ImageField(upload_to='about/', blank=True, null=True)
-
     why_exist_title = models.CharField(max_length=100, default="Why We Exist")
     why_exist_description = models.TextField(blank=True, null=True)
 
@@ -146,14 +144,18 @@ class Aboutus(models.Model):
 
         super().save(*args, **kwargs)
 
+        # Resize images if they exist
+        max_width, max_height = 800, 600
+        for image_field in [self.image, self.mission_image, self.vision_image, self.who_we_are_image]:
+            if image_field and image_field.path:
+                img = Image.open(image_field.path)
+                if img.width > max_width or img.height > max_height:
+                    img.thumbnail((max_width, max_height))
+                    img.save(image_field.path)
+
     def __str__(self):
         return self.title
 
-
-
-# ===========================
-# Leaders
-# ===========================
 
 class Leader(models.Model):
     CATEGORY_CHOICES = [
@@ -172,7 +174,6 @@ class Leader(models.Model):
     personal_website = models.URLField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
 
-    # NEW FIELD: category/grouping
     category = models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,
@@ -187,8 +188,19 @@ class Leader(models.Model):
         verbose_name = "Leader"
         verbose_name_plural = "Leaders"
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        max_width, max_height = 800, 600
+        if self.photo and self.photo.path:
+            img = Image.open(self.photo.path)
+            if img.width > max_width or img.height > max_height:
+                img.thumbnail((max_width, max_height))
+                img.save(self.photo.path)
+
     def __str__(self):
         return f"{self.full_name} - {self.position}"
+
 
 class News(models.Model):
     """Comprehensive News model for all site content: news, announcements, updates, academic info, etc."""
@@ -232,6 +244,7 @@ class News(models.Model):
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
+from PIL import Image
 
 class Event(models.Model):
     title = models.CharField(max_length=150, unique=True)
@@ -263,6 +276,17 @@ class Event(models.Model):
             self.event_start = now()
         super().save(*args, **kwargs)
 
+        # Resize images if they exist
+        max_width = 800
+        max_height = 600
+
+        for img_field in [self.background_image, self.image]:
+            if img_field and img_field.path:
+                img = Image.open(img_field.path)
+                if img.width > max_width or img.height > max_height:
+                    img.thumbnail((max_width, max_height))
+                    img.save(img_field.path)
+
     def is_upcoming(self):
         return self.event_start and self.event_start >= now()
 
@@ -277,7 +301,6 @@ class Event(models.Model):
             minutes = (delta.seconds % 3600) // 60
             return f"{days}d {hours}h {minutes}m remaining"
         return "Started"
-
 
 
 # ===========================
@@ -385,23 +408,22 @@ class CommunityOutreach(models.Model):
 # ===========================
 # Projects
 # ===========================
-class Project(models.Model):
-    """Model representing club projects, initiatives, or contact-related campaigns."""
+from django.utils.text import slugify
+from PIL import Image
+import os
 
+class Project(models.Model):
+    # your existing fields ...
     title = models.CharField(max_length=100, help_text="Project or Initiative title")
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     summary = models.TextField(blank=True, help_text="Short summary of the project")
     description = models.TextField(help_text="Full details or body content")
-    
     contact_email = models.EmailField(blank=True, null=True, help_text="Email to reach out about this project")
     phone_number = models.CharField(max_length=20, blank=True, null=True, help_text="Phone number if applicable")
     url = models.URLField(blank=True, null=True, help_text="External or internal project link")
-
     image = models.ImageField(upload_to='project_images/', blank=True, null=True, help_text="Project image or banner")
-
     is_published = models.BooleanField(default=True)
     publish_date = models.DateTimeField(auto_now_add=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -413,8 +435,22 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
         super().save(*args, **kwargs)
 
+        # Resize image after saving
+        if self.image:
+            img_path = self.image.path
+            img = Image.open(img_path)
+
+            max_width = 800
+            max_height = 600
+
+            # Only resize if larger than max dimensions
+            if img.width > max_width or img.height > max_height:
+                img.thumbnail((max_width, max_height))
+                img.save(img_path)
+    
     def __str__(self):
         return self.title
 

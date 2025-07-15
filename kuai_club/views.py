@@ -45,6 +45,12 @@ def home(request):
     leaders_executive = Leader.objects.filter(category='executive').order_by('full_name')
     leaders_faculty = Leader.objects.filter(category='faculty').order_by('full_name')
 
+    categories = [
+        ('student', 'Student Leaders', leaders_student),
+        ('executive', 'Executive Board', leaders_executive),
+        ('faculty', 'Faculty Mentors', leaders_faculty),
+    ]
+
   
     
     if upcoming_events and upcoming_events[0].background_image:
@@ -77,6 +83,7 @@ def home(request):
         'leaders_student': leaders_student,
         'leaders_executive': leaders_executive,
         'leaders_faculty': leaders_faculty,
+        'categories': categories,
     })
 
 def about_pages_processor(request):
@@ -121,8 +128,8 @@ def leaders_by_category(request, category):
     })
 
 def leader_detail(request, leader_id):
-    leader = get_object_or_404(Leader, id=leader_id)
-    return render(request, 'leader_detail.html', {'leader': leader})
+    leaders = get_object_or_404(Leader, id=leader_id)
+    return render(request, 'leader_detail.html', {'leaders': leaders})
 
 def news_processor(request):
     news = News.objects.filter(is_published=True).order_by('-publish_date')
