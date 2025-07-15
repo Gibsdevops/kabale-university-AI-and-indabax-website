@@ -120,3 +120,13 @@ def hero_processor(request):
         cache.set('hero_slides', hero_slides, 300)  # Cache for 5 minutes
     return {'hero_slides': hero_slides}
 
+from django.core.cache import cache
+from .models import GalleryImage
+
+def gallery_processor(request):
+    """Latest gallery images with caching for 5 minutes."""
+    gallery_images = cache.get('latest_gallery_images')
+    if not gallery_images:
+        gallery_images = GalleryImage.objects.order_by('-upload_date', '-id')[:10]  # Adjust number if needed
+        cache.set('latest_gallery_images', gallery_images, 300)  # Cache for 300 seconds
+    return {'gallery_images': gallery_images}

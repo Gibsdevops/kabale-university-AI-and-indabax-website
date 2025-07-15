@@ -15,6 +15,7 @@ from .models import (
     CommunityOutreach,
     Project,
     HeroSlide,
+    GalleryImage
 )
 import logging
 
@@ -43,6 +44,8 @@ def home(request):
 
     today = now().date()
     current_leaders = Leader.objects.filter(start_date__lte=today, end_date__gte=today)
+
+    gallery_images = GalleryImage.objects.order_by('-upload_date', '-id')[:20] 
 
     categories = [
     ('student', 'Student Leaders', current_leaders.filter(category='student')),
@@ -79,6 +82,7 @@ def home(request):
         'background_image_url': background_image_url,
 
         'categories': categories,
+        'gallery_images': gallery_images, 
     })
 
 def about_pages_processor(request):
@@ -130,9 +134,6 @@ def news_processor(request):
     news = News.objects.filter(is_published=True).order_by('-publish_date')
     return {'news': news}
 
-def news_page(request, page_id):
-    page = get_object_or_404(News, id=page_id, is_published=True)
-    return render(request, 'news_detail.html', {'page': page})
 
 def events_processor(request):
     events = Event.objects.filter(is_published=True).order_by('event_start')

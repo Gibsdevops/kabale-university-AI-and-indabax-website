@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="{% static 'kuai_club/css/projects.css' %}">
     <link rel="stylesheet" href="{% static 'kuai_club/css/Events.css' %}">
     <link rel="stylesheet" href="{% static 'kuai_club/css/leaders.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/News.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/gallery.css' %}">
 
     {% if site_settings.favicon %}
         <link rel="icon" href="{{ site_settings.favicon.url }}" type="image/x-icon" />
@@ -218,7 +220,6 @@
 </div>
 
 
-
 <div id="news-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000; max-width:400px;">
     <ul class="list-unstyled">
         {% for item in news %}
@@ -227,7 +228,8 @@
                     <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width:50px; height:50px; object-fit:cover; border-radius:4px; margin-right:10px;">
                 {% endif %}
                 <div>
-                    <a href="{% url 'kuai_club:news_page' item.id %}" class="fw-bold text-dark">{{ item.title }}</a>
+                    <!-- Changed from url tag to anchor that links to section with an id -->
+                    <a href="#news-{{ item.id }}" class="fw-bold text-dark">{{ item.title }}</a>
                     <p class="mb-0 text-muted" style="font-size: 0.85rem;">
                         {{ item.summary|truncatewords:15 }}
                     </p>
@@ -238,6 +240,7 @@
         {% endfor %}
     </ul>
 </div>
+
 
 <div id="events-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; z-index:1000;">
     <ul class="list-unstyled">
@@ -337,6 +340,10 @@
 <script src="{% static 'kuai_club/js/projects.js' %}"></script>
 <script src="{% static 'kuai_club/js/Event.js' %}" ></script>
 <script src="{% static 'kuai_club/js/leaders.js' %}"></script>
+<script src="{% static 'kuai_club/js/News.js' %}"></script>
+<script src="{% static 'kuai_club/js/gallery.js' %}"></script>
+
+
 
 
 

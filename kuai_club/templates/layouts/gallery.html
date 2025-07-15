@@ -1,0 +1,326 @@
+{% load static %}
+
+{% block content %}
+<section class="gallery-section">
+  <h2 class="gallery-title">Latest Gallery</h2>
+  <div id="main-gallery" class="gallery-wrapper">
+    {% for image in gallery_images|slice:":4" %}
+      <div class="gallery-item loading">
+        <img src="{{ image.image.url }}" alt="{{ image.title|default:'Gallery image' }}">
+      </div>
+    {% endfor %}
+
+    {% if gallery_images|length > 4 %}
+      <div class="more-btn-container">
+        <button 
+          id="show-more-btn" 
+          class="btn btn-primary small-btn" 
+          aria-expanded="false" 
+          aria-controls="extra-gallery"
+        >
+          + More
+        </button>
+      </div>
+    {% endif %}
+  </div>
+
+  <div id="extra-gallery" class="gallery-wrapper extra-gallery" style="display: none;" aria-hidden="true">
+    {% for image in gallery_images|slice:"4:" %}
+      <div class="gallery-item loading">
+        <img src="{{ image.image.url }}" alt="{{ image.title|default:'Gallery image' }}">
+      </div>
+    {% endfor %}
+    <div class="hide-btn-container">
+      <button id="hide-gallery-btn" class="btn btn-secondary hide-btn small-btn">
+        Hide
+      </button>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const showMoreBtn = document.getElementById('show-more-btn');
+    const hideGalleryBtn = document.getElementById('hide-gallery-btn');
+    const extraGallery = document.getElementById('extra-gallery');
+    const mainGallery = document.getElementById('main-gallery');
+
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', () => {
+            extraGallery.style.display = 'grid';
+            extraGallery.classList.add('show');
+            showMoreBtn.style.display = 'none';
+            showMoreBtn.setAttribute('aria-expanded', 'true');
+            extraGallery.setAttribute('aria-hidden', 'false');
+
+            setTimeout(() => {
+                extraGallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        });
+    }
+
+    if (hideGalleryBtn) {
+        hideGalleryBtn.addEventListener('click', () => {
+            extraGallery.classList.remove('show');
+            mainGallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            showMoreBtn.setAttribute('aria-expanded', 'false');
+            extraGallery.setAttribute('aria-hidden', 'true');
+
+            setTimeout(() => {
+                extraGallery.style.display = 'none';
+                showMoreBtn.style.display = 'inline-block';
+            }, 300);
+        });
+    }
+
+    // Image loading animation
+    const images = document.querySelectorAll('.gallery-item img');
+    images.forEach(img => {
+        const galleryItem = img.closest('.gallery-item');
+
+        img.addEventListener('load', () => {
+            galleryItem.classList.remove('loading');
+        });
+
+        img.addEventListener('error', () => {
+            galleryItem.classList.remove('loading');
+        });
+
+        if (!img.complete) {
+            galleryItem.classList.add('loading');
+        }
+    });
+
+    // Click to view full image
+    document.querySelectorAll('.gallery-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const img = item.querySelector('img');
+            if(img) {
+                window.open(img.src, '_blank');
+            }
+        });
+    });
+
+    // Intersection Observer for fade-in animation
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.gallery-item').forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(item);
+    });
+});
+</script>
+{% endblock scripts %}
+
+{% block styles %}
+<style>
+.gallery-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.gallery-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-item:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.more-btn-container {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.hide-btn-container {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn.small-btn {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 80px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.extra-gallery {
+    display: none;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.extra-gallery.show {
+    display: grid;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hide-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+
+.hide-btn:hover {
+    box-shadow: 0 12px 30px rgba(255, 107, 107, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .gallery-wrapper {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .gallery-title {
+        font-size: 2rem;
+    }
+    
+    .gallery-section {
+        padding: 2rem 1rem;
+    }
+
+    .more-btn-container {
+        position: static;
+        transform: none;
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .gallery-title {
+        font-size: 1.8rem;
+    }
+}
+
+/* Loading animation */
+.gallery-item.loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+</style>
+{% endblock styles %>
+{% endblock %}

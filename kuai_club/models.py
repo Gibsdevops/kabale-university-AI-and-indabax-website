@@ -224,6 +224,7 @@ class Leader(models.Model):
         return today > self.end_date
 
 
+
 class News(models.Model):
     """Comprehensive News model for all site content: news, announcements, updates, academic info, etc."""
 
@@ -233,7 +234,8 @@ class News(models.Model):
     content = models.TextField(blank=True, help_text="Full detailed content for the news")
     url = models.URLField(max_length=300, blank=True, help_text="Optional external link for news or resource")
 
-    image = models.ImageField(upload_to='news_images/', blank=True, null=True, help_text="Optional image for the news item")
+    image = models.ImageField(upload_to='news_images/', blank=True, null=True, help_text="Main image for the news card")
+    background_image = models.ImageField(upload_to='news_backgrounds/', blank=True, null=True, help_text="Background slider image for this news")
 
     is_published = models.BooleanField(default=True, help_text="Show or hide this news item on the site")
     publish_date = models.DateTimeField(null=True, blank=True, help_text="Date when news was published or will be published")
@@ -255,7 +257,23 @@ class News(models.Model):
         if not self.publish_date:
             from django.utils.timezone import now
             self.publish_date = now()
+
         super().save(*args, **kwargs)
+
+        # Resize the main image
+        if self.image:
+            img = Image.open(self.image.path)
+            if img.height > 600 or img.width > 800:
+                img = img.resize((800, 600))  # Resize to 800x600
+                img.save(self.image.path)
+
+        # Resize the background image
+        if self.background_image:
+            bg = Image.open(self.background_image.path)
+            if bg.height > 1080 or bg.width > 1920:
+                bg = bg.resize((1920, 1080))  # Resize to 1920x1080
+                bg.save(self.background_image.path)
+
 
 
 
@@ -532,6 +550,33 @@ class HeroSlide(models.Model):
 
 
 
+from django.db import models
+from PIL import Image
+
+class GalleryImage(models.Model):
+    title = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(upload_to='gallery/')
+    caption = models.CharField(max_length=255, blank=True)
+    upload_date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-upload_date', '-id']
+
+    def __str__(self):
+        return self.title or f"Image {self.id}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # Resize image if necessary
+        if self.image:
+            img = Image.open(self.image.path)
+            max_width = 1280
+            max_height = 960
+
+            if img.height > max_height or img.width > max_width:
+                img.thumbnail((max_width, max_height))
+                img.save(self.image.path)
 
 
 

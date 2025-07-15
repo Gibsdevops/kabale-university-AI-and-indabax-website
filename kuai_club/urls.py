@@ -16,8 +16,7 @@ urlpatterns = [
     path('leaders/category/<str:category>/', views.leaders_by_category, name='leaders_by_category'),
     path('leader/<int:leader_id>/', views.leader_detail, name='leader_detail'),
 
-    # News
-    path('news/<int:page_id>/', views.news_page, name='news_page'),
+
 
     # Events
     path('event/<int:page_id>/', views.event_page, name='event_page'),

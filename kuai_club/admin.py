@@ -2,6 +2,7 @@
 from django.contrib import admin
 from .models import SiteSettings,Aboutus,Leader,Event,Resource,CommunityOutreach,News,Research,Project
 from .models import HeroSlide
+from django.utils.html import format_html
 
 # Register your models here.
 
@@ -125,11 +126,39 @@ class LeaderAdmin(admin.ModelAdmin):
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'publish_date', 'is_published', 'created_at', 'updated_at')
-    readonly_fields = ('created_at', 'updated_at')
+    list_display = ('title', 'slug', 'publish_date', 'is_published', 'created_at', 'updated_at', 'news_image_tag')
+    readonly_fields = ('created_at', 'updated_at', 'news_image_preview', 'background_image_preview')
     search_fields = ('title', 'summary', 'content')
     prepopulated_fields = {"slug": ("title",)}
     list_filter = ('is_published', 'publish_date')
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'slug', 'summary', 'content', 'url', 'is_published', 'publish_date')
+        }),
+        ('Images', {
+            'fields': ('image', 'news_image_preview', 'background_image', 'background_image_preview')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+
+    def news_image_tag(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" width="60" height="40" style="object-fit:cover;" />', obj.image.url)
+        return "-"
+    news_image_tag.short_description = "News Image"
+
+    def news_image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" width="200" style="object-fit:contain;" />', obj.image.url)
+        return "No image"
+
+    def background_image_preview(self, obj):
+        if obj.background_image:
+            return format_html('<img src="{}" width="300" style="object-fit:contain;" />', obj.background_image.url)
+        return "No background"
+
 
 
 from django.contrib import admin
@@ -223,3 +252,12 @@ class HeroSlideAdmin(admin.ModelAdmin):
     )
 
 
+
+from .models import GalleryImage
+
+@admin.register(GalleryImage)
+class GalleryImageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'upload_date')
+    search_fields = ('title', 'caption')
+    list_filter = ('upload_date',)
+    readonly_fields = ('upload_date',)

@@ -162,16 +162,23 @@
   text-align: center;
   font-size: 1rem;
   font-weight: 700;
-  color: #0a9396;
-  text-decoration: underline;
+  color: #ffffff;            
+  background-color: #0a9396; 
+  padding: 10px 20px;        
+  border-radius: 30px;       
+  text-decoration: none;    
   cursor: pointer;
-  transition: color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(10, 147, 150, 0.3); 
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .view-previous-btn:hover {
-  color: #ae2012;
+  background-color: #ae2012;  
+  box-shadow: 0 6px 12px rgba(174, 32, 18, 0.5);
+  color: #fff;               
 }
 
+  
 /* Responsive */
 @media (max-width: 768px) {
   .leaders-grid {
