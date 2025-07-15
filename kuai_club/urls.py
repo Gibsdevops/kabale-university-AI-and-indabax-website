@@ -1,10 +1,10 @@
 from django.urls import path
 from . import views
 
-app_name = 'kuai_club' # Namespacing for this app
+app_name = 'kuai_club'  # Namespacing for this app
 
 urlpatterns = [
-    
+
     # Home
     path('', views.home, name='home'),
 
@@ -16,12 +16,16 @@ urlpatterns = [
     path('leaders/category/<str:category>/', views.leaders_by_category, name='leaders_by_category'),
     path('leader/<int:leader_id>/', views.leader_detail, name='leader_detail'),
 
-    # News detail page
+    # News
     path('news/<int:page_id>/', views.news_page, name='news_page'),
 
-
-    # Event 
+    # Events
     path('event/<int:page_id>/', views.event_page, name='event_page'),
+    path('api/events/', views.api_events, name='api_events'),  # Matches JS URL
+
+    # Projects
+    path('projects/<int:page_id>/', views.project_page, name='project_page'),
+    path('api/projects/', views.api_projects, name='api_projects'),
 
     # Research
     path('research/<int:page_id>/', views.research_page, name='research_page'),
@@ -29,12 +33,6 @@ urlpatterns = [
     # Resources
     path('resources/<int:page_id>/', views.resource_page, name='resource_page'),
 
-
-    # Community
+    # Community Outreach
     path('community/<int:page_id>/', views.community_page, name='community_page'),
-
-    # Projects
-    path('projects/<int:page_id>/', views.project_page, name='project_page'),
-
-    
 ]

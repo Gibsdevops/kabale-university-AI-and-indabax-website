@@ -21,13 +21,28 @@ def site_settings(request):
     return {'site_settings': settings}
 
 
+from django.core.cache import cache
+from .models import Aboutus
+
 def about_pages_processor(request):
-    """About pages list."""
-    pages = cache.get('about_pages')
-    if not pages:
-        pages = Aboutus.objects.all().order_by('title')
-        cache.set('about_pages', pages, 300)
-    return {'about_pages': pages}
+    """Context processor to provide about_pages (list) and about_page (first item)."""
+    
+    about_pages = cache.get('about_pages')
+    about_page = cache.get('about_page')
+
+    if not about_pages:
+        about_pages = Aboutus.objects.all()
+        cache.set('about_pages', about_pages, 300)
+
+    if not about_page:
+        about_page = Aboutus.objects.first()
+        cache.set('about_page', about_page, 300)
+
+    return {
+        'about_pages': about_pages,
+        'about_page': about_page,
+    }
+
 
 
 def leader_processor(request):

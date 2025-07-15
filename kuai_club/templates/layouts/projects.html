@@ -1,0 +1,38 @@
+{% load static %}
+<section class="projects-slider-section">
+  <div class="container">
+    <h2 class="section-title">Our Latest Projects</h2>
+    <div class="projects-slider-wrapper" id="projectsSliderWrapper">
+      <div class="projects-slider" id="projectsSlider">
+        {% for project in projects %}
+          <div class="project-card{% if forloop.counter == 2 %} mid-card{% endif %}" data-project-id="{{ project.id }}">
+            {% if project.image %}
+             <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image" loading="lazy" />
+            {% else %}
+             <img src="{% static 'images/default-project.jpg' %}" alt="Default Project Image" class="project-image" loading="lazy" />
+            {% endif %}
+            <div class="project-content">
+              <h3 class="project-title">{{ project.title }}</h3>
+              <p class="project-summary">{{ project.summary|truncatewords:20 }}</p>
+              <div class="project-meta">
+                <span class="project-date">{{ project.publish_date|date:"F d, Y" }}</span>
+                {% if project.url %}
+                  <a href="{{ project.url }}" class="project-link" target="_blank">Learn More</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- Slider navigation buttons -->
+    <div class="slider-nav-container">
+      <button class="slider-btn" id="slideLeft" type="button">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="slider-btn" id="slideRight" type="button">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</section>

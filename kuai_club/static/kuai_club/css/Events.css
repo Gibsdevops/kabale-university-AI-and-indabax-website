@@ -1,0 +1,337 @@
+/* Enhanced Dual Events Section CSS - FIXED VERSION */
+.dual-events-section {
+  padding: 60px 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+  z-index: 1;
+  min-height: 600px;
+}
+
+.dual-events-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(143, 188, 143, 0.85);
+  z-index: -1;
+}
+
+.events-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.event-block {
+  color: #fff;
+  text-align: center;
+  position: relative;
+  padding: 20px;
+}
+
+.event-block h2 {
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.event-slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.event-slider {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  overflow: hidden;
+  justify-content: center;
+  min-height: 400px;
+  align-items: flex-start;
+}
+
+/* Previous Events - Single Card Layout */
+.previous-events .event-slider {
+  max-width: 350px;
+}
+
+.previous-events .event-card {
+  width: 100%;
+  max-width: 350px;
+}
+
+/* Upcoming Events - Two Cards Layout */
+.upcoming-events .event-slider {
+  max-width: 720px;
+}
+
+.upcoming-events .event-card {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+.event-card {
+  background-color: #ffffff;
+  color: #333;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+}
+
+.event-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.event-card:hover img {
+  transform: scale(1.05);
+}
+
+.event-content {
+  text-align: left;
+}
+
+.event-title {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  color: #333;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.event-summary {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.event-organizer {
+  font-size: 0.9rem;
+  color: #2e7d32;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.event-countdown {
+  font-size: 0.9rem;
+  color: #d32f2f;
+  margin-bottom: 15px;
+  font-weight: 600;
+  background-color: #fff3e0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 4px solid #ff9800;
+}
+
+.event-link {
+  color: #4caf50;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  padding: 8px 16px;
+  border: 2px solid #4caf50;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.event-link:hover {
+  background-color: #4caf50;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Navigation Buttons - FIXED */
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.nav-btn {
+  background: #ffffff;
+  color: #4caf50;
+  font-size: 1.8rem;
+  border: 2px solid #4caf50;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  outline: none;
+  user-select: none;
+}
+
+.nav-btn:hover:not(.disabled):not(:disabled) {
+  background-color: #4caf50;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.nav-btn:active:not(.disabled):not(:disabled) {
+  transform: scale(0.95);
+}
+
+.nav-btn.disabled,
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  color: #bbb;
+  border-color: #ddd;
+  transform: none;
+}
+
+.nav-btn.disabled:hover,
+.nav-btn:disabled:hover {
+  background-color: #f5f5f5;
+  color: #bbb;
+  transform: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Loading and Error States */
+.loading-card,
+.no-events,
+.error-message {
+  width: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  color: #666;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.error-message {
+  background-color: rgba(255, 235, 235, 0.95);
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dual-events-section {
+    background-attachment: scroll;
+  }
+  
+  .events-container {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  
+  .event-block {
+    padding: 10px;
+  }
+  
+  .upcoming-events .event-slider {
+    max-width: 680px;
+  }
+  
+  .upcoming-events .event-card {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dual-events-section {
+    padding: 40px 15px;
+    background-attachment: scroll;
+  }
+  
+  .event-block h2 {
+    font-size: 1.8rem;
+  }
+  
+  .upcoming-events .event-slider {
+    flex-direction: column;
+    align-items: center;
+    max-width: 350px;
+  }
+  
+  .upcoming-events .event-card,
+  .previous-events .event-card {
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .nav-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dual-events-section {
+    padding: 30px 10px;
+    background-attachment: scroll;
+  }
+  
+  .event-block h2 {
+    font-size: 1.5rem;
+  }
+  
+  .event-card {
+    padding: 15px;
+  }
+  
+  .event-card img {
+    height: 150px;
+  }
+  
+  .event-title {
+    font-size: 1.3rem;
+  }
+  
+  .nav-buttons {
+    gap: 15px;
+  }
+}

@@ -62,3 +62,64 @@
     {# <script src="{% static 'kuai_club/js/script.js' %}"></script> #}
 </body>
 </html>
+
+
+
+
+# models.py
+from django.db import models
+from django.utils.text import slugify
+from django.utils.timezone import now
+
+class Event(models.Model):
+    title = models.CharField(max_length=150, unique=True)
+    slug = models.SlugField(max_length=160, unique=True, blank=True)
+    summary = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    event_url = models.URLField(max_length=300, blank=True, null=True)
+    location = models.CharField(max_length=200, blank=True)
+    image = models.ImageField(upload_to='event_images/', blank=True, null=True)
+    is_published = models.BooleanField(default=True)
+    event_start = models.DateTimeField(null=True, blank=True)
+    event_end = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Event"
+        verbose_name_plural = "Events"
+        ordering = ['event_start']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        if not self.event_start:
+            self.event_start = now()
+        super().save(*args, **kwargs)
+
+    def is_upcoming(self):
+        return self.event_start and self.event_start > now()
+
+    def time_until(self):
+        from django.utils.timezone import now
+        delta = self.event_start - now()
+        if delta.total_seconds() > 0:
+            days = delta.days
+            hours = delta.seconds // 3600
+            minutes = (delta.seconds % 3600) // 60
+            return f"{days}d {hours}h {minutes}m remaining"
+        return "Started or Passed"
+
+# admin.py
+from django.contrib import admin
+from .models import Event
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'event_start', 'event_end', 'is_published', 'is_upcoming')
+    list_filter = ('is_published', 'event_start')
+    search_fields = ('title', 'summary', 'location')
+    prepopulated_fields = {"slug": ("title",)}

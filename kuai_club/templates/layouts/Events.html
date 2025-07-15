@@ -1,0 +1,88 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'kuai_club/css/Events.css' %}">
+
+
+{% block content %}
+
+<section class="dual-events-section" style="background-image: url('{{ background_image_url }}'); background-size: cover; background-position: center;">
+  <div class="events-container">
+    
+    <!-- Previous Events Block -->
+    <div class="event-block previous-events">
+      <h2>Previous Events</h2>
+      <div class="event-slider-wrapper" id="prevEventWrapper">
+        <div class="event-slider" id="prevSlider">
+          {% if past_events %}
+            <div class="event-card" data-id="{{ past_events.0.id }}">
+              {% if past_events.0.image %}
+                <img src="{{ past_events.0.image.url }}" alt="{{ past_events.0.title }}" />
+              {% else %}
+                <img src="{% static 'images/default-event.jpg' %}" alt="{{ past_events.0.title }}" />
+              {% endif %}
+              <div class="event-content">
+                <h3 class="event-title">{{ past_events.0.title }}</h3>
+                <p class="event-summary">{{ past_events.0.summary }}</p>
+                {% if past_events.0.organizer %}
+                  <p class="event-organizer"><strong>Organizer:</strong> {{ past_events.0.organizer }}</p>
+                {% endif %}
+                <a href="{{ past_events.0.event_url }}" target="_blank" class="event-link">Learn More</a>
+              </div>
+            </div>
+          {% else %}
+            <div class="no-events">
+              <p>No previous events available</p>
+            </div>
+          {% endif %}
+        </div>
+        <div class="nav-buttons">
+          <button class="nav-btn" id="prevLeft" aria-label="Previous event">&lt;</button>
+          <button class="nav-btn" id="prevRight" aria-label="Next event">&gt;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events Block -->
+    <div class="event-block upcoming-events">
+      <h2>Upcoming Events</h2>
+      <div class="event-slider-wrapper" id="upEventWrapper">
+        <div class="event-slider" id="upSlider">
+          {% for event in upcoming_events|slice:":2" %}
+            <div class="event-card" data-id="{{ event.id }}">
+              {% if event.image %}
+                <img src="{{ event.image.url }}" alt="{{ event.title }}" />
+              {% else %}
+                <img src="{% static 'images/default-event.jpg' %}" alt="{{ event.title }}" />
+              {% endif %}
+              <div class="event-content">
+                <h3 class="event-title">{{ event.title }}</h3>
+                <p class="event-summary">{{ event.summary }}</p>
+                {% if event.organizer %}
+                  <p class="event-organizer"><strong>Organizer:</strong> {{ event.organizer }}</p>
+                {% endif %}
+                {% if event.time_until_start %}
+                  <p class="event-countdown" data-start="{{ event.event_start|date:'c' }}">
+                    <strong>Time Remaining:</strong> {{ event.time_until_start }}
+                  </p>
+                {% endif %}
+                <a href="{{ event.event_url }}" target="_blank" class="event-link">Learn More</a>
+              </div>
+            </div>
+          {% empty %}
+            <div class="no-events">
+              <p>No upcoming events available</p>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="nav-buttons">
+          <button class="nav-btn" id="upLeft" aria-label="Previous events">&lt;</button>
+          <button class="nav-btn" id="upRight" aria-label="Next events">&gt;</button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+{% endblock content %}
+
+<script src="{% static 'kuai_club/js/Event.js' %}" ></script>

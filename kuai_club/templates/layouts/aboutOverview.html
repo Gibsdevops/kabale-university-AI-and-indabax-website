@@ -1,0 +1,101 @@
+{% load static %}
+{% if about_page %}
+  <section class="about-overview-section" id="about-overview">
+    <div class="container">
+      <div class="about-main-card">
+
+        <!-- Top Row Headers -->
+        <div class="about-headers-row">
+          <div class="about-header-left">
+            <h2 class="about-heading">{{ about_page.who_we_are_title|default:"Who We Are" }}</h2>
+          </div>
+          <div class="about-header-right">
+            <h2 class="about-heading">Mission</h2>
+          </div>
+        </div>
+
+        <!-- First Content Row -->
+        <div class="about-content-row">
+          <!-- Who We Are -->
+          <div class="about-card about-who-we-are">
+            <div class="about-image-container">
+              {% if about_page.who_we_are_image %}
+                <img src="{{ about_page.who_we_are_image.url }}" alt="Who We Are" class="about-image" />
+              {% elif about_page.image %}
+                <img src="{{ about_page.image.url }}" alt="Who We Are" class="about-image" />
+              {% else %}
+                <div class="about-image-placeholder"><i class="fas fa-users"></i></div>
+              {% endif %}
+            </div>
+            <div class="about-text-container">
+              <p class="about-description">
+                {{ about_page.who_we_are_description|default:about_page.content }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Mission -->
+          <!-- Mission -->
+            <div class="about-card about-mission">
+              <div class="about-image-container">
+                {% if about_page.mission_image %}
+                  <img src="{{ about_page.mission_image.url }}" alt="Mission" class="about-image" />
+                {% elif about_page.image %}
+                  <img src="{{ about_page.image.url }}" alt="Mission" class="about-image" />
+                {% else %}
+                  <div class="about-image-placeholder"><i class="fas fa-bullseye"></i></div>
+                {% endif %}
+              </div>
+              <div class="about-text-container">
+                <p class="about-description">{{ about_page.mission }}</p>
+              </div>
+            </div>
+
+        </div>
+
+        <!-- Second Row Headers -->
+        <div class="about-headers-row">
+          <div class="about-header-left">
+            <h2 class="about-heading">Vision</h2>
+          </div>
+          <div class="about-header-right">
+            <h2 class="about-heading">{{ about_page.why_exist_title|default:"Why We Exist" }}</h2>
+          </div>
+        </div>
+
+        <!-- Second Content Row -->
+        <div class="about-content-row">
+          <!-- Vision -->
+          <div class="about-card about-vision">
+            <div class="about-text-container">
+              <p class="about-description">{{ about_page.vision }}</p>
+            </div>
+            <div class="about-image-container">
+              {% if about_page.vision_image %}
+                <img src="{{ about_page.vision_image.url }}" alt="Vision" class="about-image" />
+              {% else %}
+                <div class="about-image-placeholder"><i class="fas fa-eye"></i></div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Why We Exist -->
+          <div class="about-card about-why-exist">
+            <div class="about-text-container about-text-full">
+              <p class="about-description">{{ about_page.why_exist_description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Learn More Button -->
+        <div class="about-cta-container">
+          <a href="{% url 'kuai_club:about_detail' about_page.id %}" class="about-learn-more-btn">
+            <span>Learn More About Us</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+{% endif %}

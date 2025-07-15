@@ -1,0 +1,90 @@
+{% load static %}
+
+<section class="leaders-section">
+  <div class="section-header">
+    <div class="section-subtitle">TEAM MEMBERS</div>
+    <h2 class="section-title">Meet our<br>Professional team of<br>experts</h2>
+    <p class="section-description">
+      Our dedicated team of leaders and experts are committed to driving innovation and excellence in everything we do.
+    </p>
+  </div>
+
+  {% for category, label, leaders in categories %}
+    {% if leaders %}
+      <div class="category-section">
+        <h3 class="category-title">{{ label }}</h3>
+        <div class="leaders-grid">
+          {% for leader in leaders %}
+            <div class="leader-card">
+              <div class="social-toggle" onclick="toggleSocial(this)">
+                <i class="fas fa-plus"></i>
+              </div>
+
+              <div class="social-links">
+                {% if leader.email %}
+                  <a href="mailto:{{ leader.email }}" class="social-link email"><i class="fas fa-envelope"></i></a>
+                {% endif %}
+                {% if leader.linkedin_url %}
+                  <a href="{{ leader.linkedin_url }}" class="social-link linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                {% endif %}
+                {% if leader.github_url %}
+                  <a href="{{ leader.github_url }}" class="social-link github" target="_blank"><i class="fab fa-github"></i></a>
+                {% endif %}
+                {% if leader.personal_website %}
+                  <a href="{{ leader.personal_website }}" class="social-link website" target="_blank"><i class="fas fa-globe"></i></a>
+                {% endif %}
+                {% if leader.phone %}
+                  <a href="tel:{{ leader.phone }}" class="social-link phone"><i class="fas fa-phone"></i></a>
+                {% endif %}
+              </div>
+
+              <div class="leader-photo">
+                {% if leader.photo %}
+                  <img src="{{ leader.photo.url }}" alt="{{ leader.full_name }}">
+                {% else %}
+                  <div class="placeholder-photo">{{ leader.full_name|first }}</div>
+                {% endif %}
+              </div>
+
+              <h4 class="leader-name">{{ leader.full_name }}</h4>
+              <p class="leader-position">{{ leader.position }}</p>
+              <p class="leader-bio">{{ leader.bio|truncatechars:120 }}</p>
+            </div>
+          {% endfor %}
+        </div>
+
+        <a href="/previous-leaders/{{ category }}/" class="view-previous-btn">View Previous {{ label }}</a>
+      </div>
+    {% endif %}
+  {% endfor %}
+</section>
+
+<script>
+function toggleSocial(button) {
+  const socialLinks = button.nextElementSibling;
+  const icon = button.querySelector('i');
+
+  document.querySelectorAll('.social-links.active').forEach(links => {
+    if (links !== socialLinks) {
+      links.classList.remove('active');
+      links.previousElementSibling.classList.remove('active');
+      links.previousElementSibling.querySelector('i').className = 'fas fa-plus';
+    }
+  });
+
+  socialLinks.classList.toggle('active');
+  button.classList.toggle('active');
+  icon.className = socialLinks.classList.contains('active') ? 'fas fa-times' : 'fas fa-plus';
+}
+
+// Close all when clicking outside
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.social-toggle') && !event.target.closest('.social-links')) {
+    document.querySelectorAll('.social-links.active').forEach(links => {
+      links.classList.remove('active');
+      links.previousElementSibling.classList.remove('active');
+      links.previousElementSibling.querySelector('i').className = 'fas fa-plus';
+    });
+  }
+});
+</script>

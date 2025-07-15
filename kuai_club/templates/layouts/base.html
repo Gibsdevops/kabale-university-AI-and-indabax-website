@@ -18,6 +18,10 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'kuai_club/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'kuai_club/css/hero_section.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/aboutOverview.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/projects.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/Events.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/leaders.css' %}">
 
     {% if site_settings.favicon %}
         <link rel="icon" href="{{ site_settings.favicon.url }}" type="image/x-icon" />
@@ -183,9 +187,9 @@
             <div class="col-md-6">
                 <h6 class="dropdown-header">WHO WE ARE</h6>
                 <ul class="list-unstyled">
-                    {% for item in about_pages %}
-                        {% if item.column_position == 'left' %}
-                            <li><a href="{% url 'kuai_club:about_detail' item.id %}">{{ item.title }}</a></li>
+                    {% for page in about_pages %}
+                        {% if page.column_position == 'left' %}
+                            <li><a href="{% url 'kuai_club:about_detail' page.id %}">{{ page.title }}</a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -193,9 +197,9 @@
             <div class="col-md-6">
                 <h6 class="dropdown-header">WHY WE EXIST</h6>
                 <ul class="list-unstyled">
-                    {% for item in about_pages %}
-                        {% if item.column_position == 'right' %}
-                            <li><a href="{% url 'kuai_club:about_detail' item.id %}">{{ item.title }}</a></li>
+                    {% for page in about_pages %}
+                        {% if page.column_position == 'right' %}
+                            <li><a href="{% url 'kuai_club:about_detail' page.id %}">{{ page.title }}</a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -321,6 +325,7 @@
 <main class="py-4">
     {% block content %}
     {% include 'hero_section.html' %}
+    {% include 'aboutOverview.html' %}
     {% endblock %}
 </main>
 
@@ -328,6 +333,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'kuai_club/js/main.js' %}"></script>
 <script src="{% static 'kuai_club/js/hero_section.js' %}"></script>
+<script src="{% static 'kuai_club/js/aboutOverview.js' %}"></script>
+<script src="{% static 'kuai_club/js/projects.js' %}"></script>
+<script src="{% static 'kuai_club/js/Event.js' %}" ></script>
+<script src="{% static 'kuai_club/js/leaders.js' %}"></script>
+
+
 
 <script>
     // Simple hover logic to show/hide content panels next to hovered nav items

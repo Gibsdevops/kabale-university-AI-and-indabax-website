@@ -59,14 +59,49 @@ class AboutusAdmin(admin.ModelAdmin):
     list_display = ('title', 'column_position', 'created_at', 'updated_at')
     readonly_fields = ('created_at', 'updated_at')
     prepopulated_fields = {'slug': ('title',)}
+
+    def has_add_permission(self, request):
+        # Only allow adding if no entry exists
+        if Aboutus.objects.exists():
+            return False
+        return super().has_add_permission(request)
+
     fieldsets = (
         ('Content', {
-            'fields': ('title', 'slug', 'content', 'column_position', 'image')
+            'fields': (
+                'title', 'slug', 'content', 'column_position', 'image',
+            )
+        }),
+        ('Who We Are Section', {
+            'fields': (
+                'who_we_are_title',
+                'who_we_are_description',
+                'who_we_are_image',
+            ),
+        }),
+        ('Mission & Vision', {
+            'fields': (
+                'mission',
+                'mission_image',
+                'vision',
+                'vision_image'
+            ),
+        }),
+        ('Why We Exist Section', {
+            'fields': (
+                'why_exist_title',
+                'why_exist_description',
+            ),
+        }),
+        ('Objectives', {
+            'fields': ('objectives',),
         }),
         ('Timestamps', {
-            'fields': ('created_at', 'updated_at')
+            'fields': ('created_at', 'updated_at'),
         }),
     )
+
+
 
 
 @admin.register(Leader)
@@ -84,29 +119,23 @@ class NewsAdmin(admin.ModelAdmin):
     list_filter = ('is_published', 'publish_date')
 
 
+from django.contrib import admin
+from .models import Event
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'location', 'event_start', 'event_end', 'is_published', 'created_at')
+    list_display = ('title', 'location', 'background_image', 'event_start', 'event_end', 'is_published', 'is_upcoming', 'created_at')
     list_filter = ('is_published', 'event_start')
     search_fields = ('title', 'location', 'summary')
     readonly_fields = ('created_at', 'updated_at')
     prepopulated_fields = {'slug': ('title',)}
-    ordering = ('-event_start',)
+    ordering = ('event_start',)
+    
+    def is_upcoming(self, obj):
+        return obj.is_upcoming()
+    is_upcoming.boolean = True
+    is_upcoming.admin_order_field = 'event_start'
 
-    fieldsets = (
-        (None, {
-            'fields': ('title', 'slug', 'summary', 'description', 'image', 'event_url')
-        }),
-        ('Event Timing', {
-            'fields': ('event_start', 'event_end')
-        }),
-        ('Visibility & Status', {
-            'fields': ('is_published',)
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at')
-        }),
-    )
 
 
 @admin.register(Research)

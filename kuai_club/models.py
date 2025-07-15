@@ -100,6 +100,10 @@ from django.utils.text import slugify
 # About Us
 # ===========================
 
+from django.db import models
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
+
 class Aboutus(models.Model):
     """Model for the About Us page content."""
     title = models.CharField(max_length=100, default="About Us")
@@ -107,15 +111,23 @@ class Aboutus(models.Model):
     content = models.TextField(default="Welcome to our education platform. We are dedicated to empowering minds and transforming futures through innovative learning solutions.")
     image = models.ImageField(upload_to='about/', blank=True, null=True)
     mission = models.TextField()
+    mission_image = models.ImageField(upload_to='about/', blank=True, null=True)
     vision = models.TextField()
-    objectives = models.TextField(help_text="Provide a general overview of objectives. Specific objectives can be broken down if needed.")
+    vision_image = models.ImageField(upload_to='about/', blank=True, null=True)
+    objectives = models.TextField(help_text="Provide a general overview of objectives.")
 
-    
+    who_we_are_title = models.CharField(max_length=100, default="Who We Are")
+    who_we_are_description = models.TextField(blank=True, null=True)
+    who_we_are_image = models.ImageField(upload_to='about/', blank=True, null=True)
+
+    why_exist_title = models.CharField(max_length=100, default="Why We Exist")
+    why_exist_description = models.TextField(blank=True, null=True)
+
     COLUMN_CHOICES = (
         ('left', 'Left'),
         ('right', 'Right'),
     )
-    column_position = models.CharField(max_length=5, choices=COLUMN_CHOICES, default='left', help_text="Position of the content column")
+    column_position = models.CharField(max_length=5, choices=COLUMN_CHOICES, default='left')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -127,10 +139,16 @@ class Aboutus(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
+        # Enforce singleton (only one instance allowed)
+        if not self.pk and Aboutus.objects.exists():
+            raise ValidationError("Only one About Us entry is allowed.")
+
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
+
 
 
 # ===========================
@@ -211,29 +229,29 @@ class News(models.Model):
 # Events
 # ===========================
 
+from django.db import models
+from django.utils.text import slugify
+from django.utils.timezone import now
+
 class Event(models.Model):
-    """Comprehensive model for events, workshops, seminars, conferences, and more."""
-
-    title = models.CharField(max_length=150, unique=True, help_text="Event title or headline")
-    slug = models.SlugField(max_length=160, unique=True, blank=True, help_text="URL-friendly slug for the event")
-
-    summary = models.TextField(blank=True, help_text="Short summary or excerpt of the event")
-    description = models.TextField(blank=True, help_text="Detailed description of the event")
-
-    event_url = models.URLField(max_length=300, blank=True, null=True, help_text="External link for the event, registration or info")
-    location = models.CharField(max_length=200, blank=True, help_text="Where the event is taking place")  # 👈 Add this line
-    image = models.ImageField(upload_to='event_images/', blank=True, null=True, help_text="Optional event image")
-
-    is_published = models.BooleanField(default=True, help_text="Publish or unpublish this event")
-    event_start = models.DateTimeField(null=True, blank=True, help_text="Event start date and time")
-    event_end = models.DateTimeField(null=True, blank=True, help_text="Event end date and time")
+    title = models.CharField(max_length=150, unique=True)
+    slug = models.SlugField(max_length=160, unique=True, blank=True)
+    background_image = models.ImageField(upload_to='events_section_bg/', blank=True, null=True)
+    summary = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    event_url = models.URLField(max_length=300, blank=True, null=True)
+    location = models.CharField(max_length=200, blank=True)
+    image = models.ImageField(upload_to='event_images/', blank=True, null=True)
+    is_published = models.BooleanField(default=True)
+    event_start = models.DateTimeField(null=True, blank=True)
+    event_end = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Event"
         verbose_name_plural = "Events"
-        ordering = ['-event_start', '-created_at']
+        ordering = ['event_start']
 
     def __str__(self):
         return self.title
@@ -244,6 +262,21 @@ class Event(models.Model):
         if not self.event_start:
             self.event_start = now()
         super().save(*args, **kwargs)
+
+    def is_upcoming(self):
+        return self.event_start and self.event_start >= now()
+
+    def is_past(self):
+        return self.event_end and self.event_end < now()
+
+    def time_until_start(self):
+        delta = self.event_start - now()
+        if delta.total_seconds() > 0:
+            days = delta.days
+            hours = delta.seconds // 3600
+            minutes = (delta.seconds % 3600) // 60
+            return f"{days}d {hours}h {minutes}m remaining"
+        return "Started"
 
 
 
