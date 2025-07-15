@@ -157,6 +157,11 @@ class Aboutus(models.Model):
         return self.title
 
 
+from django.db import models
+from PIL import Image
+from datetime import timedelta
+from django.utils.timezone import now
+
 class Leader(models.Model):
     CATEGORY_CHOICES = [
         ('student', 'Student Leader'),
@@ -181,6 +186,10 @@ class Leader(models.Model):
         help_text="Select group type"
     )
 
+    # Leadership duration
+    start_date = models.DateField(help_text="Start of leadership period", default=date.today)
+    end_date = models.DateField(help_text="End of leadership period (auto-calculates 6 months if left empty)", blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -189,8 +198,13 @@ class Leader(models.Model):
         verbose_name_plural = "Leaders"
 
     def save(self, *args, **kwargs):
+        # Auto-calculate end_date as 6 months later if not set
+        if self.start_date and not self.end_date:
+            self.end_date = self.start_date + timedelta(days=180)
+
         super().save(*args, **kwargs)
 
+        # Resize uploaded photo if needed
         max_width, max_height = 800, 600
         if self.photo and self.photo.path:
             img = Image.open(self.photo.path)
@@ -200,6 +214,14 @@ class Leader(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.position}"
+
+    def is_current(self):
+        today = now().date()
+        return self.start_date <= today <= self.end_date
+
+    def is_past(self):
+        today = now().date()
+        return today > self.end_date
 
 
 class News(models.Model):

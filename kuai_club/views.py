@@ -41,15 +41,14 @@ def home(request):
     upcoming_events = Event.objects.filter(is_published=True, event_start__gte=now()).order_by('event_start')[:6]
     past_events = Event.objects.filter(is_published=True, event_end__lt=now()).order_by('-event_start')[:6]
 
-    leaders_student = Leader.objects.filter(category='student').order_by('full_name')
-    leaders_executive = Leader.objects.filter(category='executive').order_by('full_name')
-    leaders_faculty = Leader.objects.filter(category='faculty').order_by('full_name')
+    today = now().date()
+    current_leaders = Leader.objects.filter(start_date__lte=today, end_date__gte=today)
 
     categories = [
-        ('student', 'Student Leaders', leaders_student),
-        ('executive', 'Executive Board', leaders_executive),
-        ('faculty', 'Faculty Mentors', leaders_faculty),
-    ]
+    ('student', 'Student Leaders', current_leaders.filter(category='student')),
+    ('executive', 'Executive Board', current_leaders.filter(category='executive')),
+    ('faculty', 'Faculty Mentors', current_leaders.filter(category='faculty')),
+]
 
   
     
@@ -79,10 +78,6 @@ def home(request):
         'past_events': past_events,
         'background_image_url': background_image_url,
 
-        
-        'leaders_student': leaders_student,
-        'leaders_executive': leaders_executive,
-        'leaders_faculty': leaders_faculty,
         'categories': categories,
     })
 

@@ -104,11 +104,24 @@ class AboutusAdmin(admin.ModelAdmin):
 
 
 
+
 @admin.register(Leader)
 class LeaderAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'position', 'email', 'created_at', 'updated_at')
+    list_display = (
+        'full_name', 
+        'position', 
+        'category',         
+        'email', 
+        'start_date', 
+        'end_date',      
+        'created_at', 
+        'updated_at'
+    )
     readonly_fields = ('created_at', 'updated_at')
     search_fields = ('full_name', 'position', 'email')
+    list_filter = ('category',)  
+    ordering = ('-start_date', 'full_name') 
+
 
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
