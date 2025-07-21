@@ -140,7 +140,7 @@ body {
 }
 
 /* Hover Content Panels */
-.hover-content-panel {
+/* .hover-content-panel {
     position: absolute;
     top: 100%;
     left: 50%;
@@ -156,6 +156,47 @@ body {
     visibility: hidden;
     transition: all 0.3s ease;
     border-radius: 0 0 8px 8px;
+} */
+ /* Hover Content Panels */
+.hover-content-panel {
+    position: absolute;
+    top: 100%; /* Positions the top of the dropdown right below the bottom of the nav item */
+    left: 50%;
+    transform: translateX(-50%); /* Start with no vertical offset */
+    width: 350px;
+    max-width: 90vw;
+    background: #ffffff; /* Moved from inline style */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Moved from inline style (and updated for clarity) */
+    border-top: 3px solid #fbbf24;
+    padding: 20px; /* Changed from 1rem to 20px for consistency with other padding */
+    z-index: 1000; /* Moved from inline style */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    border-radius: 0 0 8px 8px;
+    display: none; /* Initial state: hidden by default until JS shows it */
+    pointer-events: none;
+}
+
+.hover-content-panel.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* Only apply translateY(0) when shown */
+    display: block; /* Ensure it's displayed when 'show' class is added */
+}
+
+/* Adjustments for right-aligned panels (like Quick Links or the last nav item) */
+.nav-item:nth-last-child(1) .hover-content-panel,
+.nav-item:nth-last-child(2) .hover-content-panel {
+    left: auto;
+    right: 0;
+    transform: translateX(0); /* Remove translate X for right-aligned panels */
+    /* Add top if needed, but top: 100% should usually suffice */
+}
+
+.nav-item:nth-last-child(1) .hover-content-panel.show,
+.nav-item:nth-last-child(2) .hover-content-panel.show {
+    transform: translateY(0); /* Only needed if there was an initial Y transform for these */
 }
 
 .hover-content-panel.show {
@@ -382,9 +423,9 @@ html {
 }
 
 
-.hover-content-panel {
+/* .hover-content-panel {
   pointer-events: none;
-}
+} */
 
 .hover-content-panel.show {
   pointer-events: auto;

@@ -1,66 +1,38 @@
-{% extends 'kuai_club/base.html' %}
+{% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %}Latest News{% endblock title %}
+{% block title %}All News - {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <div class="container text-center">
-        <h1>Latest News & Updates</h1>
-        <p class="lead">Stay informed with the latest happenings, research, and achievements from our club.</p>
-    </div>
-</section>
+<section class="py-5">
+    <div class="container">
+        <h1 class="text-center mb-5">Our Latest News</h1>
 
-<section class="news-list container section-spacing">
-    {% if news_posts %}
-        <div class="news-grid">
-            {% for post in news_posts %}
-                <div class="news-card">
-                    {% if post.news_image %}
-                        <img src="{{ post.news_image.url }}" alt="{{ post.title }}" class="news-image">
-                    {% else %}
-                        <img src="{% static 'kuai_club/images/default_news_image.jpg' %}" alt="Default News Image" class="news-image">
-                    {% endif %}
-                    <div class="news-content">
-                        <p class="news-date">{{ post.published_date|date:"F j, Y" }}</p>
-                        <h3><a href="{% url 'kuai_club:news_detail' slug=post.slug %}">{{ post.title }}</a></h3>
-                        <p class="news-summary">{{ post.content|striptags|truncatechars:150 }}</p>
-                        <a href="{% url 'kuai_club:news_detail' slug=post.slug %}" class="read-more">Read More &rarr;</a>
+        {% if all_news_items %}
+            {% for news_item in all_news_items %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="row g-0">
+                        {% if news_item.image %}
+                            <div class="col-md-4">
+                                <img src="{{ news_item.image.url }}" class="img-fluid rounded-start" alt="{{ news_item.title }}" style="object-fit: cover; height: 100%; width: 100%;">
+                            </div>
+                        {% endif %}
+                        <div class="{% if news_item.image %}col-md-8{% else %}col-12{% endif %}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ news_item.title }}</h5>
+                                <p class="card-text text-muted">
+                                    <small class="text-body-secondary">{{ news_item.published_date|date:"F d, Y" }}</small>
+                                </p>
+                                <p class="card-text">{{ news_item.summary }}</p>
+                                <a href="{% url 'kuai_club:news_detail' news_item.id %}" class="btn btn-primary">Read More</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
-        </div>
-
-        {# Pagination Controls #}
-        {% if is_paginated %}
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                {% endif %}
-
-                {% for i in paginator.page_range %}
-                    {% if page_obj.number == i %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                    {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                    {% endif %}
-                {% endfor %}
-
-                {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">Next</span></li>
-                {% endif %}
-            </ul>
-        </nav>
+        {% else %}
+            <p class="text-center lead">No news items available at the moment.</p>
         {% endif %}
-
-    {% else %}
-        <p style="text-align: center;">No news posts available at the moment.</p>
-    {% endif %}
+    </div>
 </section>
-
-{% endblock content %}
+{% endblock %}

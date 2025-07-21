@@ -1,99 +1,64 @@
-{% extends 'kuai_club/base.html' %}
+{% extends "layouts/base.html" %} {# Ensure correct path to base.html #}
 {% load static %}
 
-{% block title %}Our Events{% endblock title %}
+{% block title %}Events - {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <div class="container text-center">
-        <h1>Club Events</h1>
-        <p class="lead">Join us for our upcoming workshops, talks, and community gatherings.</p>
-    </div>
-</section>
+<section class="py-5">
+    <div class="container">
+        <h1 class="text-center mb-5">Our Events</h1>
 
-<section class="events-list container section-spacing">
-    <div class="event-filters mb-4">
-        <a href="{% url 'kuai_club:event_list' %}" class="btn {% if current_status == 'upcoming' %}btn-primary active{% else %}btn-secondary{% endif %}">Upcoming Events</a>
-        <a href="{% url 'kuai_club:event_list' %}?status=past" class="btn {% if current_status == 'past' %}btn-primary active{% else %}btn-secondary{% endif %}">Past Events</a>
-        <a href="{% url 'kuai_club:event_list' %}?status=all" class="btn {% if current_status == 'all' %}btn-primary active{% else %}btn-secondary{% endif %}">All Events</a>
-    </div>
-
-    {% if events %}
-        <div class="event-grid">
-            {% for event in events %}
-                <div class="event-card {% if not event.is_upcoming %}past-event-card{% endif %}">
-                    {# Link the entire card, or main parts, to the detail page #}
-                    <a href="{% url 'kuai_club:event_detail' pk=event.pk %}"> {# <-- ADDED LINK #}
-                        {% if event.event_image %}
-                            <img src="{{ event.event_image.url }}" alt="{{ event.title }}" class="event-image">
-                        {% else %}
-                            <img src="{% static 'kuai_club/images/default_event_image.jpg' %}" alt="Default Event Image" class="event-image">
-                        {% endif %}
-                    </a>
-                    <div class="event-content">
-                        <a href="{% url 'kuai_club:event_detail' pk=event.pk %}"> {# Optional: Link title too #}
-                            <h3>{{ event.title }}</h3>
-                        </a>
-                        {% if event.event_type %}
-                            <p class="event-type">Type: {{ event.event_type.name }}</p>
-                        {% endif %}
-                        <p class="event-date-time">
-                            <i class="fas fa-calendar-alt"></i> {{ event.date|date:"F j, Y" }}
-                            {% if event.time %}<br><i class="fas fa-clock"></i> {{ event.time }}{% endif %}
-                        </p>
-                        {% if event.location %}
-                            <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                        {% endif %}
-                        <p class="event-description-summary">{{ event.description|truncatechars:150 }}</p>
-                        {# Change the button to link to detail or registration based on status #}
-                        {% if event.is_upcoming and event.registration_link %}
-                            <a href="{{ event.registration_link }}" target="_blank" class="register-link btn btn-success">Register Now</a>
-                        {% else %}
-                            <a href="{% url 'kuai_club:event_detail' pk=event.pk %}" class="register-link btn btn-info">View Details</a>
-                        {% endif %}
+        {% if upcoming_events_list %}
+            <h2 class="mb-4">Upcoming Events</h2>
+            <div class="row">
+                {% for event in upcoming_events_list %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100">
+                            {% if event.image %}
+                                <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.title }}" style="object-fit: cover; height: 200px;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                <p class="card-text text-muted">
+                                    <small>{{ event.event_start|date:"F d, Y P" }}{% if event.event_end %} - {{ event.event_end|date:"F d, Y P" }}{% endif %}</small><br>
+                                    <small>{{ event.location }}</small>
+                                </p>
+                                <p class="card-text">{{ event.summary|truncatewords:30 }}</p>
+                                <a href="{% url 'kuai_club:event_detail' event.id %}" class="btn btn-primary">Details</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-
-        {# Pagination Controls #}
-        {% if is_paginated %}
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">Previous</a></li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                {% endif %}
-
-                {% for i in paginator.page_range %}
-                    {% if page_obj.number == i %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                    {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}{% if current_status %}&status={{ current_status }}{% endif %}">{{ i }}</a></li>
-                    {% endif %}
                 {% endfor %}
-
-                {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">Next</a></li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">Next</span></li>
-                {% endif %}
-            </ul>
-        </nav>
+            </div>
+        {% else %}
+            <p class="text-center lead">No upcoming events scheduled at the moment.</p>
         {% endif %}
 
-    {% else %}
-        <p style="text-align: center;">
-            {% if current_status == 'upcoming' %}
-                No upcoming events are currently scheduled. Check back soon!
-            {% elif current_status == 'past' %}
-                No past events found.
-            {% else %}
-                No events found.
-            {% endif %}
-        </p>
-    {% endif %}
+        {% if past_events_list %}
+            <h2 class="mt-5 mb-4">Past Events</h2>
+            <div class="row">
+                {% for event in past_events_list %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm h-100">
+                            {% if event.image %}
+                                <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.title }}" style="object-fit: cover; height: 200px;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                <p class="card-text text-muted">
+                                    <small>{{ event.event_start|date:"F d, Y P" }}{% if event.event_end %} - {{ event.event_end|date:"F d, Y P" }}{% endif %}</small><br>
+                                    <small>{{ event.location }}</small>
+                                </p>
+                                <p class="card-text">{{ event.summary|truncatewords:30 }}</p>
+                                <a href="{% url 'kuai_club:event_detail' event.id %}" class="btn btn-outline-secondary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center lead">No past events found.</p>
+        {% endif %}
+    </div>
 </section>
-
-{% endblock content %}
+{% endblock %}

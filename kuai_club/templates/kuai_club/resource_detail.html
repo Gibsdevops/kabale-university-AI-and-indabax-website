@@ -1,0 +1,29 @@
+{% extends "layouts/base.html" %} {# Ensure this path is correct #}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">{{ resource_item.title }}</h1>
+    <h5 class="text-muted mb-3">{{ resource_item.get_resource_type_display }}</h5>
+
+    <div class="resource-content mb-4">
+        {{ resource_item.description|safe }}
+    </div>
+
+    {% if resource_item.file %}
+        <p class="mb-2">
+            <a href="{{ resource_item.file.url }}" class="btn btn-success btn-lg" download>
+                <i class="fas fa-download"></i> Download File
+            </a>
+        </p>
+    {% elif resource_item.external_url %}
+        <p class="mb-2">
+            <a href="{{ resource_item.external_url }}" class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-external-link-alt"></i> Access Online Resource
+            </a>
+        </p>
+    {% endif %}
+
+    <p class="text-muted mt-4">Added: {{ resource_item.created_at|date:"F d, Y" }}</p>
+    <a href="{% url 'kuai_club:resource_list' %}" class="btn btn-secondary mt-3">Back to All Resources</a>
+</div>
+{% endblock content %}

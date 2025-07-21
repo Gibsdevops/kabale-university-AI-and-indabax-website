@@ -1,43 +1,29 @@
-{% extends 'kuai_club/base.html' %}
-{% load static %}
-
-{% block title %}Communities{% endblock title %}
+{% extends "layouts/base.html" %} {# Ensure this path is correct #}
 
 {% block content %}
-<section class="page-hero">
-    <div class="container text-center">
-        <h1>Our Communities</h1>
-        <p class="lead">Join a community of like-minded individuals to learn, collaborate, and innovate in various AI fields.</p>
-    </div>
-</section>
+<div class="container my-5">
+    <h1 class="mb-4">{{ page_title }}</h1>
 
-<section class="communities-list container section-spacing">
-    {% if communities %}
-        <div class="cards-grid"> {# Re-using the cards-grid style from home.html #}
-            {% for community in communities %}
-                <div class="card community-card">
-                    {% comment %}
-                    If your Community model had an 'image' field, you'd use it here:
-                    {% if community.image %}
-                        <img src="{{ community.image.url }}" alt="{{ community.name }}" class="card-image">
+    <div class="row">
+        {% for community in communities %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ community.title }}</h5>
+                    <p class="card-text">Connect with our {{ community.title }} initiatives.</p>
+                    {% if community.url %}
+                        <a href="{{ community.url }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">Visit Community</a>
                     {% else %}
-                        {# Make sure you have a default_community_image.jpg in your static/images folder #}
-                        <img src="{% static 'kuai_club/images/default_community_image.jpg' %}" alt="Default Community Image" class="card-image">
+                        <p class="text-muted">No direct link available.</p>
                     {% endif %}
-                    {% endcomment %}
-                    <div class="card-content">
-                        <h3>{{ community.name }}</h3>
-                        <p>{{ community.description|default:"No description provided."|truncatechars:150 }}</p>
-                        {% if community.link %}
-                            <a href="{{ community.link }}" target="_blank" class="read-more">Learn More / Join</a>
-                        {% endif %}
-                    </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    {% else %}
-        <p style="text-align: center;">No communities are currently listed. Please check back later!</p>
-    {% endif %}
-</section>
-
+        {% empty %}
+        <div class="col-12">
+            <p>No community outreach links available at the moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock content %}

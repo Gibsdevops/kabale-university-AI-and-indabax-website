@@ -1,42 +1,29 @@
-{% extends 'kuai_club/base.html' %}
+{% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %}{{ news_post.title }} - News Detail{% endblock title %}
+{% block title %}{{ news_item.title }} - {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <div class="container text-center">
-        <h1>{{ news_post.title }}</h1>
-        <p class="lead">Published on {{ news_post.published_date|date:"F j, Y" }} by {{ news_post.author }}</p>
-    </div>
-</section>
-
-<section class="news-detail container section-spacing">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            {% if news_post.news_image %}
-                <img src="{{ news_post.news_image.url }}" alt="{{ news_post.title }}" class="img-fluid mb-4 news-detail-image">
-            {% else %}
-                <img src="{% static 'kuai_club/images/default_news_image.jpg' %}" alt="Default News Image" class="img-fluid mb-4 news-detail-image">
-            {% endif %}
-
-            <div class="news-content-body">
-                {{ news_post.content|safe }} {# Use |safe if content contains HTML #}
-            </div>
-
-            <div class="news-meta mt-4">
-                <p><strong>Date:</strong> {{ news_post.published_date|date:"F j, Y, P" }}</p>
-                <p><strong>Author:</strong> {{ news_post.author }}</p>
-                {% if not news_post.is_published %}
-                    <p class="text-danger"><em>This post is currently unpublished.</em></p>
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="mb-3">{{ news_item.title }}</h1>
+                <p class="text-muted">Published: {{ news_item.published_date|date:"F d, Y" }}</p>
+                
+                {% if news_item.image %}
+                    <img src="{{ news_item.image.url }}" class="img-fluid rounded mb-4" alt="{{ news_item.title }}">
                 {% endif %}
-            </div>
-
-            <div class="back-link mt-5">
-                <a href="{% url 'kuai_club:news_list' %}" class="btn btn-primary">&larr; Back to All News</a>
+                
+                <div class="news-content">
+                    {{ news_item.content|safe }} {# Assuming content is HTML and should be rendered safely #}
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{% url 'kuai_club:news_list' %}" class="btn btn-outline-secondary">Back to All News</a>
+                </div>
             </div>
         </div>
     </div>
 </section>
-
-{% endblock content %}
+{% endblock %}

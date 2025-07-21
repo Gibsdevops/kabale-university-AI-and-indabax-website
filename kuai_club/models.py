@@ -2,6 +2,13 @@ from django.db import models
 from django.utils.text import slugify # Import slugify
 from datetime import date
 from django.utils.timezone import now
+from django.db import models
+from PIL import Image
+from django.core.exceptions import ValidationError
+from datetime import timedelta
+import os
+from django.utils.translation import gettext_lazy as _
+
 
 
 
@@ -93,16 +100,9 @@ class SiteSettings(models.Model):
       SiteSettings.objects.exclude(pk=self.pk).delete()
 
 
-from django.db import models
-from django.utils.text import slugify
-
 # ===========================
 # About Us
 # ===========================
-from django.db import models
-from django.utils.text import slugify
-from django.core.exceptions import ValidationError
-from PIL import Image
 
 class Aboutus(models.Model):
     """Model for the About Us page content."""
@@ -156,11 +156,6 @@ class Aboutus(models.Model):
     def __str__(self):
         return self.title
 
-
-from django.db import models
-from PIL import Image
-from datetime import timedelta
-from django.utils.timezone import now
 
 class Leader(models.Model):
     CATEGORY_CHOICES = [
@@ -281,11 +276,6 @@ class News(models.Model):
 # Events
 # ===========================
 
-from django.db import models
-from django.utils.text import slugify
-from django.utils.timezone import now
-from PIL import Image
-
 class Event(models.Model):
     title = models.CharField(max_length=150, unique=True)
     slug = models.SlugField(max_length=160, unique=True, blank=True)
@@ -346,10 +336,6 @@ class Event(models.Model):
 # ===========================
 # Research Links
 # ===========================
-
-from django.db import models
-from django.utils.text import slugify
-from django.utils.timezone import now
 
 class Research(models.Model):
     """Professional Research model for all research projects, papers, teams, and initiatives."""
@@ -448,9 +434,6 @@ class CommunityOutreach(models.Model):
 # ===========================
 # Projects
 # ===========================
-from django.utils.text import slugify
-from PIL import Image
-import os
 
 class Project(models.Model):
     # your existing fields ...
@@ -495,13 +478,6 @@ class Project(models.Model):
         return self.title
 
 
-
-
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-from PIL import Image  # Pillow library
-import os
-
 class HeroSlide(models.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
@@ -543,16 +519,6 @@ class HeroSlide(models.Model):
 
 
 
-
-
-
-
-
-
-
-from django.db import models
-from PIL import Image
-
 class GalleryImage(models.Model):
     title = models.CharField(max_length=100, blank=True)
     image = models.ImageField(upload_to='gallery/')
@@ -577,25 +543,6 @@ class GalleryImage(models.Model):
             if img.height > max_height or img.width > max_width:
                 img.thumbnail((max_width, max_height))
                 img.save(self.image.path)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,0 +1,24 @@
+{% extends "layouts/base.html" %} {# Remember the fixed extends path #}
+
+{% block content %}
+<div class="container my-5">
+    <h1>{{ page_title }}</h1>
+    <div class="row">
+        {% for item in research_areas %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text">{{ item.summary|truncatewords:30 }}</p>
+                    <a href="{% url 'kuai_club:research_detail' item.id %}" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No research areas available.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

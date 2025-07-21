@@ -207,9 +207,9 @@ class ResourceAdmin(admin.ModelAdmin):
 
 @admin.register(CommunityOutreach)
 class CommunityOutreachAdmin(admin.ModelAdmin):
-    list_display = ('title', 'url', 'created_at', 'updated_at')
+    list_display = ('title', 'url', 'created_at')
+    search_fields = ('title', 'url')
     readonly_fields = ('created_at', 'updated_at')
-    search_fields = ('title',)
 
 
 @admin.register(Project)

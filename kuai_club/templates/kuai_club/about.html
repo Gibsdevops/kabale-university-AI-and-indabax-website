@@ -1,76 +1,71 @@
-{% extends 'kuai_club/base.html' %}
+{% extends 'layouts/base.html' %} {# IMPORTANT: Extend from the correct base.html in the layouts folder #}
 {% load static %}
 
-{% block title %}About Us{% endblock title %}
+{% block title %}About Us - {{ site_settings.site_name }}{% endblock title %} {# Use site_settings from context processor #}
 
 {% block content %}
-<section class="about-hero">
-    <div class="container text-center">
-        <h1>About Kabale University AI Club</h1>
-        <p class="lead">Discover our purpose, values, and what drives our community.</p>
+<section class="about-hero text-center py-5 bg-light"> {# Added Bootstrap classes for styling #}
+    <div class="container">
+        <h1 class="display-4 text-primary">{{ page.title }}</h1> {# Assuming page.title holds "About Kabale University AI Club" or similar #}
+        <p class="lead text-muted">{{ page.summary|default:"Discover our purpose, values, and what drives our community." }}</p> {# Assuming page.summary #}
     </div>
 </section>
 
-<section class="mission-vision-objectives container section-spacing">
-    {% if about_content %}
-        <div class="mission-section content-block">
-            <h2 class="section-title">Our Mission</h2>
-            <div class="content-text">
-                {{ about_content.mission|linebreaksbr }} {# linebreaksbr converts newlines to <br> tags #}
-            </div>
-        </div>
-
-        <div class="vision-section content-block">
-            <h2 class="section-title">Our Vision</h2>
-            <div class="content-text">
-                {{ about_content.vision|linebreaksbr }}
-            </div>
-        </div>
-
-        <div class="objectives-section content-block">
-            <h2 class="section-title">Our Objectives</h2>
-            <div class="content-text">
-                {# Display objectives as an unordered list, assuming they are line-separated in the admin #}
-                <ul>
-                     {# Display objectives as a single block for now, converted from newlines to breaks #}
-                    <div class="content-text">
-                        {{ about_content.objectives|linebreaksbr }}
+<section class="mission-vision-objectives container py-5"> {# section-spacing can be replaced by py-5 for Bootstrap padding #}
+    {% if page %} {# Changed from about_content to page, as per about_detail view's context #}
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary"><i class="fas fa-bullseye me-2"></i>Our Mission</h2>
+                        <div class="card-text">
+                            {{ page.mission|linebreaksbr }} {# page.mission from the Aboutus model #}
+                        </div>
                     </div>
-                </ul>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary"><i class="fas fa-eye me-2"></i>Our Vision</h2>
+                        <div class="card-text">
+                            {{ page.vision|linebreaksbr }} {# page.vision from the Aboutus model #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary"><i class="fas fa-list-check me-2"></i>Our Objectives</h2>
+                        <div class="card-text">
+                            {# Display objectives as a block, assuming it's a single text field with newlines #}
+                            {{ page.objectives|linebreaksbr }} {# page.objectives from the Aboutus model #}
+                            {# If you want proper list items, you'd need to store objectives as separate entries or parse them. #}
+                            {# For example, if objectives are comma-separated: #}
+                            {# <ul> #}
+                            {# {% for obj in page.objectives|split_comma %}<li>{{ obj }}</li>{% endfor %} #}
+                            {# </ul> #}
+                            {# (Requires a custom template filter 'split_comma' or storing objectives differently) #}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     {% else %}
-        <div class="container text-center">
-            <p>About Us content is not yet available. Please add it via the admin panel.</p>
+        <div class="container text-center py-5">
+            <div class="alert alert-warning" role="alert">
+                About Us content is not yet available. Please add it via the admin panel (ensure an Aboutus entry exists, especially ID 1 if you're relying on the default redirect).
+            </div>
         </div>
     {% endif %}
 </section>
 
-{# You can optionally add a section for partners/affiliations here if you want #}
-<section class="about-partners container section-spacing">
-    <h2 class="section-title">Our Valued Partners</h2>
-    {% if partners %} {# 'partners' context needs to be passed from the view, we'll add this next #}
-        <div class="partner-grid">
-            {% for partner in partners %}
-                <div class="partner-item">
-                    {% if partner.logo %}
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }} Logo" class="partner-logo">
-                    {% else %}
-                        <img src="{% static 'kuai_club/images/default_partner_logo.png' %}" alt="Default Partner Logo" class="partner-logo">
-                    {% endif %}
-                    <h3>{{ partner.name }}</h3>
-                    <p>{{ partner.description|default:"" }}</p>
-                    {% if partner.website_url %}
-                        <a href="{{ partner.website_url }}" target="_blank" class="read-more">Visit Website</a>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p style="text-align: center;">No partners currently listed.</p>
-    {% endif %}
-</section>
-
-{# You could also add dynamic content for Club Achievements or Testimonials here if you create models for them #}
+{# Removed the "Our Valued Partners" section from here. #}
+{# It's best practice to have a dedicated partners page (which you have at /partners/). #}
+{# This keeps the About Us page focused on its core content. #}
+{# The link to 'Partners' is already in your main navigation in layouts/base.html #}
 
 {% endblock content %}
