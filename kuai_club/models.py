@@ -416,9 +416,12 @@ class Resource(models.Model):
 # ===========================
 
 class CommunityOutreach(models.Model):
-    """Model for community outreach links."""
-    title = models.CharField(max_length=50, default='Community Outreach')
-    url = models.URLField(max_length=200, blank=True, null=True, help_text="URL for the community outreach link")
+    """Model for community outreach initiatives, including external links."""
+    name = models.CharField(max_length=100, unique=True, help_text="Name of the community (e.g., Indabax Kabale Uganda)") # Changed 'title' to 'name' for clarity and consistency
+    description = models.TextField(blank=True, null=True, help_text="Short description of the community/program.") # Added
+    external_url = models.URLField(max_length=500, blank=True, null=True, help_text="Link to the external community website.") # Changed 'url' to 'external_url' for clarity
+    is_featured = models.BooleanField(default=False, help_text="Check to display this community in the homepage 'Community Outreach' section.") # Added
+    order = models.IntegerField(default=0, help_text="Order in which communities appear (lower number first in lists and sections).") # Added
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -426,9 +429,10 @@ class CommunityOutreach(models.Model):
     class Meta:
         verbose_name = "Community Outreach"
         verbose_name_plural = "Community Outreaches"
+        ordering = ['order', 'name'] # Order by the new 'order' field
 
     def __str__(self):
-        return self.title
+        return self.name # Changed to return 'name'
 
 
 # ===========================
@@ -571,4 +575,6 @@ class Partner(models.Model):
 
     def __str__(self):
         return self.name
+    
+
 

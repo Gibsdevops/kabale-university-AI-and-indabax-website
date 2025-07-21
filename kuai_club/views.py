@@ -43,7 +43,8 @@ def home(request):
     leader = Leader.objects.all().order_by('position')
     research = Research.objects.all().order_by('title')
     resources = Resource.objects.all().order_by('title')
-    community = CommunityOutreach.objects.all().order_by('title')
+    all_communities_outreach = CommunityOutreach.objects.all().order_by('order') 
+    featured_communities_outreach = CommunityOutreach.objects.filter(is_featured=True).order_by('order') 
     projects = Project.objects.all().order_by('title')
     hero_slides = HeroSlide.objects.filter(is_active=True).order_by('order')
 
@@ -80,7 +81,8 @@ def home(request):
         'events': events_for_dropdown, # Use this for the events dropdown
         'research': research,
         'resources': resources,
-        'community': community,
+        'all_communities_outreach': all_communities_outreach,
+        'featured_communities_outreach': featured_communities_outreach,
         'projects': projects,
         'hero_slides': hero_slides,
         'upcoming_events': upcoming_events, # Keep if used elsewhere on home (e.g., a dedicated events section)
@@ -126,6 +128,7 @@ def project_processor(request): # This is fine if used as a context processor
     projects = Project.objects.filter(is_published=True).order_by('-publish_date')[:5] 
     return {'projects': projects}
 
+
 def community_processor(request): # This is fine if used as a context processor
     community = CommunityOutreach.objects.all().order_by('title')
     return {'community': community}
@@ -133,6 +136,8 @@ def community_processor(request): # This is fine if used as a context processor
 def hero_processor(request): # This is fine if used as a context processor
     hero_slides = HeroSlide.objects.all().order_by('title')
     return {'hero_slides': hero_slides}
+
+
 # --- END CONTEXT PROCESSORS ---
 
 
@@ -461,13 +466,18 @@ def resource_detail(request, slug):
 
 
 def community_list(request):
-    all_communities = CommunityOutreach.objects.all().order_by('title') # Order alphabetically
+    all_communities_outreach = CommunityOutreach.objects.all().order_by('order')
+    site_settings = SiteSettings.objects.first()
     context = {
-        'communities': all_communities,
-        'page_title': 'Community Outreach'
+        'site_settings': site_settings,
+        'all_communities_outreach': all_communities_outreach,
     }
     return render(request, 'kuai_club/community_list.html', context)
-
 def partner_list(request):
-    partners = Partner.objects.all().order_by('name')
-    return render(request, 'kuai_club/partner_list.html', {'partners': partners})
+    # Fetch partners, ordering by 'display_order' and then 'name' as per your model's Meta
+    partners = Partner.objects.filter(is_active=True).order_by('display_order', 'name')
+    context = {
+        'partners': partners,
+        'page_title': 'Our Partners' # For base.html title block
+    }
+    return render(request, 'kuai_club/partner_list.html', context)

@@ -1,29 +1,75 @@
-{% extends "layouts/base.html" %} {# Ensure this path is correct #}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    All Communities - {{ site_settings.site_name }}
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .community-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .community-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .community-card .card-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .community-card .card-text {
+            font-size: 1rem;
+            color: var(--text-light);
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h1 class="mb-4">{{ page_title }}</h1>
+<section class="all-communities-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 text-primary">Explore All Our Communities</h2>
+        <p class="text-center lead mb-5">
+            Discover the various communities and initiatives we are part of or support.
+            Click to learn more and connect directly with them.
+        </p>
 
-    <div class="row">
-        {% for community in communities %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ community.title }}</h5>
-                    <p class="card-text">Connect with our {{ community.title }} initiatives.</p>
-                    {% if community.url %}
-                        <a href="{{ community.url }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">Visit Community</a>
-                    {% else %}
-                        <p class="text-muted">No direct link available.</p>
-                    {% endif %}
-                </div>
+        {% if all_communities_outreach %} {# Changed variable name #}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                {% for community_item in all_communities_outreach %} {# Changed variable name #}
+                    <div class="col d-flex">
+                        <div class="community-card w-100">
+                            <h3 class="card-title">{{ community_item.name }}</h3>
+                            {% if community_item.description %}
+                                <p class="card-text">{{ community_item.description }}</p>
+                            {% endif %}
+                            {% if community_item.external_url %}
+                                <a href="{{ community_item.external_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-auto">
+                                    Visit Community <i class="fas fa-external-link-alt ms-2"></i>
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary mt-auto" disabled>No Link Available</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <p>No community outreach links available at the moment.</p>
-        </div>
-        {% endfor %}
+        {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                No communities are currently listed. Please check back later!
+            </div>
+        {% endif %}
     </div>
-</div>
-{% endblock content %}
+</section>
+{% endblock %}

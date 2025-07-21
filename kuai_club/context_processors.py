@@ -12,7 +12,8 @@ from .models import (
     CommunityOutreach,
     Project,
     HeroSlide,
-    GalleryImage # Make sure all models are imported once at the top
+    GalleryImage,
+    Partner # Make sure all models are imported once at the top
 )
 
 # You can combine all these into one main context processor function
@@ -127,12 +128,19 @@ def resource_processor(request):
 
 
 def community_processor(request):
-    """Community outreach links."""
-    community = cache.get('community_links')
-    if not community:
-        community = CommunityOutreach.objects.all().order_by('title')[:5] # Limit for dropdown to prevent overload
-        cache.set('community_links', community, 300)
-    return {'communities': community}
+    # Fetch communities for global availability (e.g., navigation dropdown)
+    # Corrected: using 'order' field instead of 'title'
+    all_communities_outreach = CommunityOutreach.objects.all().order_by('order')[:5] # Limit for dropdown to prevent overload
+
+    # You might also want to pass SiteSettings via a context processor if not already doing so,
+    # to avoid passing it in every view. Example:
+    # from .models import SiteSettings
+    # site_settings = SiteSettings.objects.first()
+
+    return {
+        'all_communities_outreach': all_communities_outreach,
+        # 'site_settings': site_settings, # Uncomment if you put SiteSettings here
+    }
 
 
 def project_processor(request):
@@ -142,6 +150,8 @@ def project_processor(request):
         projects = Project.objects.filter(is_published=True).order_by('title')
         cache.set('project_links', projects, 300)
     return {'projects': projects}
+
+
 
 def hero_processor(request):
     """Hero slides context processor with caching."""
@@ -158,3 +168,11 @@ def gallery_processor(request):
         gallery_images = GalleryImage.objects.order_by('-upload_date', '-id')[:10]
         cache.set('latest_gallery_images', gallery_images, 300)
     return {'gallery_images': gallery_images}
+
+def partner_processor(request):
+    """
+    Makes a selection of active partners available in the context for the navbar dropdown.
+    """
+    # Fetch a few partners to display in the dropdown (e.g., top 5 by display_order)
+    partners_for_dropdown = Partner.objects.filter(is_active=True).order_by('display_order', 'name')[:5]
+    return {'partners_for_dropdown': partners_for_dropdown}

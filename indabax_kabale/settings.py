@@ -81,6 +81,7 @@ TEMPLATES = [
                 'kuai_club.context_processors.resource_processor',
                 'kuai_club.context_processors.community_processor',
                 'kuai_club.context_processors.project_processor',
+                'kuai_club.context_processors.partner_processor',
                 'kuai_club.context_processors.hero_processor',
                 'kuai_club.context_processors.gallery_processor',
             ],

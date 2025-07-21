@@ -205,11 +205,32 @@ class ResourceAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(CommunityOutreach)
+@admin.register(CommunityOutreach) # Using the decorator for cleaner registration
 class CommunityOutreachAdmin(admin.ModelAdmin):
-    list_display = ('title', 'url', 'created_at')
-    search_fields = ('title', 'url')
-    readonly_fields = ('created_at', 'updated_at')
+    # Updated list_display to use 'name' and 'external_url'
+    list_display = ('name', 'external_url', 'is_featured', 'order', 'created_at',)
+    
+    # Updated search_fields to use 'name' and 'description'
+    search_fields = ('name', 'description',)
+    
+    # Add list_filter if you want to filter by 'is_featured'
+    list_filter = ('is_featured',)
+    
+    # Fields to make editable directly in the list view (optional)
+    list_editable = ('is_featured', 'order',)
+    
+    # Fields to make clickable links to the detail page (optional)
+    list_display_links = ('name',)
+
+    # Fields to group in the add/change form (optional)
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'description', 'external_url')
+        }),
+        ('Display Options', {
+            'fields': ('is_featured', 'order')
+        }),
+    )
 
 
 @admin.register(Project)
