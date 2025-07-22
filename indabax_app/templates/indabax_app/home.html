@@ -1,27 +1,116 @@
-{% extends "indabax_app/base.html" %}
-{% load static %}
+{# D:\indabax\kabale_ai_club_website\indabax_app\templates\indabax_app\home.html #}
+
+{% extends 'indabax_app/base.html' %} 
+{% load static %} {# Load static here if you are directly referencing static files in this template #}
+
 {% block content %}
 
-<div style="max-width: 1100px; margin: auto;">
-  <h2 style="text-align: center; margin: 20px 0;">
-    Welcome to IndabaX Kabale AI Club
-  </h2>
-
-  <div class="slider-container">
-    <button class="slide-arrow prev">&#10094;</button>
-
-    <div class="slider" id="slider">
-      {% for image in slider_images %}
-        <div class="slide">
-          <img src="{{ image.image.url }}" alt="{{ image.title }}">
-          <p>{{ image.title }}</p>
-        </div>
-      {% endfor %}
+{# --- Image Slider / Carousel Section --- #}
+<div id="indabaxAppCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
-
-    <button class="slide-arrow next">&#10095;</button>
-  </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="5000"> {# Show for 5 seconds #}
+            <img src="{% static 'indabax_app/images/slider/slide1.jpg' %}" class="d-block w-100" alt="IndabaX Event 1">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Empowering AI Talent</h5>
+                <p>Join us to explore the future of Artificial Intelligence.</p>
+                <a href="{% url 'indabax_app:about' %}" class="btn btn-outline-light">Learn More</a>
+            </div>
+        </div>
+        <div class="carousel-item" data-bs-interval="5000">
+            <img src="{% static 'indabax_app/images/slider/slide2.jpg' %}" class="d-block w-100" alt="IndabaX Workshop">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Hands-on Workshops</h5>
+                <p>Gain practical skills in machine learning and data science.</p>
+                <a href="{% url 'indabax_app:tutorials' %}" class="btn btn-warning">View Tutorials</a>
+            </div>
+        </div>
+        <div class="carousel-item" data-bs-interval="5000">
+            <img src="{% static 'indabax_app/images/slider/slide3.jpg' %}" class="d-block w-100" alt="IndabaX Community">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Vibrant Community</h5>
+                <p>Connect with fellow AI enthusiasts and experts.</p>
+                <a href="{% url 'indabax_app:leaders' %}" class="btn btn-success">Meet Our Leaders</a>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
+{# --- End Image Slider --- #}
 
-<script src="{% static 'core/js/slider.js' %}"></script>
-{% endblock %}
+<div class="container my-5"> {# Main content container #}
+    <h1 class="text-center mb-4 indabax-heading">Welcome to IndabaX Kabale AI Club!</h1>
+    <p class="lead text-center indabax-text">Your premier hub for Artificial Intelligence education, research, and community engagement in Kabale, Uganda.</p>
+    
+    {# --- About Us / Mission Section (Example Content Area 1) --- #}
+    <section class="row align-items-center my-5 p-4 rounded shadow-sm indabax-section-bg-light">
+        <div class="col-md-7">
+            <h2 class="indabax-subheading">About Our Initiative</h2>
+            <p class="indabax-text">IndabaX Kabale is part of the larger Deep Learning IndabaX movement, aimed at strengthening African Machine Learning. We foster a vibrant community, providing resources and opportunities for learning, collaboration, and innovation in AI.</p>
+            <a href="{% url 'indabax_app:about' %}" class="btn indabax-btn-primary mt-3">Discover Our Story</a>
+        </div>
+        <div class="col-md-5 text-center">
+            <img src="{% static 'indabax_app/images/about-indabax.jpg' %}" alt="About IndabaX" class="img-fluid rounded shadow-lg">
+        </div>
+    </section>
+
+    {# --- Focus Areas / Pillars Section (Example Content Area 2) --- #}
+    <section class="my-5 p-4 rounded shadow-sm indabax-section-bg-dark text-white">
+        <h2 class="text-center mb-4 indabax-subheading">Our Core Pillars</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 indabax-card">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-3x mb-3 indabax-icon-yellow"></i>
+                        <h5 class="card-title indabax-card-title">Education</h5>
+                        <p class="card-text indabax-text">Providing comprehensive tutorials and workshops to build foundational and advanced AI skills.</p>
+                        <a href="{% url 'indabax_app:tutorials' %}" class="btn indabax-btn-secondary mt-2">Explore Tutorials</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 indabax-card">
+                    <div class="card-body">
+                        <i class="fas fa-flask fa-3x mb-3 indabax-icon-green"></i>
+                        <h5 class="card-title indabax-card-title">Research</h5>
+                        <p class="card-text indabax-text">Engaging in impactful AI research to solve local and global challenges.</p>
+                        <a href="#" class="btn indabax-btn-secondary mt-2">View Research (Placeholder)</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 indabax-card">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x mb-3 indabax-icon-yellow"></i>
+                        <h5 class="card-title indabax-card-title">Community</h5>
+                        <p class="card-text indabax-text">Building a strong network of AI enthusiasts, mentors, and professionals.</p>
+                        <a href="{% url 'indabax_app:leaders' %}" class="btn indabax-btn-secondary mt-2">Meet Our Community</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# --- Call to Action / Latest News/Events (Example Content Area 3) --- #}
+    <section class="my-5 p-4 text-center indabax-section-bg-light rounded shadow-sm">
+        <h2 class="indabax-subheading mb-4">Get Involved!</h2>
+        <p class="indabax-text">Ready to dive into the world of AI? Join our upcoming events and connect with us.</p>
+        <div class="d-grid gap-2 d-md-block">
+            <a href="#" class="btn indabax-btn-primary btn-lg me-md-2 mb-2 mb-md-0">Upcoming Events (Placeholder)</a>
+            <a href="#" class="btn indabax-btn-secondary btn-lg mb-2 mb-md-0">Contact Us (Placeholder)</a>
+        </div>
+    </section>
+
+</div>
+{% endblock content %}

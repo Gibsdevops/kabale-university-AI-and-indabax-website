@@ -315,15 +315,31 @@
         Communities
     </a>
 
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'kuai_club:community_list' %}"
+       onmouseover="showHoverPanel('community-content')"
+       onmouseout="hideHoverPanel('community-content')">
+        Communities
+    </a>
+
     <div id="community-content" class="hover-content-panel">
         <ul class="list-unstyled">
-            {# Iterate over the all_communities_outreach context variable #}
+            {# Existing loop for Community Outreach items #}
             {% for community_item in all_communities_outreach %}
-                {# Use community_item.name for the text and community_item.external_url for the link #}
                 <li><a href="{{ community_item.external_url }}" target="_blank" rel="noopener noreferrer">{{ community_item.name }}</a></li>
             {% empty %}
+                {# Displayed if no community items are found #}
                 <li><span class="text-muted">No community links available.</span></li>
             {% endfor %}
+
+            {# Add a separator if there are existing community items before adding "Indabax App" #}
+            {% if all_communities_outreach %}
+                <li class="dropdown-divider"></li> {# Optional: Adds a horizontal line for visual separation #}
+            {% endif %}
+            
+            {# THIS IS THE INDABAX APP LINK #}
+            <li><a href="{% url 'indabax_app:home' %}">Indabax App</a></li>
+
         </ul>
         <div class="text-center mt-3">
             <a href="{% url 'kuai_club:community_list' %}" class="btn btn-primary btn-sm">View All Communities</a>

@@ -1,80 +1,79 @@
+{# D:\indabax\kabale_ai_club_website\indabax_app\templates\indabax_app\base.html #}
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>IndabaX Kabale AI Club</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <!-- Font Awesome CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'core/css/slider.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndabaX Kabale AI Club</title>
+    
+      {# Link to Bootstrap CSS from Indabax App's static folder #}
+    <link rel="stylesheet" href="{% static 'indabax_app/css/bootstrap.min.css' %}"> {# Adjusted to bootstrap.min based on your last clarification #}
+    
+    {# Link to Indabax App specific custom CSS files here #}
+    <link rel="stylesheet" href="{% static 'indabax_app/css/indabax_app_style.css' %}">
+    <link rel="stylesheet" href="{% static 'indabax_app/css/indabax_app_leaders.css' %}">
+    
+    {# Font Awesome for Icons (add this line) #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
 </head>
 <body>
-
-<!-- Header with logo and navbar side by side -->
-<header class="navbar">
-  <div class="nav-container">
-    <!-- Logo -->
-    <div class="logo">
-      <a href="{% url 'indabax_app:home' %}">
-        <img src="{% static 'core/images/logo.png' %}" alt="IndabaX Logo">
-      </a>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="nav">
-      <div class="hamburger" onclick="toggleMenu()">☰</div>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="{% url 'indabax_app:home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
-        <li><a href="{% url 'indabax_app:about' %}" class="{% if request.path == '/about/' %}active{% endif %}">About</a></li>
-        <li><a href="{% url 'indabax_app:tutorials' %}" class="{% if request.path == '/tutorials/' %}active{% endif %}">Tutorials</a></li>
-        <li><a href="{% url 'indabax_app:leaders' %}" class="{% if request.path == '/leaders/' %}active{% endif %}">Leaders</a></li>
-      </ul>
+    {# INDABAX APP UNIQUE NAVIGATION BAR #}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> {# bg-dark for a dark background #}
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'indabax_app:home' %}">IndabaX App</a> {# Brand link to Indabax App's home #}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavIndabax" aria-controls="navbarNavIndabax" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavIndabax"> {# Unique ID for this navbar #}
+                <ul class="navbar-nav ms-auto"> {# ms-auto pushes items to the right #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'indabax_app:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'indabax_app:about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'indabax_app:tutorials' %}">Tutorials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'indabax_app:leaders' %}">Leaders</a>
+                    </li>
+                    {# Button to go back to the kuai_club website #}
+                    <li class="nav-item ms-lg-3"> {# Add margin on large screens #}
+                        <a class="nav-link btn btn-outline-light" href="{% url 'kuai_club:home' %}">Kabale University AI club</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
-  </div>
-</header>
 
-<hr>
+    {# Content block where other templates will inject their content #}
+    {% block content %}
+    {% endblock content %}
 
-{% block content %}{% endblock %}
+    {# INDABAX APP UNIQUE FOOTER (You can add this below the content block) #}
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p>&copy; 2025 IndabaX Kabale AI Club App. All rights reserved.</p>
+            <p>Email: indabaxkabale@gmail.com</p>
+            <p>Kabale University, Kikungiri Hill, Kabale, Uganda</p>
+            {# Social media icons for Indabax App, if any #}
+            <div class="social-icons mt-3">
+                {# Example icons, make sure you have Font Awesome or similar library linked if you use actual icons #}
+                <a href="#" class="text-white mx-2"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-content">
-    <p>&copy; {% now "Y" %} IndabaX Kabale AI Club. All rights reserved.</p>
+
+    {# Link to Bootstrap JS from Indabax App's static folder #}
+    <script src="{% static 'indabax_app/js/bootstrap.bundle.min.js' %}"></script>
     
-    <p>Email: 
-      <a href="mailto:indabaxkabale@gmail.com">indabaxkabale@gmail.com</a>
-    </p>
     
-    <p>
-      <i class="fa-solid fa-location-dot"></i>
-      <a href="https://maps.app.goo.gl/oYS4H6jdTXxcNnY26" target="_blank">
-        Kabale University, Kikungiri Hill, Kabale, Uganda
-      </a>
-    </p>
-
-    <div class="social-links">
-      <a href="https://github.com/indabaXug" target="_blank" aria-label="GitHub">
-        <i class="fa-brands fa-github"></i>
-      </a>
-      <a href="https://twitter.com/indabaX_ug" target="_blank" aria-label="Twitter">
-        <i class="fa-brands fa-x-twitter"></i>
-      </a>
-      <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-        <i class="fa-brands fa-linkedin"></i>
-      </a>
-    </div>
-  </div>
-</footer>
-
-
-
-<script>
-  function toggleMenu() {
-    document.getElementById("navLinks").classList.toggle("show");
-  }
-</script>
-
 </body>
 </html>

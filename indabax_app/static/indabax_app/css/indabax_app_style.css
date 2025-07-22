@@ -1,0 +1,435 @@
+/* Custom styles for IndabaX App - COMBINED */
+
+/* Define your primary colors (keep these new color variables) */
+:root {
+    --indabax-primary-yellow: #FFD700; /* Gold/Yellow */
+    --indabax-secondary-green: #3CB371; /* Medium Sea Green */
+    --indabax-dark-blue: #2c3e50; /* A dark blue for backgrounds/text contrast */
+    --indabax-light-gray: #f8f9fa; /* Light background for sections */
+    --indabax-text-color: #343a40; /* Dark grey for general text */
+
+    /* Keep your existing core colors for clarity if they are used elsewhere */
+    --old-navbar-bg: #d65409; /* Your original navbar orange */
+    --old-footer-bg: #0f172a; /* Your original footer dark blue */
+    --old-link-color: #22d3ee; /* Your original link color */
+}
+
+/* Body Styles - MERGED */
+body {
+    /* Keep your 'Inter' font if that's what you prefer */
+    font-family: 'Inter', sans-serif; 
+    /* Add new color and background from the proposed styles */
+    color: var(--indabax-text-color);
+    background-color: var(--indabax-light-gray); /* Light background for the overall page */
+}
+
+/* Navbar styles - MERGED & Adjusted for Bootstrap 5 */
+/* The base.html uses Bootstrap's .navbar classes, so we style those directly */
+.navbar {
+    /* Prioritize new dark blue if you want a new distinct look */
+    background-color: var(--indabax-dark-blue) !important; 
+    /* Or if you want to keep your original orange: background-color: var(--old-navbar-bg) !important; */
+
+    padding: 10px 0; /* Keep your padding */
+    border-bottom: 1px solid #ccc; /* Keep your border */
+    position: sticky; /* Keep sticky */
+    top: 0; /* Keep top */
+    z-index: 999; /* Keep z-index */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); /* Keep shadow */
+}
+
+/* Bootstrap .navbar-brand and .nav-link styling for text color and hover */
+.navbar-brand, .navbar-nav .nav-link {
+    color: white !important; /* Forces white text on dark navbar */
+}
+.navbar-nav .nav-link:hover {
+    color: var(--indabax-primary-yellow) !important; /* Yellow hover for nav links */
+}
+.navbar .btn-outline-light { /* Style for the "Back to Main Site" button */
+    border-color: white;
+    color: white;
+}
+.navbar .btn-outline-light:hover {
+    background-color: white;
+    color: var(--indabax-dark-blue);
+}
+
+
+/* Your original .nav-links classes - these might be redundant if using Bootstrap's default nav structure. */
+/* If you use Bootstrap's standard navbar, you might not need these specific selectors */
+/* If you still have custom nav HTML that uses these classes, keep them but be aware of overlaps */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    gap: 30px;
+}
+
+.nav-links li {
+    display: inline-block;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    color: #333; /* This will be overridden by .navbar-nav .nav-link if used in Bootstrap nav */
+    padding: 6px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Your original Layout container - if used for something other than main navbar, keep it */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Your original Logo size fix */
+.logo img {
+    height: 40px;
+    max-width: 120px;
+    object-fit: contain;
+}
+
+
+/* Slider styles - MERGED */
+/* The new HTML uses Bootstrap Carousel. Keep your custom slider styles, but the Bootstrap Carousel will apply its own styles too */
+/* You might want to remove your old .slider-container, .slider, .slide, .slide-arrow if you are fully using Bootstrap Carousel */
+/* However, if your old slider HTML is still in use *somewhere else*, keep these. */
+
+/* Bootstrap Carousel Caption Styling (NEW) */
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    padding: 20px;
+    border-radius: 8px;
+    bottom: 20%; /* Adjust position */
+}
+.carousel-caption h5 {
+    color: white;
+    font-size: 2.5rem; /* Larger heading */
+    font-weight: bold;
+}
+.carousel-caption p {
+    color: #f1f1f1;
+    font-size: 1.2rem;
+}
+.carousel-caption .btn {
+    margin-top: 15px;
+    font-weight: bold;
+    border-width: 2px;
+}
+/* Specific button colors for carousel */
+.carousel-caption .btn-outline-light {
+    color: white;
+    border-color: white;
+}
+.carousel-caption .btn-outline-light:hover {
+    background-color: white;
+    color: var(--indabax-dark-blue);
+}
+.carousel-caption .btn-warning {
+    background-color: var(--indabax-primary-yellow);
+    border-color: var(--indabax-primary-yellow);
+    color: var(--indabax-dark-blue); /* Text color for yellow button */
+}
+.carousel-caption .btn-warning:hover {
+    /* Manual darker color if not using SASS/Less. E.g., #E0C000 for #FFD700 */
+    background-color: #E0C000; 
+    border-color: #E0C000;
+}
+.carousel-caption .btn-success {
+    background-color: var(--indabax-secondary-green);
+    border-color: var(--indabax-secondary-green);
+    color: white;
+}
+.carousel-caption .btn-success:hover {
+    /* Manual darker color if not using SASS/Less. E.g., #328D5A for #3CB371 */
+    background-color: #328D5A; 
+    border-color: #328D5A;
+}
+
+
+/* Your original .slider-container, .slider, .slide, .slide-arrow styles */
+/* If you are only using Bootstrap Carousel on home.html, you might remove these sections. */
+/* If you plan to use a different custom slider elsewhere, keep them. */
+.slider-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    scroll-behavior: smooth;
+}
+
+.slide {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    width: 300px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 320px;
+    overflow: hidden;
+}
+
+.slide img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.slide p {
+    margin-top: 8px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Arrows */
+.slide-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    cursor: pointer;
+    padding: 0 10px;
+    z-index: 10;
+    transition: background-color 0.3s;
+}
+
+.slide-arrow:hover {
+    background-color: #ccc;
+}
+
+.slide-arrow.prev {
+    left: 0;
+}
+
+.slide-arrow.next {
+    right: 0;
+}
+
+
+/* General Headings and Text (NEW classes for consistent branding) */
+.indabax-heading {
+    color: var(--indabax-dark-blue);
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+.indabax-subheading {
+    color: var(--indabax-secondary-green);
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.indabax-text {
+    color: var(--indabax-text-color);
+}
+
+/* Section Backgrounds (NEW classes for content areas) */
+.indabax-section-bg-light {
+    background-color: white; /* Clean white background for light sections */
+}
+
+.indabax-section-bg-dark {
+    background-color: var(--indabax-dark-blue); /* Dark background for sections */
+}
+
+/* Card Styling for Pillars Section (NEW) */
+.indabax-card {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease-in-out;
+}
+.indabax-card:hover {
+    transform: translateY(-5px); /* Lift card on hover */
+}
+.indabax-card-title {
+    color: var(--indabax-dark-blue);
+    font-weight: bold;
+}
+.indabax-icon-yellow {
+    color: var(--indabax-primary-yellow);
+}
+.indabax-icon-green {
+    color: var(--indabax-secondary-green);
+}
+
+/* Custom Buttons (NEW, for consistency across the app) */
+.indabax-btn-primary {
+    background-color: var(--indabax-primary-yellow);
+    border-color: var(--indabax-primary-yellow);
+    color: var(--indabax-dark-blue); /* Text color on yellow button */
+    font-weight: bold;
+    padding: 10px 20px;
+}
+.indabax-btn-primary:hover {
+    background-color: #E0C000; /* Manual darker for yellow */
+    border-color: #E0C000;
+    color: var(--indabax-dark-blue);
+}
+
+.indabax-btn-secondary {
+    background-color: var(--indabax-secondary-green);
+    border-color: var(--indabax-secondary-green);
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+.indabax-btn-secondary:hover {
+    background-color: #328D5A; /* Manual darker for green */
+    border-color: #328D5A;
+    color: white;
+}
+
+/* Footer Styling - MERGED & Adjusted for Bootstrap 5 */
+/* Assuming the footer HTML is now in indabax_app/base.html using the `footer` tag directly */
+footer {
+    /* Use the new dark blue for the footer background, or keep your original `#0f172a` */
+    background-color: var(--indabax-dark-blue) !important; 
+    /* Or: background-color: var(--old-footer-bg); */
+
+    color: #e2e8f0; /* Your original footer text color */
+    text-align: center;
+    padding: 40px 0; /* More padding as previously suggested */
+    margin-top: 40px; /* Keep margin-top */
+    font-size: 14px; /* Keep font-size */
+}
+
+footer p {
+    margin-bottom: 5px; /* Keep existing margin */
+}
+
+/* Your original .footer-content a - likely redundant now if direct text links are used in footer HTML */
+.footer-content a {
+    color: #22d3ee; /* Your original link color */
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+}
+
+.footer-content i { /* For icons directly in footer-content */
+    margin-right: 6px;
+    color: #22d3ee;
+}
+
+/* Social links (MERGED and styled with new colors) */
+.social-links {
+    margin-top: 10px;
+}
+
+.social-links a {
+    /* Prioritize the new yellow for social icons */
+    color: var(--indabax-primary-yellow); 
+    /* Or keep your original: color: #22d3ee; */
+
+    margin: 0 10px; /* Keep margin */
+    font-size: 22px; /* Keep size */
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    /* Prioritize the new green for social icon hover */
+    color: var(--indabax-secondary-green); 
+    /* Or keep your original: color: #0ea5e9; */
+}
+
+
+/* Responsive Design (Keep your existing media queries) */
+@media screen and (max-width: 768px) {
+    .slide {
+        width: 250px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .slide {
+        width: 200px;
+    }
+
+    .slide-arrow {
+        font-size: 1.5rem;
+        padding: 0 5px;
+    }
+}
+
+/* Your original Tutorial section styles (Keep as is, they are specific to a different page) */
+.tutorials-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.tutorial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.tutorial-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.tutorial-item h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+.tutorial-item p {
+    color: #666;
+    flex-grow: 1;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .tutorial-grid {
+        grid-template-columns: 1fr;
+    }
+}

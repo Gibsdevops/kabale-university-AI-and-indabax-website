@@ -56,3 +56,55 @@ class Leader(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.position})"
+    
+
+# -------- About Page (New Model) --------
+class AboutContent(models.Model):
+    """
+    Model to store dynamic content for the About Us page.
+    We'll assume there's only one instance of this model.
+    """
+    main_heading = models.CharField(max_length=200, default="About IndabaX Kabale AI Club")
+    main_paragraph = models.TextField()
+    purpose_heading = models.CharField(max_length=200, default="Our Purpose and Objectives")
+    purpose_paragraph = models.TextField()
+
+    # Dynamic Objectives
+    # IMPORTANT FIX: Use 'AboutContent' as a string here
+    class Objective(models.Model):
+        about_content = models.ForeignKey('AboutContent', related_name='objectives', on_delete=models.CASCADE)
+        title = models.CharField(max_length=200)
+        description = models.TextField()
+
+        def __str__(self):
+            return self.title
+        
+        class Meta:
+            verbose_name = "Objective"
+            verbose_name_plural = "Objectives"
+
+    # Dynamic Affiliations and Contact (optional)
+    affiliations_heading = models.CharField(max_length=200, blank=True, null=True, default="Affiliations and Contact")
+    affiliations_paragraph = models.TextField(blank=True, null=True)
+    contact_email = models.EmailField(blank=True, null=True)
+
+    # IMPORTANT FIX: Use 'AboutContent' as a string here
+    class AffiliationLink(models.Model):
+        about_content = models.ForeignKey('AboutContent', related_name='affiliation_links', on_delete=models.CASCADE)
+        text = models.CharField(max_length=100)
+        url = models.URLField()
+
+        def __str__(self):
+            return self.text
+        
+        class Meta:
+            verbose_name = "Affiliation Link"
+            verbose_name_plural = "Affiliation Links"
+
+
+    class Meta:
+        verbose_name = "About Page Content"
+        verbose_name_plural = "About Page Content"
+
+    def __str__(self):
+        return "About Page Content"

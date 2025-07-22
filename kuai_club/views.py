@@ -473,6 +473,8 @@ def community_list(request):
         'all_communities_outreach': all_communities_outreach,
     }
     return render(request, 'kuai_club/community_list.html', context)
+
+
 def partner_list(request):
     # Fetch partners, ordering by 'display_order' and then 'name' as per your model's Meta
     partners = Partner.objects.filter(is_active=True).order_by('display_order', 'name')

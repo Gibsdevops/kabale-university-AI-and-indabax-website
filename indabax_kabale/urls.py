@@ -23,7 +23,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('kuai_club.urls')), 
-    path('communities/indabax/', include('indabax_app.urls')),
+    path('communities/indabax/', include('indabax_app.urls', namespace='indabax_app')),
 
 ]
 

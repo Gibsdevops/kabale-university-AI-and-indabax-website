@@ -9,3 +9,4 @@ urlpatterns = [
     path('tutorials/', TutorialsPageView.as_view(), name='tutorials'),
     path('leaders/', LeadersPageView.as_view(), name='leaders'),
 ]
+
