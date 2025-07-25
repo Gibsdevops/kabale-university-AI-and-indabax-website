@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -10,9 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-    {# Make sure to add Bootstrap Icons CSS if you want the footer icons (bi bi-...) #}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
@@ -28,35 +25,7 @@
     {% if site_settings.favicon %}
         <link rel="icon" href="{{ site_settings.favicon.url }}" type="image/x-icon" />
     {% endif %}
-    <style>
-        :root {
-            --primary-color: {{ site_settings.primary_color|default:'#1e3a8a' }};
-            --secondary-color: {{ site_settings.secondary_color|default:"#f59e0b" }};
-            --primary-dark: #1e40af;
-            --secondary-dark: #d97706;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --bg-light: #f8fafc;
-            --white: #ffffff;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-
-        /* Essential CSS for the hover-content-panels */
-        .hover-content-panel {
-            display: none; /* Hidden by default */
-            position: absolute;
-            background: var(--white); /* Use your defined white variable */
-            box-shadow: var(--shadow-lg); /* Use your defined shadow variable */
-            padding: 1rem;
-            z-index: 1000; /* Ensures it appears above other content */
-            border-radius: .375rem; /* Small border-radius for rounded corners */
-            min-width: 200px; /* Adjust as needed */
-            /* The positioning is handled by JavaScript, so remove inline styles from here */
-        }
-        /* The existing JS should handle dynamic positioning, but these base styles are good */
-    </style>
-
+ 
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -122,60 +91,56 @@
     </div>
 </div>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top" style="z-index: 1020;">
     <div class="container-fluid">
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+        {# Site name and logo for small screens #}
+        {% if site_settings.logo %}
+            <a class="navbar-brand d-lg-none" href="{% url 'kuai_club:home' %}">
+                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }} Logo" style="max-height: 40px;">
+            </a>
+        {% else %}
+            <a class="navbar-brand d-lg-none" href="{% url 'kuai_club:home' %}">{{ site_settings.site_name }}</a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-
-            <ul class="navbar-nav d-flex flex-row">
-
+            <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'kuai_club:home' %}">Home</a>
                 </li>
-
                 <li class="nav-item nav-hover-content" data-hover-target="about-content">
                     <a href="#" class="nav-link">About Us</a>
                 </li>
-
                 <li class="nav-item nav-hover-content" data-hover-target="leaders-content">
-                    {# This link should go directly to the main leaders page, which now includes all categories #}
-                    <a href="{% url 'kuai_club:leaders_list' %}" class="nav-link">Leaders</a> 
+                    <a href="{% url 'kuai_club:leaders_list' %}" class="nav-link">Leaders</a>
                 </li>
                 <li class="nav-item nav-hover-content" data-hover-target="news-content">
                     <a href="#" class="nav-link">News</a>
                 </li>
-
                 <li class="nav-item nav-hover-content" data-hover-target="events-content">
                     <a href="#" class="nav-link">Events</a>
                 </li>
-
                 <li class="nav-item nav-hover-content" data-hover-target="research-content">
                     <a href="#" class="nav-link">Research</a>
                 </li>
-
                 <li class="nav-item nav-hover-content" data-hover-target="resource-content">
                     <a href="#" class="nav-link">Resources</a>
                 </li>
-
+                {# CORRECTLY PLACED COMMUNITIES LINK #}
                 <li class="nav-item nav-hover-content" data-hover-target="community-content">
-                    <a href="#" class="nav-link">Communities </a>
+                    <a class="nav-link" href="{% url 'kuai_club:community_list' %}">
+                        Communities
+                    </a>
                 </li>
-
-                {# START: NEW PARTNERS TAB AND HOVER PANEL LINK #}
                 <li class="nav-item nav-hover-content" data-hover-target="partners-content">
                     <a href="{% url 'kuai_club:partner_list' %}" class="nav-link">Partners</a>
                 </li>
-                {# END: NEW PARTNERS TAB AND HOVER PANEL LINK #}
-
                 <li class="nav-item nav-hover-content" data-hover-target="projects-content">
                     <a href="#" class="nav-link">Projects</a>
                 </li>
-
                 <li class="nav-item">
                     <button class="btn btn-outline-light ms-3" type="button" data-bs-toggle="modal" data-bs-target="#searchModal">
                         <i class="fas fa-search"></i>
@@ -187,7 +152,7 @@
 </nav>
 
 {# Existing Hover Panels #}
-<div id="about-content" class="hover-content-panel"> {# Removed inline style attribute as it's now in <style> block #}
+<div id="about-content" class="hover-content-panel">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -197,7 +162,7 @@
                         {% if page.column_position == 'left' %}
                             <li><a href="{% url 'kuai_club:about_detail' page.id %}">{{ page.title }}</a></li>
                         {% endif %}
-                    {% empty %} {# Added empty check #}
+                    {% empty %}
                         <li><span class="text-muted">No About Us pages here</span></li>
                     {% endfor %}
                 </ul>
@@ -209,7 +174,7 @@
                         {% if page.column_position == 'right' %}
                             <li><a href="{% url 'kuai_club:about_detail' page.id %}">{{ page.title }}</a></li>
                         {% endif %}
-                    {% empty %} {# Added empty check #}
+                    {% empty %}
                         <li><span class="text-muted">No About Us pages here</span></li>
                     {% endfor %}
                 </ul>
@@ -218,16 +183,16 @@
     </div>
 </div>
 
-<div id="leaders-content" class="hover-content-panel"> {# Removed inline style attribute #}
+<div id="leaders-content" class="hover-content-panel">
     <ul class="list-unstyled mb-0">
         <li><a href="{% url 'kuai_club:leaders_list' %}#student-leaders">Student Leaders</a></li>
         <li><a href="{% url 'kuai_club:leaders_list' %}#executive-board">Executive Board</a></li>
         <li><a href="{% url 'kuai_club:leaders_list' %}#faculty-mentors">Faculty Mentors</a></li>
-        <li><a href="{% url 'kuai_club:leaders_list' %}">All Leaders</a></li> 
+        <li><a href="{% url 'kuai_club:leaders_list' %}">All Leaders</a></li>
     </ul>
 </div>
 
-<div id="news-content" class="hover-content-panel"> {# Removed inline style attribute #}
+<div id="news-content" class="hover-content-panel">
     <ul class="list-unstyled">
         {% for item in news %}
             <li class="d-flex align-items-center mb-3">
@@ -235,7 +200,7 @@
                     <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width:50px; height:50px; object-fit:cover; border-radius:4px; margin-right:10px;">
                 {% endif %}
                 <div>
-                    <li><a href="{% url 'kuai_club:news_detail' item.id %}" class="fw-bold text-dark">{{ item.title }}</a></li>
+                    <a href="{% url 'kuai_club:news_detail' item.id %}" class="fw-bold text-dark">{{ item.title }}</a>
                     <p class="mb-0 text-muted" style="font-size: 0.85rem;">
                         {{ item.summary|truncatewords:15 }}
                     </p>
@@ -248,7 +213,7 @@
     </ul>
 </div>
 
-<div id="events-content" class="hover-content-panel"> {# Removed inline style attribute #}
+<div id="events-content" class="hover-content-panel">
     <ul class="list-unstyled">
         {% for event in events %}
             <li class="d-flex align-items-center mb-3">
@@ -269,7 +234,7 @@
     </ul>
 </div>
 
-<div id="research-content" class="hover-content-panel"> {# Removed inline style attribute #}
+<div id="research-content" class="hover-content-panel">
     <ul class="list-unstyled">
         {% for researchlinks in research %}
             <li><a href="{% url 'kuai_club:research_detail' researchlinks.id %}">{{ researchlinks.title }}</a></li>
@@ -280,7 +245,7 @@
     </ul>
 </div>
 
-<div id="resource-content" class="hover-content-panel"> {# Removed inline style attribute #}
+<div id="resource-content" class="hover-content-panel">
     <div class="row">
         <div class="col-md-6">
             <h6 class="dropdown-header">LEARNING RESOURCES</h6>
@@ -308,46 +273,26 @@
     </div>
 </div>
 
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'kuai_club:community_list' %}"
-       onmouseover="showHoverPanel('community-content')"
-       onmouseout="hideHoverPanel('community-content')">
-        Communities
-    </a>
+{# CORRECTLY PLACED COMMUNITIES HOVER PANEL #}
+<div id="community-content" class="hover-content-panel">
+    <ul class="list-unstyled">
+        {% for community_item in all_communities_outreach %}
+            <li><a href="{{ community_item.external_url }}" target="_blank" rel="noopener noreferrer">{{ community_item.name }}</a></li>
+        {% empty %}
+            <li><span class="text-muted">No community links available.</span></li>
+        {% endfor %}
 
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'kuai_club:community_list' %}"
-       onmouseover="showHoverPanel('community-content')"
-       onmouseout="hideHoverPanel('community-content')">
-        Communities
-    </a>
-
-    <div id="community-content" class="hover-content-panel">
-        <ul class="list-unstyled">
-            {# Existing loop for Community Outreach items #}
-            {% for community_item in all_communities_outreach %}
-                <li><a href="{{ community_item.external_url }}" target="_blank" rel="noopener noreferrer">{{ community_item.name }}</a></li>
-            {% empty %}
-                {# Displayed if no community items are found #}
-                <li><span class="text-muted">No community links available.</span></li>
-            {% endfor %}
-
-            {# Add a separator if there are existing community items before adding "Indabax App" #}
-            {% if all_communities_outreach %}
-                <li class="dropdown-divider"></li> {# Optional: Adds a horizontal line for visual separation #}
-            {% endif %}
-            
-            {# THIS IS THE INDABAX APP LINK #}
-            <li><a href="{% url 'indabax_app:home' %}">Indabax App</a></li>
-
-        </ul>
-        <div class="text-center mt-3">
-            <a href="{% url 'kuai_club:community_list' %}" class="btn btn-primary btn-sm">View All Communities</a>
-        </div>
+        {% if all_communities_outreach %}
+            <li class="dropdown-divider"></li>
+        {% endif %}
+        <li><a href="{% url 'indabax_app:home' %}">Indabax App</a></li>
+    </ul>
+    <div class="text-center mt-3">
+        <a href="{% url 'kuai_club:community_list' %}" class="btn btn-primary btn-sm">View All Communities</a>
     </div>
-</li>
+</div>
 
-{# START: NEW PARTNERS HOVER PANEL #}
+
 <div id="partners-content" class="hover-content-panel">
     <ul class="list-unstyled">
         {% for partner_item in partners_for_dropdown %}
@@ -355,18 +300,15 @@
                 {% if partner_item.website_link %}
                     <a href="{{ partner_item.website_link }}" target="_blank" rel="noopener noreferrer">{{ partner_item.name }}</a>
                 {% else %}
-                    {# If you had a partner_detail page, you'd link here, otherwise just the name #}
                     <span class="text-muted">{{ partner_item.name }}</span>
                 {% endif %}
             </li>
         {% empty %}
             <li><span class="text-muted">No featured partners.</span></li>
         {% endfor %}
-        {# Add a link to the full partners list page #}
         <li><a href="{% url 'kuai_club:partner_list' %}" class="btn btn-primary btn-sm mt-2">View All Partners</a></li>
     </ul>
 </div>
-{# END: NEW PARTNERS HOVER PANEL #}
 
 <div id="projects-content" class="hover-content-panel">
     <ul class="list-unstyled">
@@ -409,16 +351,6 @@
 </div>
 <main class="py-4">
     {% block content %}
-    {# These includes should ideally be in home.html, not base.html, unless every page uses them #}
-    {# If home.html is the only page that includes these, move them there. #}
-    {# If home.html extends base.html, these would effectively be rendered on every page extending base.html. #}
-    {# The comment about moving these to home.html is correct if they are only for home page. #}
-    {# But your home.html already includes them, so they would be duplicated. #}
-    {# Remove them from here in base.html if home.html is the only one including them. #}
-    {# However, if 'home.html' uses block content, then the 'main' section in base.html will be replaced #}
-    {# by the content in home.html. So this might not be an issue. Let's assume for now. #}
-    {# {% include 'hero_section.html' %} #}
-    {# {% include 'aboutOverview.html' %} #}
     {% endblock %}
 </main>
 
@@ -430,60 +362,69 @@
 <script src="{% static 'kuai_club/js/Event.js' %}" ></script>
 <script src="{% static 'kuai_club/js/leaders.js' %}"></script>
 <script src="{% static 'kuai_club/js/News.js' %}"></script>
-{# <script src="{% static 'kuai_club/js/gallery.js' %}"></script> #}
-
 
 <script>
-    // Simple hover logic to show/hide content panels next to hovered nav items
     document.addEventListener('DOMContentLoaded', function() {
         const navItems = document.querySelectorAll('.nav-hover-content');
         const panels = document.querySelectorAll('.hover-content-panel');
 
-        navItems.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                // Hide all panels first
-                panels.forEach(panel => panel.style.display = 'none');
+        const showPanel = (targetPanel, navItem) => {
+            const navRect = navItem.getBoundingClientRect();
+            
+            // First, remove the 'is-visible' class from all other panels
+            panels.forEach(p => p.classList.remove('is-visible'));
 
-                // Show target panel
-                const targetId = item.getAttribute('data-hover-target');
-                const targetPanel = document.getElementById(targetId);
-                if (targetPanel) {
-                    // Position panel below the hovered nav item
-                    const rect = item.getBoundingClientRect();
-                    targetPanel.style.display = 'block';
-                    // These are crucial for correct positioning relative to the hovered item
-                    targetPanel.style.top = rect.bottom + window.scrollY + 'px';
-                    targetPanel.style.left = rect.left + window.scrollX + 'px';
-                }
+            // Then, add it to the target panel
+            targetPanel.classList.add('is-visible');
+
+            // Position the panel below the nav item
+            targetPanel.style.top = (navRect.bottom + window.scrollY) + 'px';
+        };
+
+        const hidePanel = (panel) => {
+            panel.classList.remove('is-visible');
+        };
+
+        let timeoutId;
+        navItems.forEach(item => {
+            const targetId = item.getAttribute('data-hover-target');
+            const targetPanel = document.getElementById(targetId);
+
+            if (!targetPanel) return; // Skip if a panel is not found
+
+            item.addEventListener('mouseenter', () => {
+                clearTimeout(timeoutId);
+                showPanel(targetPanel, item);
             });
 
             item.addEventListener('mouseleave', () => {
-                // Hide panel after a short delay to allow hover on panel itself
-                setTimeout(() => {
-                    // Only hide if mouse is not over panel
-                    const targetId = item.getAttribute('data-hover-target');
-                    const targetPanel = document.getElementById(targetId);
-                    if (targetPanel && !targetPanel.matches(':hover')) {
-                        targetPanel.style.display = 'none';
+                timeoutId = setTimeout(() => {
+                    if (!targetPanel.matches(':hover')) {
+                        hidePanel(targetPanel);
                     }
                 }, 200);
             });
         });
 
-        // Hide panel when mouse leaves panel itself
         panels.forEach(panel => {
+            panel.addEventListener('mouseenter', () => {
+                clearTimeout(timeoutId);
+            });
             panel.addEventListener('mouseleave', () => {
-                panel.style.display = 'none';
+                timeoutId = setTimeout(() => {
+                    hidePanel(panel);
+                }, 200);
             });
         });
     });
 </script>
 
+
+
 {% block extra_js %}{% endblock %}
 
 </body>
 
-{# The footer was included twice in your original paste, I've kept only one instance. #}
 <footer class="footer bg-dark text-white py-4 mt-5">
     <div class="container">
         <div class="row">
@@ -501,7 +442,6 @@
             <div class="col-md-4 mb-3 mb-md-0">
                 <h5>Quick Links</h5>
                 <ul class="list-unstyled">
-                    {# Example static links, you can also iterate over site_settings.quick_links if you're populating it from JSON #}
                     <li><a href="{% url 'kuai_club:home' %}" class="text-white-50 text-decoration-none">Home</a></li>
                     <li><a href="{% url 'kuai_club:about_detail' page_id=1 %}" class="text-white-50 text-decoration-none">About Us</a></li>
                     <li><a href="{% url 'kuai_club:project_list' %}" class="text-white-50 text-decoration-none">Projects</a></li>
@@ -510,7 +450,6 @@
                     <li><a href="{% url 'kuai_club:research_list' %}" class="text-white-50 text-decoration-none">Research</a></li>
                     <li><a href="{% url 'kuai_club:resource_list' %}" class="text-white-50 text-decoration-none">Resources</a></li>
                     <li><a href="{% url 'kuai_club:community_list' %}" class="text-white-50 text-decoration-none">Community</a></li>
-                    {# ADD PARTNERS LINK TO FOOTER QUICK LINKS #}
                     <li><a href="{% url 'kuai_club:partner_list' %}" class="text-white-50 text-decoration-none">Partners</a></li>
                     {% if site_settings.privacy_policy_url %}
                         <li><a href="{{ site_settings.privacy_policy_url }}" class="text-white-50 text-decoration-none">Privacy Policy</a></li>

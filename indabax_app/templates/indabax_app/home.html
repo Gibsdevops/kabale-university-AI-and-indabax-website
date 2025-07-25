@@ -1,42 +1,86 @@
-{# D:\indabax\kabale_ai_club_website\indabax_app\templates\indabax_app\home.html #}
 
 {% extends 'indabax_app/base.html' %} 
-{% load static %} {# Load static here if you are directly referencing static files in this template #}
+{% load indabax_filters %} 
+{% load static %}
 
 {% block content %}
 
-{# --- Image Slider / Carousel Section --- #}
-<div id="indabaxAppCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+{# --- Main Dynamic Title for Homepage --- #}
+{# The background image will be applied to this container by JavaScript #}
+<div id="homeAnimatedTitleContainer" class="text-center my-5 py-4 hero-banner" 
+     data-background-urls="{{ hero_background_urls_json }}"
+     data-default-background="{% static 'indabax_app/images/default_hero_background.jpg' %}"> {# IMPORTANT: Ensure this default image exists #}
+    <h1 id="dynamicHomeMainHeading" class="indabax-main-title"></h1>
+    {% if home_content %}
+        <span id="hiddenHomeMainHeadingText" style="display: none;">{{ home_content.main_heading }}</span>
+        <p class="lead indabax-text-muted mt-3 mb-0">{{ home_content.main_subheading }}</p>
+    {% else %}
+        <span id="hiddenHomeMainHeadingText" style="display: none;">Welcome to IndabaX Kabale AI Club!</span>
+        <p class="lead indabax-text-muted mt-3 mb-0">Your premier hub for Artificial Intelligence education, research, and community engagement.</p>
+    {% endif %}
+</div>
+
+<section class="container my-5 py-5 text-center indabax-intro-section">
+    <p class="indabax-main-paragraph">
+        The intersection of these emerging technologies is teamwork. At IndabaX, you have the opportunity to form friendships that will help you be at the center of technologies. Have a look at what it feels like to be in the sessions!
+    </p>
+</section>
+<div id="indabaxAppCarousel" class="carousel slide" data-bs-ride="carousel">
+    </div>
+
+<div id="indabaxAppCarousel" class="carousel slide carousel-fade mb-5" data-bs-ride="carousel">
     <div class="carousel-indicators">
-        <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        {% for image in hero_slider_images %}
+            <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                    {% if forloop.first %}class="active" aria-current="true"{% endif %} 
+                    aria-label="Slide {{ forloop.counter }}"></button>
+        {% empty %}
+            {# Fallback indicators for static slides if no dynamic images are present #}
+            <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        {% endfor %}
     </div>
     <div class="carousel-inner">
-        <div class="carousel-item active" data-bs-interval="5000"> {# Show for 5 seconds #}
-            <img src="{% static 'indabax_app/images/slider/slide1.jpg' %}" class="d-block w-100" alt="IndabaX Event 1">
-            <div class="carousel-caption d-none d-md-block">
-                <h5>Empowering AI Talent</h5>
-                <p>Join us to explore the future of Artificial Intelligence.</p>
-                <a href="{% url 'indabax_app:about' %}" class="btn btn-outline-light">Learn More</a>
+        {% for image in hero_slider_images %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="5000">
+                <img src="{{ image.image.url }}" class="d-block indabax-carousel-img" alt="{{ image.title }}"> 
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ image.title }}</h5>
+                    <p>{{ image.caption }}</p>
+                    {% if image.button_text and image.button_link %}
+                        <a href="{{ image.button_link }}" class="btn btn-primary">{{ image.button_text }}</a>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="5000">
-            <img src="{% static 'indabax_app/images/slider/slide2.jpg' %}" class="d-block w-100" alt="IndabaX Workshop">
-            <div class="carousel-caption d-none d-md-block">
-                <h5>Hands-on Workshops</h5>
-                <p>Gain practical skills in machine learning and data science.</p>
-                <a href="{% url 'indabax_app:tutorials' %}" class="btn btn-warning">View Tutorials</a>
+        {% empty %}
+            {# Default static slides if no dynamic images exist #}
+            {# IMPORTANT: Ensure these static fallback images exist in 'indabax_app/static/indabax_app/images/slider/' #}
+            <div class="carousel-item active" data-bs-interval="5000">
+                <img src="{% static 'indabax_app/images/slider/slide1.jpg' %}" class="d-block indabax-carousel-img" alt="Default Slide 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Empowering AI Talent</h5>
+                    <p>Join us to explore the future of Artificial Intelligence.</p>
+                    <a href="{% url 'indabax_app:about' %}" class="btn btn-outline-light">Learn More</a>
+                </div>
             </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="5000">
-            <img src="{% static 'indabax_app/images/slider/slide3.jpg' %}" class="d-block w-100" alt="IndabaX Community">
-            <div class="carousel-caption d-none d-md-block">
-                <h5>Vibrant Community</h5>
-                <p>Connect with fellow AI enthusiasts and experts.</p>
-                <a href="{% url 'indabax_app:leaders' %}" class="btn btn-success">Meet Our Leaders</a>
+            <div class="carousel-item" data-bs-interval="5000">
+                <img src="{% static 'indabax_app/images/slider/slide2.jpg' %}" class="d-block indabax-carousel-img" alt="Default Slide 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Hands-on Workshops</h5>
+                    <p>Gain practical skills in machine learning and data science.</p>
+                    <a href="{% url 'indabax_app:tutorials' %}" class="btn btn-warning">View Tutorials</a>
+                </div>
             </div>
-        </div>
+            <div class="carousel-item" data-bs-interval="5000">
+                <img src="{% static 'indabax_app/images/slider/slide3.jpg' %}" class="d-block indabax-carousel-img" alt="Default Slide 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Vibrant Community</h5>
+                    <p>Connect with fellow AI enthusiasts and experts.</p>
+                    <a href="{% url 'indabax_app:leaders' %}" class="btn btn-success">Meet Our Leaders</a>
+                </div>
+            </div>
+        {% endfor %}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#indabaxAppCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -47,70 +91,207 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-{# --- End Image Slider --- #}
+{# --- End Dynamic Image Slider --- #}
 
 <div class="container my-5"> {# Main content container #}
-    <h1 class="text-center mb-4 indabax-heading">Welcome to IndabaX Kabale AI Club!</h1>
-    <p class="lead text-center indabax-text">Your premier hub for Artificial Intelligence education, research, and community engagement in Kabale, Uganda.</p>
-    
-    {# --- About Us / Mission Section (Example Content Area 1) --- #}
-    <section class="row align-items-center my-5 p-4 rounded shadow-sm indabax-section-bg-light">
-        <div class="col-md-7">
-            <h2 class="indabax-subheading">About Our Initiative</h2>
-            <p class="indabax-text">IndabaX Kabale is part of the larger Deep Learning IndabaX movement, aimed at strengthening African Machine Learning. We foster a vibrant community, providing resources and opportunities for learning, collaboration, and innovation in AI.</p>
-            <a href="{% url 'indabax_app:about' %}" class="btn indabax-btn-primary mt-3">Discover Our Story</a>
+
+    {# --- About Our Initiative Section (Dynamic) --- #}
+    {% if home_content %}
+    <section class="row align-items-center my-5 py-5 px-3 rounded-3 shadow-lg indabax-section-bg-light">
+        <div class="col-md-7 order-md-1"> {# Order changed for mobile-first image below text #}
+            <h2 class="display-5 fw-bold indabax-subheading mb-4">{{ home_content.about_home_heading }}</h2>
+            <p class="lead indabax-text mb-4">{{ home_content.about_home_paragraph|linebreaksbr }}</p>
+            <a href="{% url 'indabax_app:about' %}" class="btn indabax-btn-primary btn-lg">Discover Our Story <i class="fas fa-arrow-right ms-2"></i></a>
         </div>
-        <div class="col-md-5 text-center">
-            <img src="{% static 'indabax_app/images/about-indabax.jpg' %}" alt="About IndabaX" class="img-fluid rounded shadow-lg">
+        <div class="col-md-5 order-md-2 text-center mt-4 mt-md-0">
+            {% if home_content.about_home_image %}
+                <img src="{{ home_content.about_home_image.url }}" alt="About IndabaX" class="img-fluid rounded-3 shadow-lg indabax-img-hover-effect">
+            {% else %}
+                <img src="{% static 'indabax_app/images/about-indabax.jpg' %}" alt="About Indabax" class="img-fluid rounded-3 shadow-lg indabax-img-hover-effect">
+            {% endif %}
         </div>
     </section>
+    {% endif %}
 
-    {# --- Focus Areas / Pillars Section (Example Content Area 2) --- #}
-    <section class="my-5 p-4 rounded shadow-sm indabax-section-bg-dark text-white">
-        <h2 class="text-center mb-4 indabax-subheading">Our Core Pillars</h2>
-        <div class="row text-center">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 indabax-card">
-                    <div class="card-body">
-                        <i class="fas fa-graduation-cap fa-3x mb-3 indabax-icon-yellow"></i>
-                        <h5 class="card-title indabax-card-title">Education</h5>
-                        <p class="card-text indabax-text">Providing comprehensive tutorials and workshops to build foundational and advanced AI skills.</p>
-                        <a href="{% url 'indabax_app:tutorials' %}" class="btn indabax-btn-secondary mt-2">Explore Tutorials</a>
+    {# --- Our Core Pillars Section (Dynamic) --- #}
+    {% if pillars %}
+    <section class="my-5 py-5 indabax-pillars-section">
+        <h2 class="text-center mb-5 display-4 fw-bold text-white indabax-heading">Our Core Pillars</h2>
+        <div class="row text-center justify-content-center g-4">
+            {% for pillar in pillars %}
+                <div class="col-md-4 col-lg-4 mb-4">
+                    <div class="card h-100 indabax-pillar-card">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            {% if pillar.icon_class %}
+                                <i class="{{ pillar.icon_class }} fa-4x mb-4 {% if forloop.counter0|divisibleby:2 %}indabax-icon-yellow{% else %}indabax-icon-green{% endif %}"></i>
+                            {% else %}
+                                <i class="fas fa-question-circle fa-4x mb-4 text-secondary"></i> {# Default icon if none provided #}
+                            {% endif %}
+                            <h5 class="card-title fw-bold mb-3 indabax-card-title">{{ pillar.title }}</h5>
+                            <p class="card-text text-muted indabax-text mb-4">{{ pillar.description|linebreaksbr }}</p>
+                            {% if pillar.button_url %}
+                                <a href="{{ pillar.button_url }}" class="btn indabax-btn-secondary mt-auto">{{ pillar.button_text }}</a>
+                            {% else %}
+                                <a href="#" class="btn indabax-btn-secondary mt-auto disabled">Learn More</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 indabax-card">
-                    <div class="card-body">
-                        <i class="fas fa-flask fa-3x mb-3 indabax-icon-green"></i>
-                        <h5 class="card-title indabax-card-title">Research</h5>
-                        <p class="card-text indabax-text">Engaging in impactful AI research to solve local and global challenges.</p>
-                        <a href="#" class="btn indabax-btn-secondary mt-2">View Research (Placeholder)</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 indabax-card">
-                    <div class="card-body">
-                        <i class="fas fa-users fa-3x mb-3 indabax-icon-yellow"></i>
-                        <h5 class="card-title indabax-card-title">Community</h5>
-                        <p class="card-text indabax-text">Building a strong network of AI enthusiasts, mentors, and professionals.</p>
-                        <a href="{% url 'indabax_app:leaders' %}" class="btn indabax-btn-secondary mt-2">Meet Our Community</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </section>
+    {% endif %}
 
-    {# --- Call to Action / Latest News/Events (Example Content Area 3) --- #}
-    <section class="my-5 p-4 text-center indabax-section-bg-light rounded shadow-sm">
-        <h2 class="indabax-subheading mb-4">Get Involved!</h2>
-        <p class="indabax-text">Ready to dive into the world of AI? Join our upcoming events and connect with us.</p>
+    {# --- Upcoming Events Section (New & Dynamic) --- #}
+    {% if upcoming_events %}
+    <section class="my-5 py-5 indabax-events-section">
+        <h2 class="text-center mb-5 display-4 fw-bold indabax-heading">Upcoming Events</h2>
+        
+        {# Start of NEW Events Carousel #}
+        <div id="eventsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000"> {# Added data-bs-interval #}
+            <div class="carousel-inner">
+                {% comment %}
+                We'll group events into slides. For simplicity, let's put 2 events per slide on large screens,
+                1 per slide on small screens. You can adjust this 'events_per_slide' logic.
+                {% endcomment %}
+                {% for event in upcoming_events %}
+                    {% if forloop.counter0|divisibleby:2 %} {# Start a new carousel-item for every 2 events #}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="row justify-content-center g-4"> {# Use a row for cards within the slide #}
+                    {% endif %}
+                                <div class="col-12 col-md-6"> {# Each card takes full width on small, half on medium #}
+                                    <div class="card h-100 shadow-sm indabax-event-card">
+                                        {% if event.image %}
+                                            <img src="{{ event.image.url }}" class="card-img-top indabax-event-img" alt="{{ event.title }}">
+                                        {% else %}
+                                            <img src="{% static 'indabax_app/images/default-event.jpg' %}" class="card-img-top indabax-event-img" alt="Default Event Image">
+                                        {% endif %}
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title indabax-card-title">{{ event.title }}</h5>
+                                            <p class="card-text indabax-text-sm mb-2"><i class="far fa-calendar-alt me-2"></i>{{ event.date|date:"F d, Y" }}</p>
+                                            {% if event.time %}<p class="card-text indabax-text-sm mb-2"><i class="far fa-clock me-2"></i>{{ event.time }}</p>{% endif %}
+                                            {% if event.location %}<p class="card-text indabax-text-sm mb-2"><i class="fas fa-map-marker-alt me-2"></i>{{ event.location }}</p>{% endif %}
+                                            <p class="card-text indabax-text-short">{{ event.description|truncatechars:150 }}</p>
+                                            {% if event.registration_url %}
+                                                <a href="{{ event.registration_url }}" target="_blank" class="btn indabax-btn-primary mt-auto">Register Now <i class="fas fa-external-link-alt ms-2"></i></a>
+                                            {% else %}
+                                                <a href="#" class="btn indabax-btn-primary mt-auto disabled">Details Coming Soon</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                    {% if forloop.counter|divisibleby:2 or forloop.last %} {# Close carousel-item after 2 events or if it's the last event #}
+                            </div> {# /row #}
+                        </div> {# /carousel-item #}
+                    {% endif %}
+                {% empty %}
+                    <div class="carousel-item active">
+                        <div class="text-center py-4">
+                            <p class="lead text-muted">No upcoming events scheduled at the moment. Stay tuned!</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {# Carousel Controls #}
+            <button class="carousel-control-prev" type="button" data-bs-target="#eventsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#eventsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+            {# Optional: Carousel Indicators if you want them for this one #}
+            <div class="carousel-indicators">
+                {% for event in upcoming_events %}
+                    {# Calculate the slide index for every *group* of 2 events #}
+                    {% if forloop.counter0|divisibleby:2 %}
+                        <button type="button" data-bs-target="#eventsCarousel" 
+                                data-bs-slide-to="{{ forloop.counter0|divide_int:2 }}" {# Use the custom filter here #}
+                                {% if forloop.first %}class="active" aria-current="true"{% endif %} 
+                                aria-label="Slide {{ forloop.counter0|divide_int:2|add:1 }}"></button> {# And here, for label #}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {# End of NEW Events Carousel #}
+
+    </section>
+    {% else %}
+        <div class="text-center my-5">
+            <p class="lead text-muted">No upcoming events scheduled at the moment. Stay tuned!</p>
+        </div>
+    {% endif %}
+
+    {# --- Past Events Section (New & Dynamic - Optional, can be moved to a separate page if many) --- #}
+    {% if past_events %}
+    <section class="my-5 py-5 indabax-past-events-section">
+        <h2 class="text-center mb-5 display-4 fw-bold indabax-heading">Past Events</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for event in past_events %}
+            <div class="col">
+                <div class="card h-100 shadow-sm indabax-event-card past-event-card">
+                    {% if event.image %}
+                        <img src="{{ event.image.url }}" class="card-img-top indabax-event-img" alt="{{ event.title }}">
+                    {% else %}
+                        <img src="{% static 'indabax_app/images/default-past-event.jpg' %}" class="card-img-top indabax-event-img" alt="Default Past Event Image">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title indabax-card-title">{{ event.title }}</h5>
+                        <p class="card-text indabax-text-sm mb-2"><i class="far fa-calendar-alt me-2"></i>{{ event.date|date:"F d, Y" }}</p>
+                        {% if event.location %}<p class="card-text indabax-text-sm mb-2"><i class="fas fa-map-marker-alt me-2"></i>{{ event.location }}</p>{% endif %}
+                        <p class="card-text indabax-text-short">{{ event.description|truncatechars:100 }}</p>
+                        <a href="#" class="btn btn-outline-secondary mt-auto disabled">View Details</a> {# Or link to a detail page if you create one #}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {# --- Partners Section (New & Dynamic) --- #}
+    {% if partners %}
+    <section class="my-5 py-5 text-center indabax-partners-section">
+        <h2 class="text-center mb-5 display-4 fw-bold indabax-heading">Our Valued Partners</h2>
+        <div class="row justify-content-center align-items-center g-4">
+            {% for partner in partners %}
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="{{ partner.website_url|default:'#' }}" target="_blank" class="d-block indabax-partner-logo-link">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }} Logo" class="img-fluid indabax-partner-logo">
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {# --- Call to Action / Latest News/Events (Dynamic) --- #}
+    {% if home_content %}
+    <section class="my-5 py-5 text-center indabax-section-bg-light rounded-3 shadow-sm">
+        <h2 class="indabax-subheading mb-4">{{ home_content.cta_heading }}</h2>
+        <p class="lead indabax-text mb-4">{{ home_content.cta_paragraph|linebreaksbr }}</p>
         <div class="d-grid gap-2 d-md-block">
-            <a href="#" class="btn indabax-btn-primary btn-lg me-md-2 mb-2 mb-md-0">Upcoming Events (Placeholder)</a>
-            <a href="#" class="btn indabax-btn-secondary btn-lg mb-2 mb-md-0">Contact Us (Placeholder)</a>
+            {% if home_content.cta_primary_button_url %}
+                <a href="{{ home_content.cta_primary_button_url }}" class="btn indabax-btn-primary btn-lg me-md-2 mb-2 mb-md-0">{{ home_content.cta_primary_button_text }} <i class="fas fa-arrow-right ms-2"></i></a>
+            {% else %}
+                <a href="#" class="btn indabax-btn-primary btn-lg me-md-2 mb-2 mb-md-0 disabled">Upcoming Events</a>
+            {% endif %}
+
+            {% if home_content.cta_secondary_button_url %}
+                <a href="{{ home_content.cta_secondary_button_url }}" class="btn indabax-btn-secondary btn-lg mb-2 mb-md-0">{{ home_content.cta_secondary_button_text }} <i class="fas fa-phone-alt ms-2"></i></a>
+            {% else %}
+                <a href="#" class="btn indabax-btn-secondary btn-lg mb-2 mb-md-0 disabled">Contact Us</a>
+            {% endif %}
         </div>
     </section>
+    {% endif %}
 
 </div>
+
+{# Place custom script at the end of the body for better performance #}
+<script src="{% static 'indabax_app/js/home_page_animation.js' %}"></script>
+<script src="{% static 'indabax_app/js/hero_background_rotator.js' %}"></script>
+
+
 {% endblock content %}

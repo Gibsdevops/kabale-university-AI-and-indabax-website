@@ -21,34 +21,49 @@
 </head>
 <body>
     {# INDABAX APP UNIQUE NAVIGATION BAR #}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> {# bg-dark for a dark background #}
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'indabax_app:home' %}">IndabaX App</a> {# Brand link to Indabax App's home #}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavIndabax" aria-controls="navbarNavIndabax" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavIndabax"> {# Unique ID for this navbar #}
-                <ul class="navbar-nav ms-auto"> {# ms-auto pushes items to the right #}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'indabax_app:home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'indabax_app:about' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'indabax_app:tutorials' %}">Tutorials</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'indabax_app:leaders' %}">Leaders</a>
-                    </li>
-                    {# Button to go back to the kuai_club website #}
-                    <li class="nav-item ms-lg-3"> {# Add margin on large screens #}
-                        <a class="nav-link btn btn-outline-light" href="{% url 'kuai_club:home' %}">Kabale University AI club</a>
-                    </li>
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavIndabax" aria-controls="navbarNavIndabax" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <a class="navbar-brand d-lg-none" href="{% url 'indabax_app:home' %}">
+        <img src="{% static 'indabax_app/images/logo.png' %}" alt="IndabaX Logo" class="nav-logo logo-penetrate">
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbarNavIndabax">
+      
+      <ul class="navbar-nav w-100 d-lg-flex justify-content-lg-between align-items-lg-center">
+
+        <div class="d-lg-flex">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'indabax_app:home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'indabax_app:about' %}">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'indabax_app:tutorials' %}">Tutorials</a>
+          </li>
         </div>
-    </nav>
+
+        <a class="navbar-brand d-none d-lg-block mx-auto" href="{% url 'indabax_app:home' %}">
+            <img src="{% static 'indabax_app/images/logo.png' %}" alt="IndabaX Logo" class="nav-logo">
+        </a>
+
+        <div class="d-lg-flex">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'indabax_app:leaders' %}">Leaders</a>
+          </li>
+          <li class="nav-item ms-lg-3">
+            <a class="nav-link btn btn-outline-light" href="{% url 'kuai_club:home' %}">Kabale University AI club</a>
+          </li>
+        </div>
+      </ul>
+    </div>
+  </div>
+</nav>
 
     {# Content block where other templates will inject their content #}
     {% block content %}

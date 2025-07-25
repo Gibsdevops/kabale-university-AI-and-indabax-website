@@ -1,5 +1,36 @@
 from django.contrib import admin
-from .models import EventImage, TutorialCategory, Tutorial, Leader, AboutContent
+from .models import ( EventImage, 
+                     TutorialCategory, 
+                     Tutorial, 
+                     Leader, 
+                     AboutContent, 
+                     HomePageContent, 
+                     Pillar,
+                     Event, 
+                     Partner,
+                     GalleryImage, 
+                     HeroBackgroundImage,)
+
+@admin.register(HomePageContent)
+class HomePageContentAdmin(admin.ModelAdmin):
+    list_display = ('main_heading',)
+
+@admin.register(Pillar)
+class PillarAdmin(admin.ModelAdmin):
+    list_display = ('title', 'order')
+    list_editable = ('order',)
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date', 'is_upcoming', 'location')
+    list_filter = ('is_upcoming', 'date')
+    search_fields = ('title', 'description')
+
+@admin.register(Partner)
+class PartnerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'website_url', 'order')
+    list_editable = ('order',)
+
 
 @admin.register(EventImage)
 class EventImageAdmin(admin.ModelAdmin):
@@ -47,3 +78,11 @@ class AboutContentAdmin(admin.ModelAdmin):
         }),
     )
 
+
+@admin.register(GalleryImage)
+class GalleryImageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'order', 'image')
+    list_editable = ('order',)
+    search_fields = ('title',)
+
+admin.site.register(HeroBackgroundImage)

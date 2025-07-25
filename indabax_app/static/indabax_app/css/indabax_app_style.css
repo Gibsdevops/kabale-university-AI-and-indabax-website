@@ -1,11 +1,14 @@
 /* Custom styles for IndabaX App - COMBINED */
 
+
+
+
 /* Define your primary colors (keep these new color variables) */
 :root {
     --indabax-primary-yellow: #FFD700; /* Gold/Yellow */
     --indabax-secondary-green: #3CB371; /* Medium Sea Green */
     --indabax-dark-blue: #2c3e50; /* A dark blue for backgrounds/text contrast */
-    --indabax-light-gray: #f8f9fa; /* Light background for sections */
+    --indabax-light-gray: #04234d; /* Light background for sections */
     --indabax-text-color: #343a40; /* Dark grey for general text */
 
     /* Keep your existing core colors for clarity if they are used elsewhere */
@@ -18,9 +21,17 @@
 body {
     /* Keep your 'Inter' font if that's what you prefer */
     font-family: 'Inter', sans-serif; 
-    /* Add new color and background from the proposed styles */
     color: var(--indabax-text-color);
-    background-color: var(--indabax-light-gray); /* Light background for the overall page */
+
+    background: linear-gradient(to bottom, 
+                var(--indabax-light-gray), /* Start with your light gray */
+                #f0f8ff, /* A very light, slightly bluish white for a subtle transition */
+                var(--indabax-light-gray) /* End with light gray, or another color */
+               );
+
+     min-height: 100vh; 
+     background-attachment: fixed;
+    
 }
 
 /* Navbar styles - MERGED & Adjusted for Bootstrap 5 */
@@ -30,9 +41,13 @@ body {
     background-color: var(--indabax-dark-blue) !important; 
     /* Or if you want to keep your original orange: background-color: var(--old-navbar-bg) !important; */
 
-    padding: 10px 0; /* Keep your padding */
+    /* padding: 10px 0;  */
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    /* Keep your padding */
     border-bottom: 1px solid #ccc; /* Keep your border */
-    position: sticky; /* Keep sticky */
+    position: relative; /* Keep sticky */
     top: 0; /* Keep top */
     z-index: 999; /* Keep z-index */
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); /* Keep shadow */
@@ -94,20 +109,62 @@ body {
     flex-wrap: wrap;
 }
 
-/* Your original Logo size fix */
-.logo img {
-    height: 40px;
-    max-width: 120px;
-    object-fit: contain;
+
+/* Style for the nav bar logos */
+.nav-logo {
+    height: 80px; /* Adjust as needed, a good size for a circle */
+    width: 80px; /* Must match height for a perfect circle */
+    object-fit: cover; /* Ensures the image fills the space without distortion */
+    border-radius: 50%; /* The key property to make the logo circular */
+    border: 2px solid var(--indabax-primary-yellow); /* Optional: A yellow border to match your brand */
+    transition: transform 0.3s ease;
+
+    /* Ensure the logo is on top of other elements */
+    z-index: 10;
+    /* position: absolute; */
+
+    /* Optional: A subtle drop shadow to make it pop */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    
 }
 
+.nav-logo:hover {
+    transform: scale(1.1); /* Optional: A subtle hover effect */
+}
 
-/* Slider styles - MERGED */
-/* The new HTML uses Bootstrap Carousel. Keep your custom slider styles, but the Bootstrap Carousel will apply its own styles too */
-/* You might want to remove your old .slider-container, .slider, .slide, .slide-arrow if you are fully using Bootstrap Carousel */
-/* However, if your old slider HTML is still in use *somewhere else*, keep these. */
+.logo-penetrate {
+    position: absolute;
+    /* Vertically center the logo relative to the navbar */
+    top: 50%; 
+    transform: translateY(-50%); /* Shifts the logo up by half its height */
+}
 
-/* Bootstrap Carousel Caption Styling (NEW) */
+/* Media query for large screens to handle the centered logo layout */
+@media (min-width: 992px) { /* This targets screens wider than 992px */
+  .navbar-nav > div {
+    /* Distributes space equally to push the logo to the center */
+    flex: 1; 
+    display: flex;
+    gap: 20px; /* Adjust space between links */
+  }
+
+  .navbar-nav > div:last-child {
+    /* Aligns the last set of links to the far right */
+    justify-content: flex-end;
+  }
+
+  .navbar-nav {
+      /* ... existing styles ... */
+      padding: 0; /* Make sure there's no default padding */
+    }
+    
+    /* The logo has its own padding, so we just need to ensure the links don't get squished */
+    .navbar-brand.d-none.d-lg-block {
+      padding: 0 20px; /* Add some horizontal space around the large-screen logo */
+    }
+
+}
+
 .carousel-caption {
     background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
     padding: 20px;
@@ -159,75 +216,6 @@ body {
 }
 
 
-/* Your original .slider-container, .slider, .slide, .slide-arrow styles */
-/* If you are only using Bootstrap Carousel on home.html, you might remove these sections. */
-/* If you plan to use a different custom slider elsewhere, keep them. */
-.slider-container {
-    position: relative;
-    overflow: hidden;
-}
-
-.slider {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 1rem;
-    padding: 1rem 2rem;
-    scroll-behavior: smooth;
-}
-
-.slide {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    width: 300px;
-    padding: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    height: 320px;
-    overflow: hidden;
-}
-
-.slide img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 6px;
-}
-
-.slide p {
-    margin-top: 8px;
-    font-size: 16px;
-    color: #333;
-}
-
-/* Arrows */
-.slide-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    cursor: pointer;
-    padding: 0 10px;
-    z-index: 10;
-    transition: background-color 0.3s;
-}
-
-.slide-arrow:hover {
-    background-color: #ccc;
-}
-
-.slide-arrow.prev {
-    left: 0;
-}
-
-.slide-arrow.next {
-    right: 0;
-}
 
 
 /* General Headings and Text (NEW classes for consistent branding) */
@@ -359,23 +347,6 @@ footer p {
 }
 
 
-/* Responsive Design (Keep your existing media queries) */
-@media screen and (max-width: 768px) {
-    .slide {
-        width: 250px;
-    }
-}
-
-@media screen and (max-width: 500px) {
-    .slide {
-        width: 200px;
-    }
-
-    .slide-arrow {
-        font-size: 1.5rem;
-        padding: 0 5px;
-    }
-}
 
 /* Your original Tutorial section styles (Keep as is, they are specific to a different page) */
 .tutorials-container {
@@ -433,3 +404,529 @@ footer p {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* --- Home Page Specific Styles --- */
+
+/* Main Home Page Title Animation */
+#homeAnimatedTitleContainer {
+    padding-top: 5rem; /* Space from navbar */
+    padding-bottom: 2rem;
+    overflow: hidden; /* Hide overflow during animation */
+
+    /* added */
+    min-height: 700px; /* Adjust this value to make it taller */
+    background-size: cover; /* Ensures the image covers the entire area */
+    background-position: center center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    transition: background-image 1s ease-in-out;
+
+
+    /* centering the title */
+    display: flex; /* Makes the container a flex container */
+    flex-direction: column; /* Stacks children vertically */
+    justify-content: center; /* Centers content vertically along the main axis */
+    align-items: center; /* Centers content horizontally along the cross axis */
+    text-align: center;
+}
+
+#dynamicHomeMainHeading {
+    font-size: 4.5rem; /* Larger font for homepage title */
+    font-weight: 800; /* Extra bold */
+    line-height: 1.1;
+    margin-bottom: 1rem;
+}
+
+#dynamicHomeMainHeading .animated-word {
+    display: inline-block; /* Crucial for transform animation */
+    white-space: nowrap; /* Prevent words from breaking */
+    /* Transition properties are set by JS on animation start */
+}
+
+.indabax-text-muted {
+    color: #6c757d; /* Bootstrap gray */
+    font-size: 1.3rem; /* Slightly larger lead paragraph */
+}
+
+
+/* Carousel Image Height (adjust as needed for aesthetics) */
+.indabax-carousel-img {
+    width: 100%;
+    height: 500px; /* Fixed height for consistency */
+    object-fit: contain; 
+    display: block;
+    margin: 0 auto; /* Center the image horizontally within its container */
+    border-radius: 10px; /* Add some rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow *
+    /* Ensures image covers the area, cropping if necessary */
+}
+
+/* Styles for the main Hero/Gallery Carousel container */
+#indabaxAppCarousel {
+    max-width: 960px; /* Max width for the entire carousel container */
+    margin: 40px auto 60px auto; /* Center the carousel, add top/bottom margin */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); /* A more prominent shadow for the contained look */
+    border-radius: 15px; /* Rounded corners for the entire carousel box */
+    overflow: hidden; /* Important to hide any overflow beyond rounded corners */
+    background-color: var(--indabax-light-gray);
+    padding: 20px;
+}
+
+#indabaxAppCarousel .carousel-inner {
+    background-color: transparent; /* White background behind the images to show the spacing */
+    border-radius: 15px; /* Match outer container's border-radius */
+}
+
+#indabaxAppCarousel .carousel-item {
+    padding: 0; /* Add padding around the image within each slide */
+    background-color: transparent;
+    display: flex; /* Use flexbox to easily center content */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    min-height: 540px; /* Adjust to be slightly taller than the image height + padding */
+}
+
+/* Adjustments for carousel captions on the Hero Slider */
+#indabaxAppCarousel .carousel-caption {
+    position: absolute; /* Keep absolute for overlay */
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+    padding: 15px 20px;
+    border-radius: 8px;
+    bottom: 5%; /* Position closer to the bottom of the *image* */
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    max-width: 80%; /* Limit width of caption */
+    width: auto; /* Allow width to shrink to content */
+    text-align: center;
+}
+
+#indabaxAppCarousel .carousel-caption h5 {
+    font-size: 1.8rem; /* Slightly smaller for better fit */
+    margin-bottom: 0.5rem;
+}
+
+#indabaxAppCarousel .carousel-caption p {
+    font-size: 1rem; /* Slightly smaller */
+    margin-bottom: 0;
+}
+
+#indabaxAppCarousel .carousel-caption .btn {
+    font-size: 0.9rem; /* Smaller button */
+    padding: 8px 15px;
+}
+
+/* Adjust carousel controls for the hero slider (optional) */
+#indabaxAppCarousel .carousel-control-prev,
+#indabaxAppCarousel .carousel-control-next {
+    width: 5%; /* Make controls a bit narrower */
+    background: rgba(0, 0, 0, 0.2); /* Subtle background for controls */
+    border-radius: 0 15px 15px 0; /* Only right side for prev */
+    transition: background-color 0.3s ease;
+}
+
+#indabaxAppCarousel .carousel-control-prev {
+    left: 0;
+    border-radius: 15px 0 0 15px; /* Only left side for next */
+}
+
+#indabaxAppCarousel .carousel-control-next {
+    right: 0;
+    border-radius: 0 15px 15px 0;
+}
+
+#indabaxAppCarousel .carousel-control-prev:hover,
+#indabaxAppCarousel .carousel-control-next:hover {
+    background: rgba(0, 0, 0, 0.4); /* Darker on hover */
+}
+
+/* About Our Initiative Section */
+.indabax-section-bg-light {
+    background-color: white; /* Light grey background */
+    border-radius: 15px; /* More rounded corners */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Stronger, softer shadow */
+}
+
+.indabax-img-hover-effect {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.indabax-img-hover-effect:hover {
+    transform: translateY(-8px); /* Lift effect on hover */
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+/* Our Core Pillars Section (already styled, just ensure consistency) */
+.indabax-pillars-section {
+    background-color: var(--indabax-dark-blue); /* Dark background */
+    color: white;
+    border-radius: 15px; /* Match other sections */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Upcoming & Past Events Section */
+.indabax-events-section, .indabax-past-events-section {
+    padding: 3rem 0;
+    /* Add specific background or border if desired, e.g., border-top: 1px solid #eee; */
+}
+
+.indabax-event-card {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    overflow: hidden; /* Ensures rounded corners on image */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.indabax-event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.indabax-event-img {
+    height: 200px; /* Fixed height for event images */
+    object-fit: cover;
+}
+
+.indabax-event-card .card-body {
+    padding: 1.5rem;
+}
+
+.indabax-event-card .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #0d6efd; /* Primary color for event titles */
+}
+
+.indabax-text-sm {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.indabax-text-short {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #495057;
+}
+
+.past-event-card {
+    opacity: 0.8; /* Slightly dim past events */
+}
+
+/* Partners Section */
+.indabax-partners-section {
+    background-color: var(--indabax-light-gray); /* Light background for partners */
+    border-radius: 15px;
+    padding: 4rem 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.indabax-partner-logo-link {
+    display: block;
+    padding: 1rem;
+    background-color: #ffffff; /* White background for each logo */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.indabax-partner-logo-link:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.indabax-partner-logo {
+    max-height: 80px; /* Max height for logos */
+    width: auto;
+    display: block; /* Remove extra space below img */
+    margin: auto; /* Center logo */
+    filter: grayscale(80%); /* Make logos grayscale */
+    transition: filter 0.3s ease;
+}
+
+.indabax-partner-logo-link:hover .indabax-partner-logo {
+    filter: grayscale(0%); /* Color on hover */
+}
+
+
+/* Re-confirm general styles (already in your CSS, but crucial) */
+.indabax-heading {
+    color: #212529; /* Dark text for headings */
+}
+
+.indabax-subheading {
+    color: #28a745; /* Green for subheadings (adjust as needed) */
+}
+
+.indabax-btn-primary {
+    background-color: #0d6efd; /* Example primary color */
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.indabax-btn-primary:hover {
+    background-color: #0a58ca; /* Darker on hover */
+    color: white;
+}
+
+.indabax-btn-secondary {
+    background-color: #6c757d; /* Example secondary color */
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.indabax-btn-secondary:hover {
+    background-color: #5a6268; /* Darker on hover */
+    color: white;
+}
+
+.color-orange {
+    color: #fd7e14; /* Specific orange for animated text */
+}
+
+.color-green {
+    color: #28a745; /* Specific green for animated text */
+}
+
+
+/* Custom styles for the animated about page heading */
+#animatedHeadingContainer {
+    overflow: hidden; /* Hide overflowing parts during animation */
+    /* Add any other styling for the container if needed */
+}
+
+#dynamicMainHeading {
+    font-size: 3.5rem; /* Adjust font size as needed */
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 20px; /* Space below heading */
+}
+
+.animated-word {
+    display: inline-block; /* Essential for transform to work on inline elements */
+    white-space: nowrap; /* Keep words from breaking */
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Default transition */
+}
+
+/* Custom Colors for words */
+.color-orange {
+    color: #fd7e14; /* Bootstrap Orange */
+}
+
+.color-green {
+    color: #28a745; /* Bootstrap Green */
+}
+
+/* Optional: More advanced gradient effect per letter (requires more complex JS) */
+/* .multi-color-letter {
+    background: linear-gradient(to right, #fd7e14, #ffc107);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+} */
+
+/* Styling for the main introductory paragraph */
+.indabax-intro-section {
+    
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    margin-top: 3rem; /* Space from the heading */
+}
+
+.indabax-main-paragraph {
+    font-size: 1.25rem; /* Larger font size */
+    line-height: 1.8; /* Increased line height for readability */
+    color: var(--indabax-text-color); /* Darker text for emphasis */
+    font-weight: 400; /* Regular weight, can be bolder */
+}
+
+/* Styling for the Purpose and Objectives introductory section */
+.indabax-purpose-section {
+    padding: 2rem 0; /* Add vertical padding */
+    border-bottom: 1px solid #e9ecef; /* Subtle bottom border to separate */
+    margin-top: 3rem;
+}
+
+.indabax-subheading-underline {
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 25px !important; /* Ensure sufficient space below heading */
+}
+
+.indabax-subheading-underline::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 80px; /* Width of the underline */
+    height: 3px; /* Thickness of the underline */
+    background-color: #28a745; /* Green color for the underline */
+    border-radius: 2px;
+}
+
+.indabax-purpose-paragraph {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #6c757d; /* Slightly lighter grey for this paragraph */
+    max-width: 800px; /* Constrain width for readability */
+    margin: 0 auto; /* Center the paragraph */
+}
+
+
+/* Styling for Objective Cards */
+.indabax-card {
+    border: 1px solid #e9ecef; /* Light border */
+    border-radius: 12px; /* More rounded corners */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    background-color: #ffffff; /* Ensure white background for cards */
+}
+
+.indabax-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+}
+
+.indabax-card .card-body {
+    padding: 1.5rem; /* More internal padding */
+    display: flex; /* Use flexbox to align content */
+    flex-direction: column;
+}
+
+.indabax-card-title {
+    font-size: 1.3rem; /* Slightly larger title */
+    font-weight: bold;
+    color: #007bff; /* A prominent color for titles, e.g., Bootstrap blue */
+    margin-bottom: 0.75rem;
+}
+
+.indabax-card .card-text {
+    font-size: 0.95rem; /* Adjust text size */
+    line-height: 1.6;
+    color: #495057; /* Standard dark grey for text */
+}
+
+/* Optional: Add a subtle icon if you want a placeholder visual */
+
+/* Styling for Affiliations and Contact Section */
+.indabax-affiliations-section {
+    background-color: lab(29.94% -37.47 35.72); /* Dark background similar to core pillars */
+    color: hsl(46, 94%, 48%); /* Default text color */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+    margin-top: 5rem; /* Space from previous section */
+}
+
+.indabax-affiliations-section .indabax-subheading-underline::after {
+    background-color: #ffc107; /* Yellow underline for dark section heading */
+}
+
+.indabax-contact-card {
+    background-color: #495057; /* Slightly lighter dark for inner cards */
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.indabax-contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.indabax-icon-primary {
+    color: #007bff; /* Bootstrap primary blue for icons */
+}
+
+.indabax-link-styled {
+    color: #007bff; /* Primary link color */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.indabax-link-styled:hover {
+    color: #0056b3; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+.indabax-affiliation-btn {
+    border-color: #ffc107; /* Orange border */
+    color: #ffc107; /* Orange text */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.indabax-affiliation-btn:hover {
+    background-color: #ffc107; /* Orange background on hover */
+    color: hsl(125, 90%, 30%); /* Dark text on hover */
+}
+
+/* Ensure the events carousel takes full width */
+#eventsCarousel {
+    width: 100%;
+    margin: 0 auto; /* Center the carousel */
+    max-width: 1200px; /* Optional: Limit max width for large screens */
+}
+
+/* Optional: Style for event carousel controls if you want them different from main hero */
+#eventsCarousel .carousel-control-prev-icon,
+#eventsCarousel .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.3); /* Slightly less prominent */
+    border-radius: 50%;
+    padding: 12px;
+}
+
+
+#eventsCarousel .carousel-control-prev,
+#eventsCarousel .carousel-control-next {
+    width: 4%; /* Slightly narrower controls */
+}
+
+/* indabax_app_style.css */
+
+.hero-banner {
+    /* REMOVE background-image: url(...) from here! It's now set by JS. */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 80px 20px;
+    text-align: center;
+    color: #FFFFFF;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 50px;
+    /* Add a smooth transition for background image changes */
+    transition: background-image 1s ease-in-out; 
+}
+
+/* Optional: Add a semi-transparent overlay to improve text readability */
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+    z-index: -1;
+}
+
+/* Style the title and subtitle colors for readability over the image */
+.hero-banner h1 {
+    color: #FFFFFF;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    font-size: 3.5rem;
+}
+
+.hero-banner h1 span {
+    color: #4CAF50;
+}
+
+.hero-banner p {
+    color: #E0E0E0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    font-size: 1.25rem;
+}
+
+/* Your other CSS rules... */
+

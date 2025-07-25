@@ -1,21 +1,48 @@
 {# indabax_app/about.html #}
 {% extends "indabax_app/base.html" %}
-{% load static %} {# Good practice to include if using static files directly here #}
+{% load static %}
 
 {% block content %}
-<div class="container my-5"> {# Add a container for better layout #}
-    {% if about_content %} {# Check if about_content exists #}
-        <h2 class="indabax-heading">{{ about_content.main_heading }}</h2>
-        <p class="indabax-text">{{ about_content.main_paragraph|linebreaksbr }}</p> {# |linebreaksbr filter converts newlines to <br> tags #}
+<div class="container my-5">
+    {% if about_content %}
+        {# Container for the animated heading #}
+        <div id="animatedHeadingContainer" class="text-center mb-5">
+            <h2 id="dynamicMainHeading" class="indabax-heading"></h2> {# JavaScript will populate and animate this #}
+            <span id="hiddenMainHeadingText" style="display: none;">{{ about_content.main_heading }}</span>
+        </div>
 
-        <h3 class="indabax-subheading mt-4">{{ about_content.purpose_heading }}</h3>
-        <p class="indabax-text">{{ about_content.purpose_paragraph|linebreaksbr }}</p>
+        <!-- <p class="indabax-text">{{ about_content.main_paragraph|linebreaksbr }}</p> -->
+         {# ... (Animated Heading and hidden text as discussed) ... #}
 
-        <h4 class="indabax-subheading mt-5 text-center">Our Core Objectives</h4> {# Added text-center for the heading #}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3"> {# Bootstrap grid for cards #}
+        <section class="mb-5 py-4 px-3 text-center indabax-intro-section">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                        {# Optional: Icon or small image here #}
+                        {# <i class="fas fa-brain fa-3x mb-3 text-primary"></i> #}
+                    <p class="lead indabax-main-paragraph">{{ about_content.main_paragraph|linebreaksbr }}</p>
+                </div>
+            </div>
+        </section>
+
+{# ... (Purpose Heading and Paragraph will come next) ... #}
+
+        <!-- <h3 class="indabax-subheading mt-4">{{ about_content.purpose_heading }}</h3>
+        <p class="indabax-text">{{ about_content.purpose_paragraph|linebreaksbr }}</p> -->
+        <section class="my-5 py-4 indabax-purpose-section">
+             <div class="row justify-content-center">
+                    <div class="col-lg-10 text-center">
+                        <h3 class="indabax-subheading indabax-subheading-underline mb-4">{{ about_content.purpose_heading }}</h3>
+                        <p class="indabax-text indabax-purpose-paragraph">{{ about_content.purpose_paragraph|linebreaksbr }}</p>
+                    </div>
+                </div>
+        </section>
+
+
+        <h4 class="indabax-subheading mt-5 text-center">Our Core Objectives</h4>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3">
             {% for objective in about_content.objectives.all %}
                 <div class="col">
-                    <div class="card h-100 shadow-sm indabax-card"> {# Added h-100 for equal height, shadow-sm for subtle shadow #}
+                    <div class="card h-100 shadow-sm indabax-card">
                         <div class="card-body">
                             <h5 class="card-title indabax-card-title">{{ objective.title }}</h5>
                             <p class="card-text indabax-text">{{ objective.description|linebreaksbr }}</p>
@@ -24,12 +51,12 @@
                 </div>
             {% empty %}
                 <div class="col-12">
-                    <p class="alert alert-info text-center">No objectives defined yet. Please add them via the admin panel.</p>
+                    <p class="alert alert-info text-center">No objectives defined yet.</p>
                 </div>
             {% endfor %}
         </div>
 
-        {% if about_content.affiliations_heading %}
+        <!-- {% if about_content.affiliations_heading %}
             <h3 class="indabax-subheading mt-5">{{ about_content.affiliations_heading }}</h3>
         {% endif %}
         
@@ -45,17 +72,76 @@
 
         {% if about_content.affiliation_links.all %}
             <p class="indabax-text mt-3">Our official websites include:</p>
-            <ul class="list-unstyled"> {# list-unstyled removes default list styling #}
+            <ul class="list-unstyled">
                 {% for link in about_content.affiliation_links.all %}
                     <li><a href="{{ link.url }}" target="_blank">{{ link.text }}</a></li>
                 {% empty %}
                     <li>No affiliation links defined yet.</li>
                 {% endfor %}
             </ul>
-        {% endif %}
+        {% endif %} -->
+
+            {# ... (Our Core Objectives cards section) ... #}
+
+                {% if about_content.affiliations_heading or about_content.contact_email or about_content.affiliation_links.all %}
+                    <section class="my-5 py-5 indabax-affiliations-section">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-10 text-center">
+                                {% if about_content.affiliations_heading %}
+                                    <h3 class="indabax-subheading indabax-subheading-underline text-white mb-4">{{ about_content.affiliations_heading }}</h3>
+                                {% endif %}
+                                
+                                {% if about_content.affiliations_paragraph %}
+                                    <p class="indabax-text text-white-50 mb-4">{{ about_content.affiliations_paragraph|linebreaksbr }}</p>
+                                {% endif %}
+
+                                <div class="row justify-content-center g-4 mt-4">
+                                    {% if about_content.contact_email %}
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card h-100 indabax-contact-card">
+                                                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                                    <i class="fas fa-envelope fa-3x mb-3 indabax-icon-primary"></i>
+                                                    <h5 class="card-title indabax-card-title">Email Us</h5>
+                                                    <p class="card-text text-center">
+                                                        <a href="mailto:{{ about_content.contact_email }}" class="indabax-link-styled">{{ about_content.contact_email }}</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if about_content.affiliation_links.all %}
+                                        <div class="col-md-6 col-lg-8">
+                                            <div class="card h-100 indabax-contact-card">
+                                                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                                    <i class="fas fa-link fa-3x mb-3 indabax-icon-primary"></i>
+                                                    <h5 class="card-title indabax-card-title">Official Websites</h5>
+                                                    <div class="d-flex flex-wrap justify-content-center mt-3">
+                                                        {% for link in about_content.affiliation_links.all %}
+                                                            <a href="{{ link.url }}" target="_blank" class="btn btn-outline-warning btn-sm m-2 indabax-affiliation-btn">{{ link.text }} <i class="fas fa-external-link-alt ms-1"></i></a>
+                                                        {% empty %}
+                                                            <p class="text-muted">No affiliation links defined yet.</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
+
+                {# ... (end block and script tag) ... #}
+
 
     {% else %}
         <p class="alert alert-warning">About page content has not been set up in the admin yet. Please add content.</p>
     {% endif %}
 </div>
+
+{# Place custom script at the end of the body for better performance #}
+<script src="{% static 'indabax_app/js/about_page_animation.js' %}"></script>
+
 {% endblock %}
