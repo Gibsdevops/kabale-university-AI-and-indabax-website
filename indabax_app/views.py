@@ -15,6 +15,7 @@ from .models import (EventImage,
 from datetime import date
 from django.db.models import Q
 import json
+from django.shortcuts import render
 from django.views.generic import ListView
 
 
@@ -117,3 +118,20 @@ class PhotosView(ListView):
         Returns all published albums, ordered from newest to oldest.
         """
         return Album.objects.filter(is_published=True).order_by('-id')
+
+
+def search(request):
+    query = request.GET.get('q')
+    results = []
+
+    if query:
+        # Search the Leader model for names containing the query (case-insensitive)
+        results = Leader.objects.filter(
+            Q(name__icontains=query) | Q(position__icontains=query)
+        ).distinct()
+
+    context = {
+        'query': query,
+        'results': results
+    }
+    return render(request, 'indabax_app/search_results.html', context)

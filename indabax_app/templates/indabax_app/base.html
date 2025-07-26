@@ -63,6 +63,10 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'indabax_app:leaders' %}">Leaders</a>
           </li>
+          <form class="d-flex ms-lg-3" role="search" action="{% url 'indabax_app:search' %}" method="get">
+                <input class="form-control me-2" type="search" placeholder="Search Leaders..." aria-label="Search" name="q">
+                <button class="btn btn-outline-light" type="submit">Search</button>
+            </form>
           <li class="nav-item ms-lg-3">
             <a class="nav-link btn btn-outline-light" href="{% url 'kuai_club:home' %}">Kabale University AI club</a>
           </li>

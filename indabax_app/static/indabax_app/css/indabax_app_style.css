@@ -36,80 +36,88 @@ body {
 
 /* Navbar styles - MERGED & Adjusted for Bootstrap 5 */
 /* The base.html uses Bootstrap's .navbar classes, so we style those directly */
-.navbar {
-    /* Prioritize new dark blue if you want a new distinct look */
-    background-color: var(--indabax-dark-blue) !important; 
-    /* Or if you want to keep your original orange: background-color: var(--old-navbar-bg) !important; */
+/* --- Consolidated Navbar Styles --- */
 
-    /* padding: 10px 0;  */
+.navbar {
+    /* Retaining your existing background, padding, and layout properties */
+    background-color: var(--indabax-dark-blue) !important;
     padding-top: 15px;
     padding-bottom: 15px;
-
-    /* Keep your padding */
-    border-bottom: 1px solid #ccc; /* Keep your border */
-    position: relative; /* Keep sticky */
-    top: 0; /* Keep top */
-    z-index: 999; /* Keep z-index */
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); /* Keep shadow */
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    z-index: 999;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 }
 
-/* Bootstrap .navbar-brand and .nav-link styling for text color and hover */
 .navbar-brand, .navbar-nav .nav-link {
-    color: white !important; /* Forces white text on dark navbar */
+    /* Your existing text color */
+    color: white !important;
 }
+
+/* Updated styling for the navigation links to add a dynamic hover effect */
+.navbar-nav .nav-link {
+    position: relative;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 10px 15px;
+}
+
+/* The yellow line that appears on hover */
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 80%;
+    height: 2px;
+    background-color: var(--indabax-primary-yellow);
+    transition: transform 0.3s ease;
+}
+
 .navbar-nav .nav-link:hover {
-    color: var(--indabax-primary-yellow) !important; /* Yellow hover for nav links */
+    color: var(--indabax-primary-yellow) !important;
 }
-.navbar .btn-outline-light { /* Style for the "Back to Main Site" button */
+
+.navbar-nav .nav-link:hover::after {
+    transform: translateX(-50%) scaleX(1); /* Expands the line on hover */
+}
+
+/* Style for the search form and input field */
+.navbar .search-form {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.navbar .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    box-shadow: none;
+}
+
+/* Style for the "Search" button */
+.navbar .btn-outline-light {
     border-color: white;
     color: white;
 }
+
 .navbar .btn-outline-light:hover {
     background-color: white;
     color: var(--indabax-dark-blue);
 }
 
-
-/* Your original .nav-links classes - these might be redundant if using Bootstrap's default nav structure. */
-/* If you use Bootstrap's standard navbar, you might not need these specific selectors */
-/* If you still have custom nav HTML that uses these classes, keep them but be aware of overlaps */
-.nav-links {
-    display: flex;
-    justify-content: center;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    gap: 30px;
-}
-
-.nav-links li {
-    display: inline-block;
-}
-
-.nav-links a {
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 16px;
-    color: #333; /* This will be overridden by .navbar-nav .nav-link if used in Bootstrap nav */
-    padding: 6px 12px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-.nav-links a:hover {
-    background-color: #333;
-    color: #fff;
-}
-
-/* Your original Layout container - if used for something other than main navbar, keep it */
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-
+/* Your existing logo and media query styles are good to keep */
 /* Style for the nav bar logos */
 .nav-logo {
     height: 80px; /* Adjust as needed, a good size for a circle */

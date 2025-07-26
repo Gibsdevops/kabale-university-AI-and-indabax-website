@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import HomePageView, AboutPageView, TutorialsPageView, LeadersPageView, AllLeadersPageView, PhotosView
+from . import views
 
 app_name = 'indabax_app'
 
@@ -10,6 +11,6 @@ urlpatterns = [
     path('leaders/', LeadersPageView.as_view(), name='leaders'),
     path('leaders/all/', AllLeadersPageView.as_view(), name='all_leaders'),
     path('photos/', PhotosView.as_view(), name='photos'),
-
+    path('search/', views.search, name='search'),
 ]
 
