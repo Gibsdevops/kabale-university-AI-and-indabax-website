@@ -216,13 +216,44 @@ body {
 }
 
 
-
-
-/* General Headings and Text (NEW classes for consistent branding) */
+/*
+ * This is the definitive styling for all section headings.
+ * Use this block to ensure consistent styling across the entire site.
+ */
 .indabax-heading {
-    color: var(--indabax-dark-blue);
+    color: #ff7f00; /* Sets the heading color to orange */
+    
+    /* Font and sizing */
     font-weight: bold;
     font-size: 3rem;
+    
+    /* Rotation animation setup */
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+/* This is the hover effect that makes the heading rotate slightly */
+.indabax-heading:hover {
+    transform: rotateX(10deg);
+}
+
+/* Adjust font size for smaller screens */
+@media (max-width: 768px) {
+    .indabax-heading {
+        font-size: 2.2rem;
+    }
+}
+/* This is the hover effect that makes the heading rotate slightly */
+.indabax-heading:hover {
+    transform: rotateX(10deg);
+}
+
+/* For smaller screens, you might want to adjust the font size */
+@media (max-width: 768px) {
+    .indabax-heading {
+        font-size: 2.2rem;
+    }
 }
 
 .indabax-subheading {
@@ -647,11 +678,6 @@ footer p {
 }
 
 
-/* Re-confirm general styles (already in your CSS, but crucial) */
-.indabax-heading {
-    color: #212529; /* Dark text for headings */
-}
-
 .indabax-subheading {
     color: #28a745; /* Green for subheadings (adjust as needed) */
 }
@@ -717,12 +743,6 @@ footer p {
     color: #28a745; /* Bootstrap Green */
 }
 
-/* Optional: More advanced gradient effect per letter (requires more complex JS) */
-/* .multi-color-letter {
-    background: linear-gradient(to right, #fd7e14, #ffc107);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-} */
 
 /* Styling for the main introductory paragraph */
 .indabax-intro-section {
@@ -861,26 +881,6 @@ footer p {
     color: hsl(125, 90%, 30%); /* Dark text on hover */
 }
 
-/* Ensure the events carousel takes full width */
-#eventsCarousel {
-    width: 100%;
-    margin: 0 auto; /* Center the carousel */
-    max-width: 1200px; /* Optional: Limit max width for large screens */
-}
-
-/* Optional: Style for event carousel controls if you want them different from main hero */
-#eventsCarousel .carousel-control-prev-icon,
-#eventsCarousel .carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.3); /* Slightly less prominent */
-    border-radius: 50%;
-    padding: 12px;
-}
-
-
-#eventsCarousel .carousel-control-prev,
-#eventsCarousel .carousel-control-next {
-    width: 4%; /* Slightly narrower controls */
-}
 
 /* indabax_app_style.css */
 
@@ -927,6 +927,216 @@ footer p {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
     font-size: 1.25rem;
 }
+
+
+/* Custom Styles for Past Events Slider */
+
+/* Custom Styles for ALL Event Cards */
+
+.indabax-event-card {
+    border: 3px solid #ff7f00; /* A nice shade of orange */
+    transition: all 0.3s ease-in-out; /* Add a smooth transition */
+}
+
+/* Optional: Add a hover effect for a better user experience */
+.indabax-event-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* A more pronounced shadow */
+    transform: translateY(-5px); /* Slightly lift the card */
+}
+
+/* Ensure images fit the card without distortion */
+.event-image-fit {
+    width: 100%;
+    height: 200px; /* You can adjust this fixed height to your liking */
+    object-fit: cover; /* This is the key! It crops the image to fit the container */
+    object-position: center; /* Centers the image within the container */
+}
+
+/* Style the carousel arrows to make them more visible */
+/* This will target both the upcoming and past event sliders */
+.indabax-events-section .carousel-control-prev,
+.indabax-events-section .carousel-control-next,
+.indabax-past-events-section-slider .carousel-control-prev,
+.indabax-past-events-section-slider .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    opacity: 1; 
+}
+
+/* Change the icon color of the arrows for both sliders */
+.indabax-events-section .carousel-control-prev-icon,
+.indabax-events-section .carousel-control-next-icon,
+.indabax-past-events-section-slider .carousel-control-prev-icon,
+.indabax-past-events-section-slider .carousel-control-next-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ff7f00'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e");
+}
+
+.indabax-events-section .carousel-control-next-icon,
+.indabax-past-events-section-slider .carousel-control-next-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ff7f00'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+/* --- Leader Flip Card Styles --- */
+
+.leader-card-flip {
+    background-color: transparent;
+    width: 100%;
+    height: 350px; /* Adjust height as needed */
+    perspective: 1000px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.card-flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    border-radius: 8px;
+}
+
+.leader-card-flip:hover .card-flip-inner {
+    transform: rotateY(180deg);
+}
+
+.card-flip-front,
+.card-flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-flip-front {
+    background-color: #f8f9fa;
+    color: #343a40;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.card-flip-front .leader-img {
+    width: 100%;
+    height: 250px; /* Fixed height for the image */
+    object-fit: cover;
+    object-position: top; /* Important for good headshots */
+}
+
+.card-flip-front .card-body-front {
+    padding: 1rem;
+}
+
+.card-flip-front .card-title-front {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.card-flip-front .card-text-front {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.card-flip-back {
+    background-color: #ff7f00; /* The orange color you like */
+    color: white;
+    transform: rotateY(180deg);
+    padding: 1.5rem;
+    justify-content: center;
+}
+
+.card-flip-back .card-body-back {
+    text-align: center;
+}
+
+.card-flip-back .card-title-back {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.card-flip-back .card-text-back {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-flip-back .social-icons a {
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease-in-out;
+}
+
+.card-flip-back .social-icons a:hover {
+    color: #343a40; /* Dark hover color */
+}
+
+/* --- Leader Position Text Color --- */
+/* This targets the position text on the front of the leader card */
+.card-flip-front .card-text-front {
+    color: #ff7f00 !important; /* Forces the position text to be orange */
+    font-weight: bold; /* Make the text bold for better visibility */
+}s
+
+/* Custom CSS for the Orange Button */
+.orange-btn {
+    background-color: #ff7f00; /* Your orange color */
+    border-color: #ff7f00;
+    color: white; /* Ensure text is white for visibility */
+    transition: background-color 0.3s ease;
+}
+
+.orange-btn:hover {
+    background-color: #e06a00; /* A slightly darker orange on hover */
+    border-color: #e06a00;
+}
+
+/* --- Photo Gallery Styles --- */
+
+/* Styles for the container of each album */
+.indabax-album-card {
+    /* Use a similar card style to other sections */
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow: hidden; /* Ensures the iframe corners are rounded */
+}
+
+/* Add a subtle hover effect to the cards */
+.indabax-album-card:hover {
+    transform: translateY(-5px); /* Lifts the card slightly */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* Stronger shadow on hover */
+}
+
+/* Style for the clickable album cards */
+.indabax-album-link {
+    text-decoration: none; /* Remove the default link underline */
+    color: inherit; /* Inherit the text color from the parent element */
+}
+
+/* Add a hover effect to show that the card is clickable */
+.indabax-album-link:hover .indabax-album-card {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Ensure text on all leaders page is visible */
+/* Since the body is likely a white background, this ensures text is readable */
+
 
 /* Your other CSS rules... */
 

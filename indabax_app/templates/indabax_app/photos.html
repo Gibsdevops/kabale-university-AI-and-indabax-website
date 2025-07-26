@@ -1,0 +1,30 @@
+{% extends 'indabax_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="indabax-heading text-center mb-4">Our Gallery</h1>
+    <p class="text-center lead">
+        Explore a collection of moments from our weekly sessions and events.
+    </p>
+
+    <div class="row">
+        {% for album in albums %}
+        <div class="col-md-6 mb-4">
+            <a href="{{ album.link }}" target="_blank" class="indabax-album-link">
+                <div class="card h-100 indabax-album-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ album.title }}</h5>
+                        <p class="card-text">{{ album.description }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No albums have been added yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

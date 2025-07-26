@@ -1,28 +1,76 @@
 {% extends "indabax_app/base.html" %}
+{% load static %}
+
 {% block content %}
-<h2>Current Leaders</h2>
-<div class="leaders">
-  {% for leader in current_leaders %}
-    <div class="leader-card">
-      <img src="{{ leader.photo.url }}" alt="{{ leader.name }}" width="150">
-      <h4>{{ leader.position }}</h4>
-      <p>{{ leader.name }}</p>
-      <p>Term: {{ leader.term_start|date:"Y" }} - Present</p>
+
+<div class="container my-5">
+    <h1 class="text-center mb-5 display-4 fw-bold indabax-heading">Our Current Leaders</h1>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {% for leader in current_leaders %}
+        <div class="col">
+            <div class="leader-card-flip">
+                <div class="card-flip-inner">
+                    <div class="card-flip-front">
+                        <img src="{{ leader.photo.url }}" class="card-img-top leader-img" alt="{{ leader.name }}">
+                        <div class="card-body-front text-center">
+                            <h5 class="card-title-front">{{ leader.name }}</h5>
+                            <p class="card-text-front text-muted">{{ leader.position }}</p>
+                        </div>
+                    </div>
+                    <div class="card-flip-back">
+                        <div class="card-body-back">
+                            <h5 class="card-title-back">{{ leader.position }}</h5>
+                            <p class="card-text-back">{{ leader.bio }}</p>
+                            <div class="social-icons mt-3">
+                                {% if leader.linkedin_url %}<a href="{{ leader.linkedin_url }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+                                {% if leader.twitter_url %}<a href="{{ leader.twitter_url }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+                                {% if leader.github_url %}<a href="{{ leader.github_url }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-  {% endfor %}
+
+    <hr class="my-5">
+
+    <h2 class="text-center mb-5 display-4 fw-bold indabax-heading">Past Leaders</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {% for leader in past_leaders %}
+        <div class="col">
+            <div class="leader-card-flip">
+                <div class="card-flip-inner">
+                    <div class="card-flip-front">
+                        <img src="{{ leader.photo.url }}" class="card-img-top leader-img" alt="{{ leader.name }}">
+                        <div class="card-body-front text-center">
+                            <h5 class="card-title-front">{{ leader.name }}</h5>
+                            <p class="card-text-front text-muted">{{ leader.position }}</p>
+                        </div>
+                    </div>
+                    <div class="card-flip-back">
+                        <div class="card-body-back">
+                            <h5 class="card-title-back">{{ leader.position }}</h5>
+                            <p class="card-text-back">{{ leader.bio }}</p>
+                            <div class="social-icons mt-3">
+                                {% if leader.linkedin_url %}<a href="{{ leader.linkedin_url }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+                                {% if leader.twitter_url %}<a href="{{ leader.twitter_url }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+                                {% if leader.github_url %}<a href="{{ leader.github_url }}" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# Moved the button here, after both sections #}
+    <div class="text-center my-5">
+        <a href="{% url 'indabax_app:all_leaders' %}" class="btn btn-primary btn-lg orange-btn">View All Leaders <i class="fas fa-arrow-right ms-2"></i></a>
+    </div>
 </div>
 
-<hr>
-
-<h2>Past Leaders</h2>
-<div class="leaders">
-  {% for leader in past_leaders %}
-    <div class="leader-card">
-      <img src="{{ leader.photo.url }}" alt="{{ leader.name }}" width="150">
-      <h4>{{ leader.position }}</h4>
-      <p>{{ leader.name }}</p>
-      <p>Term: {{ leader.term_start|date:"Y" }} - {{ leader.term_end|date:"Y" }}</p>
-    </div>
-  {% endfor %}
-</div>
 {% endblock %}

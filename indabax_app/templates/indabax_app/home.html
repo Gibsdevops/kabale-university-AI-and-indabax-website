@@ -162,9 +162,9 @@
                                 <div class="col-12 col-md-6"> {# Each card takes full width on small, half on medium #}
                                     <div class="card h-100 shadow-sm indabax-event-card">
                                         {% if event.image %}
-                                            <img src="{{ event.image.url }}" class="card-img-top indabax-event-img" alt="{{ event.title }}">
+                                            <img src="{{ event.image.url }}" class="card-img-top indabax-event-img event-image-fit" alt="{{ event.title }}">
                                         {% else %}
-                                            <img src="{% static 'indabax_app/images/default-event.jpg' %}" class="card-img-top indabax-event-img" alt="Default Event Image">
+                                            <img src="{% static 'indabax_app/images/default-event.jpg' %}" class="card-img-top indabax-event-img event-image-fit" alt="Default Event Image">
                                         {% endif %}
                                         <div class="card-body d-flex flex-column">
                                             <h5 class="card-title indabax-card-title">{{ event.title }}</h5>
@@ -223,32 +223,77 @@
         </div>
     {% endif %}
 
-    {# --- Past Events Section (New & Dynamic - Optional, can be moved to a separate page if many) --- #}
-    {% if past_events %}
-    <section class="my-5 py-5 indabax-past-events-section">
-        <h2 class="text-center mb-5 display-4 fw-bold indabax-heading">Past Events</h2>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+   
+  
+       {# --- Past Events Section Slider (New & Dynamic) --- #}
+{% if past_events %}
+<section class="my-5 py-5 indabax-past-events-section-slider">
+    <h2 class="text-center mb-5 display-4 fw-bold indabax-heading">Past Events</h2>
+    
+    <div id="pastEventsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="7000">
+        <div class="carousel-inner">
             {% for event in past_events %}
-            <div class="col">
-                <div class="card h-100 shadow-sm indabax-event-card past-event-card">
-                    {% if event.image %}
-                        <img src="{{ event.image.url }}" class="card-img-top indabax-event-img" alt="{{ event.title }}">
-                    {% else %}
-                        <img src="{% static 'indabax_app/images/default-past-event.jpg' %}" class="card-img-top indabax-event-img" alt="Default Past Event Image">
-                    {% endif %}
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title indabax-card-title">{{ event.title }}</h5>
-                        <p class="card-text indabax-text-sm mb-2"><i class="far fa-calendar-alt me-2"></i>{{ event.date|date:"F d, Y" }}</p>
-                        {% if event.location %}<p class="card-text indabax-text-sm mb-2"><i class="fas fa-map-marker-alt me-2"></i>{{ event.location }}</p>{% endif %}
-                        <p class="card-text indabax-text-short">{{ event.description|truncatechars:100 }}</p>
-                        <a href="#" class="btn btn-outline-secondary mt-auto disabled">View Details</a> {# Or link to a detail page if you create one #}
+                {% if forloop.counter0|divisibleby:2 %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row justify-content-center g-4">
+                {% endif %}
+                            <div class="col-12 col-md-6">
+                                <div class="card h-100 shadow-sm indabax-event-card past-event-card">
+                                    {% if event.image %}
+                                        <img src="{{ event.image.url }}" class="card-img-top indabax-event-img event-image-fit" alt="{{ event.title }}">
+                                    {% else %}
+                                        <img src="{% static 'indabax_app/images/default-past-event.jpg' %}" class="card-img-top indabax-event-img event-image-fit" alt="Default Past Event Image">
+                                    {% endif %}
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title indabax-card-title">{{ event.title }}</h5>
+                                        <p class="card-text indabax-text-sm mb-2"><i class="far fa-calendar-alt me-2"></i>{{ event.date|date:"F d, Y" }}</p>
+                                        {% if event.location %}<p class="card-text indabax-text-sm mb-2"><i class="fas fa-map-marker-alt me-2"></i>{{ event.location }}</p>{% endif %}
+                                        <p class="card-text indabax-text-short">{{ event.description|truncatechars:100 }}</p>
+                                        <a href="#" class="btn btn-outline-secondary mt-auto disabled">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                {% if forloop.counter|divisibleby:2 or forloop.last %}
+                        </div> {# /row #}
+                    </div> {# /carousel-item #}
+                {% endif %}
+            {% empty %}
+                <div class="carousel-item active">
+                    <div class="text-center py-4">
+                        <p class="lead text-muted">No past events to display.</p>
                     </div>
                 </div>
-            </div>
             {% endfor %}
         </div>
-    </section>
-    {% endif %}
+        {# Carousel Controls for Past Events #}
+        {% if past_events|length > 2 %} {# Only show controls if there's more than one slide #}
+        <button class="carousel-control-prev" type="button" data-bs-target="#pastEventsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#pastEventsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        {% endif %}
+        {# Carousel Indicators for Past Events #}
+        {% if past_events|length > 2 %}
+        <div class="carousel-indicators">
+            {% for event in past_events %}
+                {% if forloop.counter0|divisibleby:2 %}
+                    <button type="button" data-bs-target="#pastEventsCarousel" 
+                            data-bs-slide-to="{{ forloop.counter0|divide_int:2 }}" 
+                            {% if forloop.first %}class="active" aria-current="true"{% endif %} 
+                            aria-label="Slide {{ forloop.counter0|divide_int:2|add:1 }}"></button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+ 
+    
 
     {# --- Partners Section (New & Dynamic) --- #}
     {% if partners %}

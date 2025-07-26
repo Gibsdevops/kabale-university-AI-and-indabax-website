@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HomePageView, AboutPageView, TutorialsPageView, LeadersPageView
+from .views import HomePageView, AboutPageView, TutorialsPageView, LeadersPageView, AllLeadersPageView, PhotosView
 
 app_name = 'indabax_app'
 
@@ -8,5 +8,8 @@ urlpatterns = [
     path('about/', AboutPageView.as_view(), name='about'),
     path('tutorials/', TutorialsPageView.as_view(), name='tutorials'),
     path('leaders/', LeadersPageView.as_view(), name='leaders'),
+    path('leaders/all/', AllLeadersPageView.as_view(), name='all_leaders'),
+    path('photos/', PhotosView.as_view(), name='photos'),
+
 ]
 

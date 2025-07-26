@@ -9,7 +9,10 @@ from .models import ( EventImage,
                      Event, 
                      Partner,
                      GalleryImage, 
-                     HeroBackgroundImage,)
+                     HeroBackgroundImage,
+                     Album)
+
+admin.site.register(Album)
 
 @admin.register(HomePageContent)
 class HomePageContentAdmin(admin.ModelAdmin):
@@ -47,11 +50,12 @@ class TutorialAdmin(admin.ModelAdmin):
     list_filter = ('category',)
     search_fields = ('title',)
 
-@admin.register(Leader)
 class LeaderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'position', 'term_start', 'term_end')
-    list_filter = ('position',)
-    search_fields = ('name',)
+    list_display = ('name', 'position', 'term_start', 'is_current') # Corrected list_display
+    list_filter = ('is_current', 'position')
+    search_fields = ('name', 'position')
+
+admin.site.register(Leader, LeaderAdmin)
 
 
 # Register AboutContent and its inlines
@@ -86,3 +90,4 @@ class GalleryImageAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
 admin.site.register(HeroBackgroundImage)
+

@@ -129,13 +129,26 @@ class Leader(models.Model):
     position = models.CharField(max_length=50, choices=POSITION_CHOICES)
     photo = models.ImageField(upload_to='leaders/')
     term_start = models.DateField()
-    term_end = models.DateField(null=True, blank=True)
+    #term_end = models.DateField(null=True, blank=True)
 
-    def is_current(self):
-        return self.term_end is None or self.term_end >= date.today()
+    # --- The updated `is_current` field ---
+    is_current = models.BooleanField(
+        default=True,
+        help_text="Check this box if the person is a current leader. Uncheck it for past leaders."
+    )
+    
+    # --- New Fields (no changes here from the last step) ---
+    bio = models.TextField(blank=True, help_text="A brief statement or fun fact about the leader.")
+    linkedin_url = models.URLField(max_length=200, blank=True)
+    twitter_url = models.URLField(max_length=200, blank=True)
+    github_url = models.URLField(max_length=200, blank=True)
+    
 
     def __str__(self):
         return f"{self.name} ({self.position})"
+
+    class Meta:
+        ordering = ['-is_current', 'position']
     
 
 # -------- About Page (New Model) --------
@@ -217,3 +230,14 @@ class HeroBackgroundImage(models.Model):
         ordering = ['order']
         verbose_name = "Hero Background Image"
         verbose_name_plural = "Hero Background Images"
+
+
+
+class Album(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    link = models.URLField(max_length=400, help_text="Paste the shareable link from Google Photos here.")
+    is_published = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
