@@ -11,16 +11,32 @@
 
     {% if results %}
         <div class="row">
-            {% for leader in results %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 indabax-search-card">
-                    <img src="{{ leader.image.url }}" class="card-img-top" alt="{{ leader.name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ leader.name }}</h5>
-                        <p class="card-text text-muted">{{ leader.position }}</p>
-                    </div>
+            {% for result in results %}
+                <div class="col-md-4 mb-4">
+                    {% if result.position %}
+                        <div class="card h-100 indabax-search-card">
+                            <img src="{{ result.image.url }}" class="card-img-top" alt="{{ result.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ result.name }}</h5>
+                                <p class="card-text text-muted">{{ result.position }}</p>
+                                <p class="card-text">{{ result.description|truncatechars:100 }}</p>
+                                <a href="{% url 'indabax_app:leaders' %}" class="btn btn-outline-dark mt-auto">View all leaders</a>
+                            </div>
+                        </div>
+                    {% elif result.link %}
+                        <a href="{{ result.link }}" target="_blank" class="indabax-album-link">
+                            <div class="card h-100 indabax-album-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ result.title }}</h5>
+                                    <p class="card-text">{{ result.description|truncatechars:100 }}</p>
+                                    <div class="mt-auto">
+                                        <span class="btn btn-warning">View Album <i class="fas fa-external-link-alt"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
                 </div>
-            </div>
             {% endfor %}
         </div>
     {% else %}

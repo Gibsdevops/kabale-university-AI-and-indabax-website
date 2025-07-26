@@ -37,7 +37,7 @@ body {
 /* Navbar styles - MERGED & Adjusted for Bootstrap 5 */
 /* The base.html uses Bootstrap's .navbar classes, so we style those directly */
 /* --- Consolidated Navbar Styles --- */
-
+/* var(--indabax-dark-blue) !important */
 .navbar {
     /* Retaining your existing background, padding, and layout properties */
     background-color: var(--indabax-dark-blue) !important;
@@ -83,40 +83,57 @@ body {
     transform: translateX(-50%) scaleX(1); /* Expands the line on hover */
 }
 
-/* Style for the search form and input field */
-.navbar .search-form {
-    display: flex;
+/* --- Stylish Search Form --- */
+
+/* Style the search form container */
+.navbar .d-flex {
+    /* Aligns the input and button nicely */
     align-items: center;
 }
 
+/* Style the search input field */
 .navbar .form-control {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.15); /* Slightly more visible background */
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
-    transition: background-color 0.3s ease;
+    border-radius: 20px; /* Rounded corners */
+    padding: 8px 15px; /* More padding for a better feel */
+    transition: all 0.3s ease;
+    width: 200px; /* A fixed width for consistency */
+}
+
+/* Change the background color and border on focus */
+.navbar .form-control:focus {
+    background-color: white;
+    color: var(--indabax-dark-blue);
+    border-color: var(--indabax-primary-yellow);
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
 }
 
 .navbar .form-control::placeholder {
     color: rgba(255, 255, 255, 0.6);
 }
 
-.navbar .form-control:focus {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-color: white;
-    box-shadow: none;
+.navbar .form-control:focus::placeholder {
+    color: var(--indabax-dark-blue); /* Placeholder changes color on focus */
 }
 
-/* Style for the "Search" button */
+/* Style the search button */
 .navbar .btn-outline-light {
     border-color: white;
     color: white;
+    border-radius: 20px; /* Match the rounded input */
+    padding: 8px 12px; /* Adjust padding for the icon */
+    margin-left: -40px; /* Overlap the button with the input for a compact look */
+    position: relative;
+    z-index: 10;
 }
 
 .navbar .btn-outline-light:hover {
     background-color: white;
     color: var(--indabax-dark-blue);
+    border-color: white;
 }
-
 /* Your existing logo and media query styles are good to keep */
 /* Style for the nav bar logos */
 .nav-logo {

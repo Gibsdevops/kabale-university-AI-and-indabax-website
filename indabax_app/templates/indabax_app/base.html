@@ -18,6 +18,10 @@
     {# Font Awesome for Icons (add this line) #}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
+     {# Add the favicon link here #}
+    <link rel="icon" type="image/x-icon" href="{% static 'indabax_app/images/indaba.ico' %}">
+
+
 </head>
 <body>
     {# INDABAX APP UNIQUE NAVIGATION BAR #}
@@ -63,13 +67,17 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'indabax_app:leaders' %}">Leaders</a>
           </li>
-          <form class="d-flex ms-lg-3" role="search" action="{% url 'indabax_app:search' %}" method="get">
-                <input class="form-control me-2" type="search" placeholder="Search Leaders..." aria-label="Search" name="q">
-                <button class="btn btn-outline-light" type="submit">Search</button>
-            </form>
-          <li class="nav-item ms-lg-3">
-            <a class="nav-link btn btn-outline-light" href="{% url 'kuai_club:home' %}">Kabale University AI club</a>
-          </li>
+
+          <form class="d-flex ms-lg-3 me-lg-3" role="search" action="{% url 'indabax_app:search' %}" method="get">
+            <input class="form-control me-2" type="search" placeholder="Search Leaders..." aria-label="Search" name="q">
+            <button class="btn btn-outline-light" type="submit">
+            <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+          <li class="nav-item">
+                <a class="nav-link btn btn-outline-light" href="{% url 'kuai_club:home' %}">Kabale University AI club</a>
+            </li>
         </div>
       </ul>
     </div>

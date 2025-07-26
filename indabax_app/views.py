@@ -122,16 +122,24 @@ class PhotosView(ListView):
 
 def search(request):
     query = request.GET.get('q')
-    results = []
+    all_results = []
 
     if query:
-        # Search the Leader model for names containing the query (case-insensitive)
-        results = Leader.objects.filter(
+        # Search the Leader model for matching names and positions
+        leader_results = Leader.objects.filter(
             Q(name__icontains=query) | Q(position__icontains=query)
-        ).distinct()
+        )
+        
+        # Search the Album model for matching titles and descriptions
+        album_results = Album.objects.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
+
+        # Combine all the querysets into a single list
+        all_results = list(leader_results) + list(album_results)
 
     context = {
         'query': query,
-        'results': results
+        'results': all_results
     }
     return render(request, 'indabax_app/search_results.html', context)
