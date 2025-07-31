@@ -1,7 +1,7 @@
 {% load static %}
 
 {% block content %}
-<section class="news-slider-section">
+<section id="news-section" class="news-slider-section">
   <div class="background-slider">
     {% for item in news %}
       {% if item.background_image %}
@@ -18,15 +18,18 @@
 
     <div class="news-slider-container">
       {% for item in news %}
-        <div class="news-card {% if forloop.first %}active{% endif %}">
-          {% if item.image %}
-            <img src="{{ item.image.url }}" alt="{{ item.title }}">
-          {% endif %}
-          <div class="news-text">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.summary|truncatechars:150 }}</p>
-            <div class="news-meta">
-              <span class="news-date">{{ item.publish_date|date:"F j, Y" }}</span>
+        <!-- Wrap with id for anchor linking -->
+        <div id="news-section-{{ item.slug }}" class="news-card-wrapper">
+          <div class="news-card {% if forloop.first %}active{% endif %}">
+            {% if item.image %}
+              <img src="{{ item.image.url }}" alt="{{ item.title }}">
+            {% endif %}
+            <div class="news-text">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.summary|truncatechars:150 }}</p>
+              <div class="news-meta">
+                <span class="news-date">{{ item.publish_date|date:"F j, Y" }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -45,4 +48,18 @@
     </div>
   </div>
 </section>
+
+<!-- Scroll to anchor on page load -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hash = window.location.hash;
+    if (hash) {
+      const target = document.querySelector(hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+</script>
+
 {% endblock %}

@@ -1,31 +1,45 @@
-{% extends "layouts/base.html" %} {# Ensure this path is correct #}
+{% extends 'kuai_club/base.html' %}
+{% load static %}
+
+{% block title %}Club Resources{% endblock title %}
 
 {% block content %}
-<div class="container my-5">
-    <h1 class="mb-4">{{ page_title }}</h1>
-
-    <div class="row">
-        {% for resource in resources %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ resource.title }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ resource.get_resource_type_display }}</h6> {# Displays "Learning Resource" or "Tool / Download" #}
-                    <p class="card-text">{{ resource.description|truncatewords:25 }}</p>
-                    {% if resource.file %}
-                        <a href="{{ resource.file.url }}" class="btn btn-success btn-sm" download>Download File</a>
-                    {% elif resource.external_url %}
-                        <a href="{{ resource.external_url }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">View Resource</a>
-                    {% endif %}
-                    <a href="{% url 'kuai_club:resource_detail' resource.slug %}" class="btn btn-outline-info btn-sm ml-2">Details</a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <p>No resources available at the moment.</p>
-        </div>
-        {% endfor %}
+<section class="page-hero">
+    <div class="container text-center">
+        <h1>Valuable Resources</h1>
+        <p class="lead">Explore a curated collection of links, tools, and learning materials for AI enthusiasts.</p>
     </div>
-</div>
+</section>
+
+<section class="resources-section container section-spacing">
+    {% if resource_data %}
+        <div class="row">
+            {% for data in resource_data %}
+                <div class="col-md-6 col-lg-4 mb-4"> {# Grid layout for categories #}
+                    <div class="resource-category-card">
+                        <h2 class="category-title">{{ data.category.name }}</h2>
+                        {% if data.category.description %}
+                            <p class="category-description">{{ data.category.description }}</p>
+                        {% endif %}
+                        <ul class="resource-links-list">
+                            {% for link in data.links %}
+                                <li>
+                                    <a href="{{ link.url }}" target="_blank" class="resource-link">
+                                        <i class="fas fa-external-link-alt"></i> {{ link.title }}
+                                    </a>
+                                    {% if link.description %}
+                                        <p class="resource-link-description">{{ link.description }}</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">No resources are currently available. Check back soon!</p>
+    {% endif %}
+</section>
+
 {% endblock content %}

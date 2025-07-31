@@ -1,0 +1,138 @@
+{% load static %}
+
+<section id="contact-join" class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      
+      <!-- LEFT: Contact Information -->
+      <div class="col-md-6 mb-4">
+        <h3>Contact Us</h3>
+        <p><strong>Address:</strong> {{ contact_info.address }}</p>
+        <p><strong>Email:</strong> <a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></p>
+        <p><strong>Phone:</strong> <a href="tel:{{ contact_info.phone }}">{{ contact_info.phone }}</a></p>
+        
+        <!-- Social Links moved directly below contact info -->
+        <div class="social-links mt-4">
+          {% if contact_info.facebook_link %}
+            <a href="{{ contact_info.facebook_link }}" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+          {% endif %}
+          {% if contact_info.twitter_link %}
+            <a href="{{ contact_info.twitter_link }}" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+          {% endif %}
+          {% if contact_info.instagram_link %}
+            <a href="{{ contact_info.instagram_link }}" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+          {% endif %}
+          {% if contact_info.linkedin_link %}
+            <a href="{{ contact_info.linkedin_link }}" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+          {% endif %}
+        </div>
+      </div>
+    
+
+      <!-- RIGHT: Join the Club Form -->
+      <div class="col-md-6">
+        <h3>Join the Club</h3>
+           
+      
+      {% if messages %}
+        <div id="message-box">
+            {% for message in messages %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+        </div>
+      {% endif %}
+
+        <form method="post" action="{% url 'kuai_club:join_club_submit' %}">
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            <label for="full_name">Full Name</label>
+            <input type="text" class="form-control" id="full_name" name="full_name" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="phone">Contact Number</label>
+            <input type="text" class="form-control" id="phone" name="phone">
+          </div>
+          <div class="form-group mb-3">
+            <label for="profession">Profession / Role</label>
+            <input type="text" class="form-control" id="profession" name="profession">
+          </div>
+          <div class="form-group mb-3">
+            <label for="message">Why do you want to join?</label>
+            <textarea class="form-control" id="message" name="message" rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Join Now</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<script>
+  // If success message exists, clear the form
+  const messageBox = document.getElementById('message-box');
+  if (messageBox) {
+    const form = document.querySelector('#contact-join form');
+    if (form) {
+      form.reset();
+    }
+
+    // Optionally hide message after a few seconds
+    setTimeout(() => {
+      messageBox.style.display = 'none';
+    }, 5000);
+  }
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector('#contact-join form');
+    const messageBox = document.getElementById('message-box');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();  // Stop normal form submission
+
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Form submission failed");
+        return response.text();  // Expect a redirect or response
+      })
+      .then(data => {
+        // Reset the form
+        form.reset();
+
+        // Show success message
+        if (messageBox) {
+          messageBox.innerHTML = `<div class="alert alert-success">Thank you for joining! We'll be in touch soon.</div>`;
+          messageBox.style.display = 'block';
+
+          // Hide message after 5 seconds
+          setTimeout(() => {
+            messageBox.style.display = 'none';
+          }, 5000);
+        }
+
+        // Optionally scroll back to form
+        form.scrollIntoView({ behavior: "smooth" });
+      })
+      .catch(error => {
+        if (messageBox) {
+          messageBox.innerHTML = `<div class="alert alert-danger">Something went wrong. Please try again.</div>`;
+          messageBox.style.display = 'block';
+        }
+      });
+    });
+  });
+</script>

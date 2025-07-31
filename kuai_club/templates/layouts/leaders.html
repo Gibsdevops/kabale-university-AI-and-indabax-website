@@ -11,7 +11,7 @@
 
   {% for category, label, leaders in categories %}
     {% if leaders %}
-      <div class="category-section">
+      <div id="category-{{ category }}" class="category-section">
         <h3 class="category-title">{{ label }}</h3>
         <div class="leaders-grid">
           {% for leader in leaders %}

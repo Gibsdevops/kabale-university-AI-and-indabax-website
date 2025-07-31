@@ -1,11 +1,15 @@
-# kuai_club/views.py
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
+from django.contrib import messages
+from django.views.generic import TemplateView
 from datetime import datetime, timedelta
+from django.db import models
+from django.conf import settings
+from django.core.cache import cache
+from django.urls import reverse
 from .models import (
     SiteSettings,
     Aboutus,
@@ -18,37 +22,33 @@ from .models import (
     Project,
     HeroSlide,
     GalleryImage,
-    Partner # Ensure Partner is imported if you're using it in partner_list
+    Partner,
+    ClubJoinRequest,
+    ContactInfo
+
 )
 import logging
 
 logger = logging.getLogger(__name__)
 
-# --- EXISTING VIEWS (Ensure these are present as you had them) ---
-
 def home(request):
     site_settings = SiteSettings.objects.first()
+
+    # One main About Us entry
     about_page = Aboutus.objects.first()
-    about_pages = Aboutus.objects.all() 
-    
-    latest_news_for_dropdown = News.objects.filter(is_published=True).order_by('-publish_date')[:3] 
-    
-    # --- IMPORTANT: FOR EVENTS DROPDOWN ---
-    # Fetch only upcoming events for the dropdown, limited to a few (e.g., 3 or 5)
-    # Filter by is_published=True and event_start >= now()
-    # Order by event_start to get the soonest upcoming events first
-    events_for_dropdown = Event.objects.filter(is_published=True, event_start__gte=now()).order_by('event_start')[:3] 
-    # ^^^ Change [:3] to whatever number you want in the dropdown.
+
+    # All entries for menus/navigation
+    about_pages = Aboutus.objects.all()
 
     leader = Leader.objects.all().order_by('position')
+    news = News.objects.all().order_by('title')
+    events = Event.objects.all().order_by('title')
     research = Research.objects.all().order_by('title')
     resources = Resource.objects.all().order_by('title')
-    all_communities_outreach = CommunityOutreach.objects.all().order_by('order') 
-    featured_communities_outreach = CommunityOutreach.objects.filter(is_featured=True).order_by('order') 
+    community = CommunityOutreach.objects.all().order_by('title')
     projects = Project.objects.all().order_by('title')
     hero_slides = HeroSlide.objects.filter(is_active=True).order_by('order')
 
-    # Your existing upcoming_events and past_events are good for dedicated sections if used on homepage.
     upcoming_events = Event.objects.filter(is_published=True, event_start__gte=now()).order_by('event_start')[:6]
     past_events = Event.objects.filter(is_published=True, event_end__lt=now()).order_by('-event_start')[:6]
 
@@ -56,19 +56,30 @@ def home(request):
     current_leaders = Leader.objects.filter(start_date__lte=today, end_date__gte=today)
 
     gallery_images = GalleryImage.objects.order_by('-upload_date', '-id')[:20] 
+    partners = Partner.objects.filter(is_active=True).order_by('name')
+
+    # contact and join request information
+    contact_info = ContactInfo.objects.first()
+    join_requests = ClubJoinRequest.objects.all().order_by('-date_joined')  # or 'date_joined' depending on your field name
+    
 
     categories = [
         ('student', 'Student Leaders', current_leaders.filter(category='student')),
-        ('executive', 'Executive Board', current_leaders.filter(category='executive')),
         ('faculty', 'Faculty Mentors', current_leaders.filter(category='faculty')),
-    ]
-   
+]
+
+     
+    
+
+  
+    
     if upcoming_events and upcoming_events[0].background_image:
         background_image_url = upcoming_events[0].background_image.url
     else:
-        site_settings_for_bg = SiteSettings.objects.first() 
-        if site_settings_for_bg and site_settings_for_bg.background_image:
-            background_image_url = site_settings_for_bg.background_image.url
+        # Fallback to SiteSettings or a default static image
+        site_settings = SiteSettings.objects.first()
+        if site_settings and site_settings.background_image:
+            background_image_url = site_settings.background_image.url
         else:
             background_image_url = '/static/images/default-background.jpg'
 
@@ -77,152 +88,224 @@ def home(request):
         'about_page': about_page,
         'about_pages': about_pages,
         'leader': leader,
-        'news': latest_news_for_dropdown, # This is for the news dropdown
-        'events': events_for_dropdown, # Use this for the events dropdown
+        'news': news,
+        'events': events,
         'research': research,
         'resources': resources,
-        'all_communities_outreach': all_communities_outreach,
-        'featured_communities_outreach': featured_communities_outreach,
+        'community': community,
         'projects': projects,
         'hero_slides': hero_slides,
-        'upcoming_events': upcoming_events, # Keep if used elsewhere on home (e.g., a dedicated events section)
-        'past_events': past_events,       # Keep if used elsewhere on home
+        'upcoming_events': upcoming_events,
+        'past_events': past_events,
         'background_image_url': background_image_url,
+
         'categories': categories,
         'gallery_images': gallery_images, 
+        'partners': partners,
+        'contact_info': contact_info,
+        'join_requests': join_requests,
     })
 
-
-# --- CONTEXT PROCESSORS (These should NOT be in urls.py, but in settings.py TEMPLATES 'OPTIONS') ---
-# These functions should not be directly called by URLs.
-# If you have them defined in settings.py like:
-# 'kuai_club.views.about_pages_processor',
-# Then they are fine here. Just make sure they are not mapped in urls.py.
 def about_pages_processor(request):
     return {
         'about_pages': Aboutus.objects.all(),
-        'about_page': Aboutus.objects.first(), # for general 'About Us' link
+        'about_page': Aboutus.objects.first(),
     }
 
-def leaders_processor(request): # This is fine if used as a context processor
+class AboutView(TemplateView):
+    template_name = 'kuai_club/about.html'  # Adjust if your template path differs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            context['about'] = Aboutus.get_instance()
+        except Aboutus.DoesNotExist:
+            # Render a custom 404 page if no Aboutus instance exists
+            # Note: you can customize the template path for your 404 page
+            return render(self.request, '404.html', status=404)
+        return context
+
+def leaders_processor(request):
     leaders = Leader.objects.all().order_by('full_name')
     return {'leaders': leaders}
 
-def news_processor(request): # This is fine if used as a context processor
+from django.shortcuts import render
+from django.utils import timezone
+from collections import defaultdict
+import logging
+
+logger = logging.getLogger(__name__)
+
+def previous_leaders_by_category(request, category):
+    """Display previous leaders filtered by category"""
+    valid_categories = ['student', 'faculty']
+    
+    if category not in valid_categories:
+        return render(request, '404.html', status=404)
+    
+    today = timezone.now().date()
+    
+    # Get leaders whose term has ended (past leaders)
+    previous_leaders = Leader.objects.filter(
+        category=category,
+        end_date__isnull=False,  # Must have an end date
+        end_date__lt=today       # End date must be in the past
+    ).order_by('-year_served', '-end_date', 'full_name')
+    
+    logger.info(f"Found {previous_leaders.count()} previous leaders for category: {category}")
+    
+    # Debug: Log some details about the leaders found
+    for leader in previous_leaders[:5]:  # Log first 5 for debugging
+        logger.debug(f"Leader: {leader.full_name}, Year: {leader.year_served}, End Date: {leader.end_date}")
+    
+    # Group leaders by year_served
+    leaders_by_year = defaultdict(list)
+    for leader in previous_leaders:
+        leaders_by_year[leader.year_served].append(leader)
+    
+    # Sort years in descending order (most recent first)
+    sorted_years = sorted(leaders_by_year.keys(), reverse=True)
+    
+    # Create list of tuples for template iteration
+    leaders_by_year_list = [(year, leaders_by_year[year]) for year in sorted_years]
+    
+    logger.info(f"Years with previous leaders: {sorted_years}")
+    logger.info(f"Total years: {len(sorted_years)}")
+    
+    # If no leaders found, log additional debug info
+    if not previous_leaders.exists():
+        all_leaders = Leader.objects.filter(category=category)
+        logger.info(f"Total leaders in {category} category: {all_leaders.count()}")
+        for leader in all_leaders:
+            logger.info(f"  - {leader.full_name}: start={leader.start_date}, end={leader.end_date}, is_past={leader.is_past_leader}")
+    
+    context = {
+        'leaders_by_year_list': leaders_by_year_list,
+        'category': category.title(),
+        'total_previous_leaders': previous_leaders.count(),
+    }
+    
+    return render(request, 'kuai_club/previous_leaders_by_category.html', context)
+
+
+def current_leaders_by_category(request, category):
+    """Display current leaders filtered by category"""
+    valid_categories = ['student', 'faculty']
+    
+    if category not in valid_categories:
+        return render(request, '404.html', status=404)
+    
+    today = timezone.now().date()
+    
+    # Get current leaders (those whose term hasn't ended yet)
+    current_leaders = Leader.objects.filter(
+        category=category,
+        start_date__lte=today,  # Started on or before today
+    ).filter(
+        models.Q(end_date__isnull=True) |  # No end date (ongoing)
+        models.Q(end_date__gte=today)      # Or end date is today or future
+    ).order_by('-year_served', 'position', 'full_name')
+    
+    logger.info(f"Found {current_leaders.count()} current leaders for category: {category}")
+    
+    context = {
+        'leaders': current_leaders,
+        'category': category.title(),
+        'total_current_leaders': current_leaders.count(),
+    }
+    
+    return render(request, 'kuai_club/current_leaders_by_category.html', context)
+
+
+def leaders_by_category(request, category):
+    valid_categories = ['student', 'faculty']
+    if category not in valid_categories:
+        return render(request, '404.html', status=404)
+    
+    # Redirect to homepage section for the category
+    return redirect(f'/#category-{category}')
+
+
+def news_processor(request):
     news = News.objects.filter(is_published=True).order_by('-publish_date')
     return {'news': news}
 
-def events_processor(request): # This is fine if used as a context processor
+def events_processor(request):
     events = Event.objects.filter(is_published=True).order_by('event_start')
     return {'events': events}
-
-def research_processor(request): # This is fine if used as a context processor
-    research = Research.objects.all().order_by('title')
-    return {'research': research}
-
-def resource_processor(request): # This is fine if used as a context processor
-    resources = Resource.objects.all().order_by('title')
-    return {'resources': resources}
-
-def project_processor(request): # This is fine if used as a context processor
-    projects = Project.objects.filter(is_published=True).order_by('-publish_date')[:5] 
-    return {'projects': projects}
-
-
-def community_processor(request): # This is fine if used as a context processor
-    community = CommunityOutreach.objects.all().order_by('title')
-    return {'community': community}
-
-def hero_processor(request): # This is fine if used as a context processor
-    hero_slides = HeroSlide.objects.all().order_by('title')
-    return {'hero_slides': hero_slides}
-
-
-# --- END CONTEXT PROCESSORS ---
-
-
-# --- DETAIL VIEWS (Existing ones, ensure correct template paths) ---
-
-def about_detail(request, page_id):
-    try:
-        page = Aboutus.objects.get(id=page_id)
-    except Aboutus.DoesNotExist:
-        return render(request, '404.html', status=404)
-    return render(request, 'kuai_club/about.html', {'page': page}) # Corrected template path
-
-def leaders_list_view(request): # Renamed from leaders_list_all
-    site_settings = SiteSettings.objects.first() # Get site settings for base.html title
-    today = now().date()
-
-    # Fetch and filter current leaders by category
-    student_leaders = Leader.objects.filter(
-        category='student',
-        start_date__lte=today,
-        end_date__gte=today
-    ).order_by('full_name') # Added ordering for consistency
-
-    executive_board = Leader.objects.filter(
-        category='executive',
-        start_date__lte=today,
-        end_date__gte=today
-    ).order_by('full_name')
-
-    faculty_mentors = Leader.objects.filter(
-        category='faculty',
-        start_date__lte=today,
-        end_date__gte=today
-    ).order_by('full_name')
-
-    context = {
-        'site_settings': site_settings, # Pass site settings
-        'student_leaders': student_leaders,
-        'executive_board': executive_board,
-        'faculty_mentors': faculty_mentors,
-        'page_title': 'Our Leaders', # For template use
-    }
-    return render(request, 'kuai_club/leaders_list.html', context)
-
-
-def leader_detail(request, leader_id):
-    leader = get_object_or_404(Leader, id=leader_id) # Renamed variable from 'leaders' to 'leader' for clarity
-    return render(request, 'kuai_club/leader_detail.html', {'leader': leader}) # Corrected template path
 
 def event_page(request, page_id):
     try:
         page = Event.objects.get(id=page_id, is_published=True)
     except Event.DoesNotExist:
         return render(request, '404.html', status=404)
-    return render(request, 'kuai_club/event_detail.html', {'page': page}) # Corrected template name and path
+    return render(request, 'EventDetails.html', {'page': page})
+
+def research_processor(request):
+    research = Research.objects.all().order_by('title')
+    return {'research': research}
 
 def research_page(request, page_id):
-    try:
-        page = Research.objects.get(id=page_id)
-    except Research.DoesNotExist:
-        return render(request, '404.html', status=404)
-    return render(request, 'kuai_club/research_detail.html', {'page': page}) # Assuming research_detail.html is your actual detail page
+    page = get_object_or_404(Research, id=page_id)
 
-def resource_page(request, page_id): # This view's name 'resource_page' suggests it's for details
+    # Prepare category list by splitting and stripping commas
+    if page.category:
+        category_list = [tag.strip() for tag in page.category.split(',')]
+    else:
+        category_list = []
+
+    # Prepare researchers list by splitting and stripping commas
+    if page.researchers:
+        researchers_list = [r.strip() for r in page.researchers.split(',')]
+    else:
+        researchers_list = []
+
+    context = {
+        'page': page,
+        'category_list': category_list,
+        'researchers_list': researchers_list,
+    }
+
+    return render(request, 'kuai_club/research.html', context)
+
+
+def resource_processor(request):
+    resources = Resource.objects.all().order_by('title')
+    return {'resources': resources}
+
+def resource_page(request, page_id):
     try:
         page = Resource.objects.get(id=page_id)
     except Resource.DoesNotExist:
         return render(request, '404.html', status=404)
-    return render(request, 'kuai_club/resource_detail.html', {'page': page}) # Changed to resource_detail.html
+    return render(request, 'resource_list.html', {'page': page})
+
+def project_processor(request):
+    projects = Project.objects.all().order_by('title')
+    return {'projects': projects}
 
 def project_page(request, page_id):
     try:
         page = Project.objects.get(id=page_id, is_published=True)
     except Project.DoesNotExist:
         return render(request, '404.html', status=404)
-    return render(request, 'kuai_club/project_detail.html', {'page': page}) # Corrected path and name
+    return render(request, 'projects/project_detail.html', {'page': page})
+
+def community_processor(request):
+    community = CommunityOutreach.objects.all().order_by('title')
+    return {'community': community}
 
 def community_page(request, page_id):
     try:
         page = CommunityOutreach.objects.get(id=page_id)
     except CommunityOutreach.DoesNotExist:
         return render(request, '404.html', status=404)
-    return render(request, 'kuai_club/community_detail.html', {'page': page}) # Changed to community_detail.html
+    return render(request, 'indabax_app/home.html', {'page': page})
 
-# --- API VIEWS (Keep as they are) ---
+def hero_processor(request):
+    hero_slides = HeroSlide.objects.all().order_by('title')
+    return {'hero_slides': hero_slides}
+
 def api_projects(request):
     logger.info(f"API called with method: {request.method}")
     logger.info(f"GET parameters: {request.GET}")
@@ -274,9 +357,11 @@ def api_projects(request):
     logger.info(f"Returning response: {len(projects_list)} projects, has_next: {projects_page.has_next()}")
     return JsonResponse(response_data)
 
-
 @require_GET
 def api_events(request):
+    """
+    Events API endpoint - NOTE: This should match the URL pattern /api/events/
+    """
     event_type = request.GET.get('type', 'upcoming')
     page_number = int(request.GET.get('page', 1))
     per_page = request.GET.get('per_page')
@@ -320,6 +405,7 @@ def api_events(request):
 
     event_data = []
     for event in page:
+        # Calculate time until start for upcoming events
         time_until_start = None
         if event_type == 'upcoming' and event.event_start:
             time_diff = event.event_start - now()
@@ -368,118 +454,39 @@ def api_events(request):
         "total_count": queryset.count()
     })
 
-def event_api_view(request): # This can likely be removed if not used anywhere
+# Keep the old function name for backward compatibility
+def event_api_view(request):
     return api_events(request)
 
+from django.shortcuts import redirect
+from django.contrib import messages
+from .models import ClubJoinRequest
 
-# --- NEW LIST VIEWS (Add these new functions) ---
+def join_club_submit(request):
+    if request.method == 'POST':
+        full_name = request.POST.get('full_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        profession = request.POST.get('profession', '').strip()
+        message_text = request.POST.get('message', '').strip()
 
-def news_list(request):
-    all_news = News.objects.filter(is_published=True).order_by('-publish_date')
-    return render(request, 'kuai_club/news_list.html', {'all_news': all_news})
+        # Basic validation
+        if not full_name or not email or not phone or not profession or not message_text:
+            messages.error(request, '🚫 All fields are required. Please fill out the form completely.')
+            return redirect(request.META.get('HTTP_REFERER', '/'))
 
+        # Save the request
+        ClubJoinRequest.objects.create(
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            profession=profession,
+            message=message_text
+        )
 
-def news_detail(request, pk): # pk needs to be here
-    news_item = get_object_or_404(News, pk=pk) # This line correctly uses pk
-    context = {
-        'news_item': news_item,
-        'site_settings': SiteSettings.objects.first(),
-    }
-    return render(request, 'kuai_club/news_detail.html', context)
+        messages.success(request, '🎉 Thank you for joining! We’ll get back to you soon.')
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
-
-def event_list(request):
-    # Fetch all upcoming events (or filter by time if you want separate sections)
-    upcoming = Event.objects.filter(is_published=True, event_start__gte=now()).order_by('event_start')
-    # Fetch all past events
-    past = Event.objects.filter(is_published=True, event_end__lt=now()).order_by('-event_start') # Order by most recent past event first
-
-    context = {
-        'upcoming_events_list': upcoming, # Use distinct names to avoid confusion with homepage context
-        'past_events_list': past,
-        'site_settings': SiteSettings.objects.first(),
-    }
-    return render(request, 'kuai_club/event_list.html', context)
-
-
-def event_detail(request, pk):
-    event_item = get_object_or_404(Event, pk=pk)
-    context = {
-        'event_item': event_item,
-        'site_settings': SiteSettings.objects.first(),
-    }
-    return render(request, 'kuai_club/event_detail.html', context)
-
-# def project_list(request):
-#     projects = Project.objects.filter(is_published=True).order_by('-publish_date') # Assumed publish_date
-#     return render(request, 'kuai_club/project_list.html', {'projects': projects})
-
-def project_list(request):
-    # This view is for the main 'All Projects' page
-    all_projects = Project.objects.filter(is_published=True).order_by('-publish_date') 
-    context = {
-        'projects': all_projects, # This 'projects' is for the list page
-        'page_title': 'Our Projects'
-    }
-    return render(request, 'kuai_club/project_list.html', context)
-
-def project_detail(request, slug): # Changed from page_id to slug for cleaner URLs
-    # This view is for individual project detail pages
-    project_item = get_object_or_404(Project, slug=slug, is_published=True) # Use slug for lookup
-    context = {
-        'project_item': project_item,
-        'page_title': project_item.title
-    }
-    return render(request, 'kuai_club/project_detail.html', context)
-
-def research_list(request):
-    all_research = Research.objects.all().order_by('-publish_date') # Order as desired
-    context = {
-        'research_areas': all_research,
-        'page_title': 'All Research' # For base.html title block
-    }
-    return render(request, 'kuai_club/research_area_list.html', context)
-
-def research_detail(request, pk):
-    research_item = get_object_or_404(Research, pk=pk)
-    context = {
-        'research_item': research_item,
-        'page_title': research_item.title # For base.html title block
-    }
-    return render(request, 'kuai_club/research_area_detail.html', context)
-
-def resource_list(request):
-    all_resources = Resource.objects.filter(is_active=True).order_by('title') # Order alphabetically
-    context = {
-        'resources': all_resources,
-        'page_title': 'All Resources'
-    }
-    return render(request, 'kuai_club/resource_list.html', context)
-
-def resource_detail(request, slug):
-    resource_item = get_object_or_404(Resource, slug=slug, is_active=True)
-    context = {
-        'resource_item': resource_item,
-        'page_title': resource_item.title
-    }
-    return render(request, 'kuai_club/resource_detail.html', context) 
-
-
-def community_list(request):
-    all_communities_outreach = CommunityOutreach.objects.all().order_by('order')
-    site_settings = SiteSettings.objects.first()
-    context = {
-        'site_settings': site_settings,
-        'all_communities_outreach': all_communities_outreach,
-    }
-    return render(request, 'kuai_club/community_list.html', context)
-
-
-def partner_list(request):
-    # Fetch partners, ordering by 'display_order' and then 'name' as per your model's Meta
-    partners = Partner.objects.filter(is_active=True).order_by('display_order', 'name')
-    context = {
-        'partners': partners,
-        'page_title': 'Our Partners' # For base.html title block
-    }
-    return render(request, 'kuai_club/partner_list.html', context)
+    else:
+        messages.error(request, '⚠️ Invalid request method.')
+        return redirect('/')

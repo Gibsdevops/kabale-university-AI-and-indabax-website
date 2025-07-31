@@ -1,13 +1,10 @@
+import os
 from django.db import models
 from django.utils.text import slugify # Import slugify
 from datetime import date
 from django.utils.timezone import now
-from django.db import models
-from PIL import Image
 from django.core.exceptions import ValidationError
-from datetime import timedelta
-import os
-from django.utils.translation import gettext_lazy as _
+from PIL import Image
 
 
 
@@ -16,13 +13,14 @@ class SiteSettings(models.Model):
     """Global settings for the site."""
 
     # Basic Info
-    site_name = models.CharField(max_length=100, default="Education Platform")
-    site_description = models.TextField(default="Welcome to our education platform where learning meets innovation.")
+    site_name = models.CharField(max_length=100, default="Kabale University's AI Club")
+    site_description = models.TextField(default="Join Kabale University's AI Club and start building the future — today.")
     site_keywords = models.CharField(max_length=255, blank=True)
     site_tagline = models.CharField(max_length=255, default="Empowering Minds, Transforming Futures")
 
     #QUICKLINKS
     quick_links = models.JSONField(default=list, blank=True, help_text="List of quick links in JSON format. Example: [{'name': 'Home', 'url': '/home'}, {'name': 'About Us', 'url': '/about'}]")  # FIXED: changed from CharField to JSONField for better structure
+    background_image = models.ImageField(upload_to='backgrounds/', blank=True, null=True, help_text="Background image for the site. Recommended size: 1920x1080px")
 
     # Logos and Branding
     logo = models.ImageField(upload_to='logos/', blank=True, null=True, help_text="Recommended size: 200x200px")
@@ -100,32 +98,64 @@ class SiteSettings(models.Model):
       SiteSettings.objects.exclude(pk=self.pk).delete()
 
 
+from django.db import models
+from django.utils.text import slugify
+
 # ===========================
 # About Us
 # ===========================
+from django.db import models
+from django.utils.text import slugify
+from django.core.exceptions import ValidationError
+from PIL import Image
 
+from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.text import slugify
+from PIL import Image
 class Aboutus(models.Model):
-    """Model for the About Us page content."""
+    """Singleton model for the About Us page content."""
     title = models.CharField(max_length=100, default="About Us")
     slug = models.SlugField(unique=True, blank=True)
-    content = models.TextField(default="Welcome to our education platform. We are dedicated to empowering minds and transforming futures through innovative learning solutions.")
+    content = models.TextField(default="Welcome to our education platform...")
     image = models.ImageField(upload_to='about/', blank=True, null=True)
+
     mission = models.TextField()
     mission_image = models.ImageField(upload_to='about/', blank=True, null=True)
+
     vision = models.TextField()
     vision_image = models.ImageField(upload_to='about/', blank=True, null=True)
+
     objectives = models.TextField(help_text="Provide a general overview of objectives.")
+
     who_we_are_title = models.CharField(max_length=100, default="Who We Are")
     who_we_are_description = models.TextField(blank=True, null=True)
     who_we_are_image = models.ImageField(upload_to='about/', blank=True, null=True)
+
     why_exist_title = models.CharField(max_length=100, default="Why We Exist")
     why_exist_description = models.TextField(blank=True, null=True)
 
     COLUMN_CHOICES = (
         ('left', 'Left'),
         ('right', 'Right'),
+        ('none', 'None'),
     )
-    column_position = models.CharField(max_length=5, choices=COLUMN_CHOICES, default='left')
+    column_position = models.CharField(max_length=5, choices=COLUMN_CHOICES, default='none')
+
+    # --- OUR IMPACT SECTION ---
+    impact_subtitle = models.CharField(max_length=255, default="Making a difference in AI education and technology advancement in Uganda")
+
+    impact_stat_1_label = models.CharField(max_length=100, default="Students Empowered")
+    impact_stat_1_value = models.CharField(max_length=50, default="1000+")
+
+    impact_stat_2_label = models.CharField(max_length=100, default="AI Projects Completed")
+    impact_stat_2_value = models.CharField(max_length=50, default="75+")
+
+    impact_stat_3_label = models.CharField(max_length=100, default="Partner Organizations")
+    impact_stat_3_value = models.CharField(max_length=50, default="25+")
+
+    impact_stat_4_label = models.CharField(max_length=100, default="Years of Innovation")
+    impact_stat_4_value = models.CharField(max_length=50, default="5")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -135,35 +165,56 @@ class Aboutus(models.Model):
         verbose_name_plural = "About Us"
 
     def save(self, *args, **kwargs):
+        # Auto-generate slug
         if not self.slug:
             self.slug = slugify(self.title)
 
-        # Enforce singleton (only one instance allowed)
+        # Ensure only one instance exists (singleton pattern)
         if not self.pk and Aboutus.objects.exists():
             raise ValidationError("Only one About Us entry is allowed.")
 
         super().save(*args, **kwargs)
 
-        # Resize images if they exist
+        # Resize images after saving
         max_width, max_height = 800, 600
         for image_field in [self.image, self.mission_image, self.vision_image, self.who_we_are_image]:
-            if image_field and image_field.path:
-                img = Image.open(image_field.path)
-                if img.width > max_width or img.height > max_height:
-                    img.thumbnail((max_width, max_height))
-                    img.save(image_field.path)
+            if image_field and hasattr(image_field, 'path'):
+                try:
+                    img = Image.open(image_field.path)
+                    if img.width > max_width or img.height > max_height:
+                        img.thumbnail((max_width, max_height))
+                        img.save(image_field.path)
+                except Exception:
+                    pass  # Handle cases where image file doesn't exist
+
+    @classmethod
+    def get_instance(cls):
+        """Get or create the singleton instance."""
+        instance, created = cls.objects.get_or_create(pk=1)
+        return instance
 
     def __str__(self):
         return self.title
 
 
+
+from django.db import models
+from PIL import Image
+from datetime import timedelta
+from django.utils.timezone import now, timezone
+from django.utils import timezone  # ✅ correct
+
+
+
+def current_year():
+    return timezone.now().year
+
 class Leader(models.Model):
     CATEGORY_CHOICES = [
         ('student', 'Student Leader'),
-        ('executive', 'Executive Board'),
         ('faculty', 'Faculty Mentor'),
     ]
-
+    
     full_name = models.CharField(max_length=100)
     position = models.CharField(max_length=100, help_text="e.g., President, Technical Lead")
     bio = models.TextField(blank=True, help_text="Short description about the leader")
@@ -173,51 +224,63 @@ class Leader(models.Model):
     github_url = models.URLField(blank=True, null=True)
     personal_website = models.URLField(blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
-
+    year_served = models.PositiveIntegerField(default=current_year)
+    
     category = models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,
         default='student',
         help_text="Select group type"
     )
-
-    # Leadership duration
+    
     start_date = models.DateField(help_text="Start of leadership period", default=date.today)
-    end_date = models.DateField(help_text="End of leadership period (auto-calculates 6 months if left empty)", blank=True, null=True)
-
+    end_date = models.DateField(help_text="End of leadership period", blank=True, null=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     class Meta:
         verbose_name = "Leader"
         verbose_name_plural = "Leaders"
-
+        ordering = ['-year_served', 'full_name']
+    
     def save(self, *args, **kwargs):
-        # Auto-calculate end_date as 6 months later if not set
+        # Auto-set end_date if not provided (6 months from start)
         if self.start_date and not self.end_date:
             self.end_date = self.start_date + timedelta(days=180)
-
+        
         super().save(*args, **kwargs)
-
-        # Resize uploaded photo if needed
-        max_width, max_height = 800, 600
-        if self.photo and self.photo.path:
-            img = Image.open(self.photo.path)
-            if img.width > max_width or img.height > max_height:
-                img.thumbnail((max_width, max_height))
-                img.save(self.photo.path)
-
+        
+        # Resize image if too large
+        if self.photo and hasattr(self.photo, 'path') and os.path.exists(self.photo.path):
+            max_width, max_height = 800, 600
+            try:
+                img = Image.open(self.photo.path)
+                if img.width > max_width or img.height > max_height:
+                    img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+                    img.save(self.photo.path, optimize=True, quality=85)
+            except Exception as e:
+                print(f"Error resizing image: {e}")
+    
     def __str__(self):
-        return f"{self.full_name} - {self.position}"
-
-    def is_current(self):
-        today = now().date()
+        return f"{self.full_name} - {self.position} ({self.year_served})"
+    
+    @property
+    def is_current_leader(self):
+        """Check if leader is currently active based on dates"""
+        today = timezone.now().date()
+        if not self.end_date:
+            return True  # No end date means currently active
         return self.start_date <= today <= self.end_date
-
-    def is_past(self):
-        today = now().date()
-        return today > self.end_date
-
+    
+    @property
+    def is_past_leader(self):
+        """Check if leader's term has ended"""
+        today = timezone.now().date()
+        return self.end_date and today > self.end_date
+    @property
+    def is_current(self):
+      return self.is_current_leader
 
 
 class News(models.Model):
@@ -275,6 +338,11 @@ class News(models.Model):
 # ===========================
 # Events
 # ===========================
+
+from django.db import models
+from django.utils.text import slugify
+from django.utils.timezone import now
+from PIL import Image
 
 class Event(models.Model):
     title = models.CharField(max_length=150, unique=True)
@@ -336,6 +404,10 @@ class Event(models.Model):
 # ===========================
 # Research Links
 # ===========================
+
+from django.db import models
+from django.utils.text import slugify
+from django.utils.timezone import now
 
 class Research(models.Model):
     """Professional Research model for all research projects, papers, teams, and initiatives."""
@@ -416,12 +488,9 @@ class Resource(models.Model):
 # ===========================
 
 class CommunityOutreach(models.Model):
-    """Model for community outreach initiatives, including external links."""
-    name = models.CharField(max_length=100, unique=True, help_text="Name of the community (e.g., Indabax Kabale Uganda)") # Changed 'title' to 'name' for clarity and consistency
-    description = models.TextField(blank=True, null=True, help_text="Short description of the community/program.") # Added
-    external_url = models.URLField(max_length=500, blank=True, null=True, help_text="Link to the external community website.") # Changed 'url' to 'external_url' for clarity
-    is_featured = models.BooleanField(default=False, help_text="Check to display this community in the homepage 'Community Outreach' section.") # Added
-    order = models.IntegerField(default=0, help_text="Order in which communities appear (lower number first in lists and sections).") # Added
+    """Model for community outreach links."""
+    title = models.CharField(max_length=50, default='Community Outreach')
+    url = models.URLField(max_length=200, blank=True, null=True, help_text="URL for the community outreach link")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -429,15 +498,17 @@ class CommunityOutreach(models.Model):
     class Meta:
         verbose_name = "Community Outreach"
         verbose_name_plural = "Community Outreaches"
-        ordering = ['order', 'name'] # Order by the new 'order' field
 
     def __str__(self):
-        return self.name # Changed to return 'name'
+        return self.title
 
 
 # ===========================
 # Projects
 # ===========================
+from django.utils.text import slugify
+from PIL import Image
+import os
 
 class Project(models.Model):
     # your existing fields ...
@@ -482,6 +553,13 @@ class Project(models.Model):
         return self.title
 
 
+
+
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from PIL import Image  # Pillow library
+import os
+
 class HeroSlide(models.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
@@ -523,6 +601,16 @@ class HeroSlide(models.Model):
 
 
 
+
+
+
+
+
+
+
+from django.db import models
+from PIL import Image
+
 class GalleryImage(models.Model):
     title = models.CharField(max_length=100, blank=True)
     image = models.ImageField(upload_to='gallery/')
@@ -550,14 +638,35 @@ class GalleryImage(models.Model):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 3. Partners/Affiliations
+from django.db import models
+from PIL import Image
+import os
+
 class Partner(models.Model):
     name = models.CharField(max_length=200)
-    logo = models.ImageField(upload_to='partners/', help_text="Upload partner logo (recommended size: 150x150 pixels)")
+    image = models.ImageField(upload_to='partners/', help_text="Upload partner image (will be resized to 150x150)", blank=True, null=True)
     website_link = models.URLField(blank=True, null=True, help_text="Link to the partner's website.")
     description = models.TextField(blank=True)
-    order = models.IntegerField(default=0, help_text="Order in which partners are displayed.")
-
 
     PARTNER_TYPES = (
         ('sponsor', 'Sponsor'),
@@ -566,7 +675,8 @@ class Partner(models.Model):
         ('other', 'Other'),
     )
     partner_type = models.CharField(max_length=50, choices=PARTNER_TYPES, default='collaborator')
-    is_active = models.BooleanField(default=True) # To easily toggle visibility on the frontend
+    
+    is_active = models.BooleanField(default=True)
     display_order = models.IntegerField(default=0, help_text="Lower numbers appear first on the page.")
 
     class Meta:
@@ -575,6 +685,40 @@ class Partner(models.Model):
 
     def __str__(self):
         return self.name
-    
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.image:
+            image_path = self.image.path
+            img = Image.open(image_path)
+            img = img.convert('RGB')
+            img = img.resize((150, 150), Image.Resampling.LANCZOS)
+            img.save(image_path)
+
+
+from django.db import models
+
+class ClubJoinRequest(models.Model):
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    profession = models.CharField(max_length=100, blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.full_name} - {self.email}"
+
+class ContactInfo(models.Model):
+    address = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    facebook_link = models.URLField(blank=True, null=True)
+    twitter_link = models.URLField(blank=True, null=True)
+    linkedin_link = models.URLField(blank=True, null=True)
+    instagram_link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return "Contact Information"
 

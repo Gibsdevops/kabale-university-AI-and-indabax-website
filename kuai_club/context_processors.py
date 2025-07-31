@@ -1,6 +1,4 @@
 from django.core.cache import cache
-from django.utils.timezone import now # Ensure now is imported for time-based filtering
-
 from .models import (
     SiteSettings,
     Aboutus,
@@ -13,40 +11,36 @@ from .models import (
     Project,
     HeroSlide,
     GalleryImage,
-    Partner # Make sure all models are imported once at the top
+    Partner,
+    ContactInfo,
+    ClubJoinRequest
 )
-
-# You can combine all these into one main context processor function
-# to avoid multiple entries in settings.py, or keep them separate
-# if you prefer granular control over which context processors are active.
-
-# Let's assume for now you want to keep them separate for modularity,
-# but clean up imports and refine the 'resource_processor'.
 
 def site_settings(request):
     """Global site settings."""
     settings = cache.get('site_settings')
     if not settings:
         settings = SiteSettings.objects.first()
-        # Handle case where no SiteSettings exists yet
-        if settings is None:
-            # You might want to create a default one, or handle this gracefully in templates
-            # For now, return an empty dict or None if no settings exist
-            return {'site_settings': None}
         cache.set('site_settings', settings, 300)
     return {'site_settings': settings}
 
 
+from django.core.cache import cache
+from .models import Aboutus
+
 def about_pages_processor(request):
     """Context processor to provide about_pages (list) and about_page (first item)."""
-    # It's better to fetch these together if they are always used together
+    
     about_pages = cache.get('about_pages')
+    about_page = cache.get('about_page')
+
     if not about_pages:
         about_pages = Aboutus.objects.all()
         cache.set('about_pages', about_pages, 300)
 
-    # Note: about_page will be the first item from about_pages, so no need for a separate query
-    about_page = about_pages.first() if about_pages else None # Safely get the first item
+    if not about_page:
+        about_page = Aboutus.objects.first()
+        cache.set('about_page', about_page, 300)
 
     return {
         'about_pages': about_pages,
@@ -54,23 +48,12 @@ def about_pages_processor(request):
     }
 
 
+
 def leader_processor(request):
     """Pass categorized leaders globally to templates."""
-    # Consider caching the individual leader categories if they don't change often
-    leaders_student = cache.get('leaders_student')
-    if not leaders_student:
-        leaders_student = Leader.objects.filter(category='student').order_by('position')
-        cache.set('leaders_student', leaders_student, 300)
-
-    leaders_executive = cache.get('leaders_executive')
-    if not leaders_executive:
-        leaders_executive = Leader.objects.filter(category='executive').order_by('position')
-        cache.set('leaders_executive', leaders_executive, 300)
-
-    leaders_faculty = cache.get('leaders_faculty')
-    if not leaders_faculty:
-        leaders_faculty = Leader.objects.filter(category='faculty').order_by('position')
-        cache.set('leaders_faculty', leaders_faculty, 300)
+    leaders_student = Leader.objects.filter(category='student').order_by('position')
+    leaders_executive = Leader.objects.filter(category='executive').order_by('position')
+    leaders_faculty = Leader.objects.filter(category='faculty').order_by('position')
 
     return {
         'leaders_student': leaders_student,
@@ -83,64 +66,46 @@ def news_processor(request):
     """News items with caching for 5 minutes."""
     news = cache.get('news_items')
     if not news:
-        news = News.objects.filter(is_published=True).order_by('-publish_date')[:5] # Limit for dropdown
-        cache.set('news_items', news, 300)
+        news = News.objects.filter(is_published=True).order_by('-publish_date')
+        cache.set('news_items', news, 300)  # Cache for 300 seconds = 5 minutes
     return {'news': news}
 
 
 def events_processor(request):
     """Events - cached for 5 minutes."""
-    # Filter for upcoming events for the dropdown
-    events = cache.get('events_list_upcoming') # Use a distinct cache key
+    events = cache.get('events_list')
     if not events:
-        events = Event.objects.filter(is_published=True, event_start__gte=now()).order_by('event_start')[:5] # Limit for dropdown
-        cache.set('events_list_upcoming', events, 300)
-    return {'upcoming_events': events} # Rename context variable for clarity
+        events = Event.objects.filter(is_published=True).order_by('event_start')
+        cache.set('events_list', events, 300)
+    return {'events': events}
 
 
 def research_processor(request):
     """Research links."""
     research = cache.get('research_links')
     if not research:
-        # Assuming you want top 5 for the dropdown
-        research = Research.objects.filter(is_published=True).order_by('-publish_date')[:5]
+        research = Research.objects.all().order_by('title')
         cache.set('research_links', research, 300)
     return {'research': research}
 
 
 def resource_processor(request):
     """Categorized resources for navbar dropdown."""
-    learning_resources = cache.get('navbar_learning_resources')
-    tool_resources = cache.get('navbar_tool_resources')
+    resources = cache.get('navbar_resources')
+    if not resources:
+        resources = Resource.objects.filter(is_active=True).order_by('title')
+        cache.set('navbar_resources', resources, 300)
+    return {'resources': resources}  # still using 'services' in template
 
-    if not learning_resources:
-        learning_resources = Resource.objects.filter(is_active=True, resource_type='learning').order_by('-created_at')[:3] # Limit to 3 for dropdown
-        cache.set('navbar_learning_resources', learning_resources, 300)
-
-    if not tool_resources:
-        tool_resources = Resource.objects.filter(is_active=True, resource_type='tool').order_by('-created_at')[:3] # Limit to 3 for dropdown
-        cache.set('navbar_tool_resources', tool_resources, 300)
-
-    return {
-        'learning_resources': learning_resources,
-        'tool_resources': tool_resources,
-    }
 
 
 def community_processor(request):
-    # Fetch communities for global availability (e.g., navigation dropdown)
-    # Corrected: using 'order' field instead of 'title'
-    all_communities_outreach = CommunityOutreach.objects.all().order_by('order')[:5] # Limit for dropdown to prevent overload
-
-    # You might also want to pass SiteSettings via a context processor if not already doing so,
-    # to avoid passing it in every view. Example:
-    # from .models import SiteSettings
-    # site_settings = SiteSettings.objects.first()
-
-    return {
-        'all_communities_outreach': all_communities_outreach,
-        # 'site_settings': site_settings, # Uncomment if you put SiteSettings here
-    }
+    """Community outreach links."""
+    community = cache.get('community_links')
+    if not community:
+        community = CommunityOutreach.objects.all().order_by('title')
+        cache.set('community_links', community, 300)
+    return {'community': community}
 
 
 def project_processor(request):
@@ -151,28 +116,43 @@ def project_processor(request):
         cache.set('project_links', projects, 300)
     return {'projects': projects}
 
-
-
 def hero_processor(request):
     """Hero slides context processor with caching."""
     hero_slides = cache.get('hero_slides')
     if not hero_slides:
-        hero_slides = HeroSlide.objects.filter(is_active=True).order_by('order')[:5]
-        cache.set('hero_slides', hero_slides, 300)
+        hero_slides = HeroSlide.objects.filter(is_active=True).order_by('order')[:5]  # Only active slides, ordered, limited to 5
+        cache.set('hero_slides', hero_slides, 300)  # Cache for 5 minutes
     return {'hero_slides': hero_slides}
+
 
 def gallery_processor(request):
     """Latest gallery images with caching for 5 minutes."""
     gallery_images = cache.get('latest_gallery_images')
     if not gallery_images:
-        gallery_images = GalleryImage.objects.order_by('-upload_date', '-id')[:10]
-        cache.set('latest_gallery_images', gallery_images, 300)
+        gallery_images = GalleryImage.objects.order_by('-upload_date', '-id')[:10]  # Adjust number if needed
+        cache.set('latest_gallery_images', gallery_images, 300)  # Cache for 300 seconds
     return {'gallery_images': gallery_images}
 
 def partner_processor(request):
-    """
-    Makes a selection of active partners available in the context for the navbar dropdown.
-    """
-    # Fetch a few partners to display in the dropdown (e.g., top 5 by display_order)
-    partners_for_dropdown = Partner.objects.filter(is_active=True).order_by('display_order', 'name')[:5]
-    return {'partners_for_dropdown': partners_for_dropdown}
+    """Active partners for the footer."""
+    partners = cache.get('active_partners')
+    if not partners:
+        partners = Partner.objects.filter(is_active=True).order_by('name')  # Order by name or any other field
+        cache.set('active_partners', partners, 300)  # Cache for 5 minutes
+    return {'partners': partners}
+
+def contact_info_processor(request):
+    """Contact information for the footer."""
+    contact_info = cache.get('contact_info')
+    if not contact_info:
+        contact_info = ContactInfo.objects.first()  # Assuming only one contact info object
+        cache.set('contact_info', contact_info, 300)  # Cache for 5 minutes
+    return {'contact_info': contact_info}
+
+def join_request_processor(request):
+    """Club join requests for the admin dashboard."""
+    join_requests = cache.get('club_join_requests')
+    if not join_requests:
+        join_requests = ClubJoinRequest.objects.all().order_by('-date_joined')
+        cache.set('club_join_requests', join_requests, 300)  # Cache for 5 minutes
+    return {'join_requests': join_requests}

@@ -1,0 +1,36 @@
+{% load static %}
+
+<section id="partners" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Partners</h2>
+        
+        <div class="row justify-content-center">
+            {% for partner in partners %}
+                <div class="col-6 col-md-3 mb-4 text-center">
+                    <div class="card h-100 shadow-sm border-0 fade-in-up">
+                        {% if partner.image %}
+                            <a href="{{ partner.website_link }}" target="_blank">
+                                <img src="{{ partner.image.url }}" class="card-img-top img-fluid" style="max-height: 120px; object-fit: contain; padding: 20px;" alt="{{ partner.name }}">
+                            </a>
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title mb-1">{{ partner.name }}</h6>
+                            <span class="partner-type">{{ partner.get_partner_type_display }}</span>
+                            {% if partner.description %}
+                                <p class="card-text mt-2">{{ partner.description|truncatewords:20 }}</p>
+                            {% endif %}
+                            {% if partner.website_link %}
+                                <a href="{{ partner.website_link }}" target="_blank" class="website-link">
+                                    <span>Visit Website</span>
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No partners available at the moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>

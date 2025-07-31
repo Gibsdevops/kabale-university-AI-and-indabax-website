@@ -1,8 +1,12 @@
 # kuai_club/admin.py
 from django.contrib import admin
-from .models import SiteSettings,Aboutus,Leader,Event,Resource,CommunityOutreach,News,Research,Project
+from django.http import HttpResponseRedirect
+from django.urls import path
+from .models import SiteSettings, Aboutus, Leader, Event, Resource, CommunityOutreach, News, Research, Project, Partner, GalleryImage
 from .models import HeroSlide
 from django.utils.html import format_html
+from django.forms import ModelForm
+from django.core.exceptions import ValidationError
 
 # Register your models here.
 
@@ -13,7 +17,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Basic Info', {
-            'fields': ('site_name', 'site_tagline', 'site_description', 'site_keywords')
+            'fields': ('site_name', 'site_tagline', 'site_description', 'site_keywords','background_image')
         }),
         ('Branding', {
             'fields': ('logo', 'favicon', 'primary_color', 'secondary_color')
@@ -55,73 +59,47 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Aboutus)
-class AboutusAdmin(admin.ModelAdmin):
-    list_display = ('title', 'column_position', 'created_at', 'updated_at')
-    readonly_fields = ('created_at', 'updated_at')
-    prepopulated_fields = {'slug': ('title',)}
 
-    def has_add_permission(self, request):
-        # Only allow adding if no entry exists
-        if Aboutus.objects.exists():
-            return False
-        return super().has_add_permission(request)
-
-    fieldsets = (
-        ('Content', {
-            'fields': (
-                'title', 'slug', 'content', 'column_position', 'image',
-            )
-        }),
-        ('Who We Are Section', {
-            'fields': (
-                'who_we_are_title',
-                'who_we_are_description',
-                'who_we_are_image',
-            ),
-        }),
-        ('Mission & Vision', {
-            'fields': (
-                'mission',
-                'mission_image',
-                'vision',
-                'vision_image'
-            ),
-        }),
-        ('Why We Exist Section', {
-            'fields': (
-                'why_exist_title',
-                'why_exist_description',
-            ),
-        }),
-        ('Objectives', {
-            'fields': ('objectives',),
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-        }),
-    )
+from django.contrib import admin
+from django.urls import reverse, path
+from django.http import HttpResponseRedirect
+from .models import Aboutus  # adjust import to your actual model location
 
 
-
-
+class SingletonAdminMixin:
+    """Mixin to handle singleton models in admin."""
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('', self.admin_site.admin_view(self.changelist_view), name=f'{self.model._meta.app_label}_{self.model._meta.model_name}_changelist'),
+        ]
+        return custom_urls + urls
 
 @admin.register(Leader)
 class LeaderAdmin(admin.ModelAdmin):
     list_display = (
-        'full_name', 
-        'position', 
-        'category',         
-        'email', 
-        'start_date', 
-        'end_date',      
-        'created_at', 
-        'updated_at'
+        'full_name',
+        'position',
+        'category',
+        'email',
+        'year_served',
+        'is_current_status',
+        'start_date',
+        'end_date',
+        'created_at',
+        'updated_at',
     )
+
     readonly_fields = ('created_at', 'updated_at')
     search_fields = ('full_name', 'position', 'email')
-    list_filter = ('category',)  
-    ordering = ('-start_date', 'full_name') 
+    list_filter = ('category',)
+    ordering = ('-start_date', 'full_name')
+
+    def is_current_status(self, obj):
+        return obj.is_current  # ✅ no parentheses!
+    is_current_status.short_description = 'Currently Serving'
+    is_current_status.boolean = True
+
 
 
 @admin.register(News)
@@ -205,32 +183,11 @@ class ResourceAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(CommunityOutreach) # Using the decorator for cleaner registration
+@admin.register(CommunityOutreach)
 class CommunityOutreachAdmin(admin.ModelAdmin):
-    # Updated list_display to use 'name' and 'external_url'
-    list_display = ('name', 'external_url', 'is_featured', 'order', 'created_at',)
-    
-    # Updated search_fields to use 'name' and 'description'
-    search_fields = ('name', 'description',)
-    
-    # Add list_filter if you want to filter by 'is_featured'
-    list_filter = ('is_featured',)
-    
-    # Fields to make editable directly in the list view (optional)
-    list_editable = ('is_featured', 'order',)
-    
-    # Fields to make clickable links to the detail page (optional)
-    list_display_links = ('name',)
-
-    # Fields to group in the add/change form (optional)
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'description', 'external_url')
-        }),
-        ('Display Options', {
-            'fields': ('is_featured', 'order')
-        }),
-    )
+    list_display = ('title', 'url', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+    search_fields = ('title',)
 
 
 @admin.register(Project)
@@ -282,3 +239,33 @@ class GalleryImageAdmin(admin.ModelAdmin):
     search_fields = ('title', 'caption')
     list_filter = ('upload_date',)
     readonly_fields = ('upload_date',)
+
+
+@admin.register(Partner)
+class PartnerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'partner_type', 'is_active', 'display_order', 'image_tag', 'website_link')
+    list_filter = ('partner_type', 'is_active')
+    search_fields = ('name', 'description')
+    ordering = ('display_order', 'name')
+    readonly_fields = ('image_tag',)
+
+    def image_tag(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="height: 50px; width: 50px; object-fit: cover;" />', obj.image.url)
+        return "-"
+    image_tag.short_description = 'Image Preview'
+
+from django.contrib import admin
+from .models import ClubJoinRequest, ContactInfo
+@admin.register(ClubJoinRequest)
+class ClubJoinRequestAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'email', 'phone', 'date_joined')
+    search_fields = ('full_name', 'email', 'phone')
+    list_filter = ('date_joined',)
+
+@admin.register(ContactInfo)
+class ContactInfoAdmin(admin.ModelAdmin):
+    list_display = ('email', 'phone', 'address')
+
+
+

@@ -1,0 +1,167 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Previous {{ category }} Leaders - KUAI Club{% endblock %}
+
+{% block content %}
+<div class="leaders-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <a href="javascript:history.back()" style="color: #3498db; text-decoration: none; margin-bottom: 30px; display: inline-block;">
+        ← Back to Leaders
+    </a>
+
+    <div style="text-align: center; margin-bottom: 40px;">
+        <h1 style="font-size: 2.5rem; color: #2c3e50; margin-bottom: 10px;">Previous {{ category }} Leaders</h1>
+        <p style="font-size: 1.2rem; color: #7f8c8d;">Honoring those who have shaped our community</p>
+    </div>
+
+    {% if leaders_by_year_list %}
+        <button id="expandAllBtn" style="background: #27ae60; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; margin-bottom: 20px;">
+            Expand All Years
+        </button>
+
+        {% for year, leaders in leaders_by_year_list %}
+        <div class="year-section" data-year="{{ year }}" style="margin-bottom: 30px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+            <div class="year-header" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="window.toggleYear('{{ year }}')"">
+                <h2 style="margin: 0; font-size: 1.5rem;">{{ year }} Leadership</h2>
+                <span id="arrow-{{ year }}" style="font-size: 1.2rem; transition: transform 0.3s ease; transform: rotate(-90deg);">▼</span>
+            </div>
+            
+            <div id="leaders-{{ year }}" style="padding: 20px; display: none;">
+                {% for leader in leaders %}
+                <div style="display: flex; align-items: center; padding: 20px; margin-bottom: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db;">
+                    {% if leader.photo %}
+                        <img src="{{ leader.photo.url }}" alt="{{ leader.full_name }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-right: 20px;">
+                    {% else %}
+                        <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #bdc3c7, #95a5a6); display: flex; align-items: center; justify-content: center; margin-right: 20px; color: white; font-size: 2rem; font-weight: bold;">
+                            {{ leader.full_name|first }}
+                        </div>
+                    {% endif %}
+                    
+                    <div style="flex: 1;">
+                        <h3 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #2c3e50;">{{ leader.full_name }}</h3>
+                        <p style="margin: 0 0 10px 0; color: #3498db; font-weight: 500;">{{ leader.position }}</p>
+                        
+                        {% if leader.bio %}
+                        <p style="color: #555; margin: 0 0 15px 0;">{{ leader.bio|truncatewords:30 }}</p>
+                        {% endif %}
+                        
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            {% if leader.email %}
+                            <a href="mailto:{{ leader.email }}" style="padding: 5px 12px; background: #3498db; color: white; text-decoration: none; border-radius: 20px; font-size: 0.85rem;">Email</a>
+                            {% endif %}
+                            
+                            {% if leader.linkedin_url %}
+                            <a href="{{ leader.linkedin_url }}" target="_blank" style="padding: 5px 12px; background: #3498db; color: white; text-decoration: none; border-radius: 20px; font-size: 0.85rem;">LinkedIn</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div style="text-align: center; padding: 60px 20px; color: #7f8c8d;">
+            <h3>No Previous {{ category }} Leaders Found</h3>
+            <p>There are currently no previous {{ category|lower }} leaders to display.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- JavaScript Test -->
+<script>
+console.log('🧪 MINIMAL TEST SCRIPT LOADING...');
+
+// Global functions
+window.toggleYear = function(year) {
+    console.log('🔄 Toggle year called:', year);
+    
+    const leadersGrid = document.getElementById('leaders-' + year);
+    const arrow = document.getElementById('arrow-' + year);
+    
+    if (!leadersGrid) {
+        console.error('❌ Leaders grid not found for year:', year);
+        return;
+    }
+    
+    const isVisible = leadersGrid.style.display === 'block';
+    console.log('Current visibility:', isVisible);
+    
+    if (isVisible) {
+        leadersGrid.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(-90deg)';
+        console.log('✅ Year', year, 'collapsed');
+    } else {
+        leadersGrid.style.display = 'block';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+        console.log('✅ Year', year, 'expanded');
+    }
+};
+
+window.expandAll = function() {
+    console.log('🔄 Expand all called');
+    const yearSections = document.querySelectorAll('.year-section[data-year]');
+    
+    yearSections.forEach(section => {
+        const year = section.getAttribute('data-year');
+        const leadersGrid = document.getElementById('leaders-' + year);
+        const arrow = document.getElementById('arrow-' + year);
+        
+        if (leadersGrid) {
+            leadersGrid.style.display = 'block';
+            if (arrow) arrow.style.transform = 'rotate(0deg)';
+        }
+    });
+    
+    console.log('✅ All years expanded');
+};
+
+window.debugLeaders = function() {
+    console.log('=== 🔍 DEBUG MINIMAL VERSION ===');
+    console.log('Expand button:', document.getElementById('expandAllBtn'));
+    
+    const yearSections = document.querySelectorAll('.year-section[data-year]');
+    console.log('Year sections found:', yearSections.length);
+    
+    yearSections.forEach(section => {
+        const year = section.getAttribute('data-year');
+        const grid = document.getElementById('leaders-' + year);
+        const arrow = document.getElementById('arrow-' + year);
+        console.log('Year', year + ':', {
+            grid: !!grid,
+            display: grid ? grid.style.display : 'not found',
+            arrow: !!arrow
+        });
+    });
+    
+    console.log('Functions available:');
+    console.log('- toggleYear:', typeof window.toggleYear);
+    console.log('- expandAll:', typeof window.expandAll);
+    console.log('- debugLeaders:', typeof window.debugLeaders);
+};
+
+// Initialize when ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎯 DOM loaded for minimal test');
+    
+    const expandBtn = document.getElementById('expandAllBtn');
+    if (expandBtn) {
+        expandBtn.addEventListener('click', window.expandAll);
+        console.log('✅ Expand button listener attached');
+    }
+    
+    // Auto-expand first year
+    const firstSection = document.querySelector('.year-section[data-year]');
+    if (firstSection) {
+        const firstYear = firstSection.getAttribute('data-year');
+        console.log('📂 Auto-expanding first year:', firstYear);
+        window.toggleYear(parseInt(firstYear));
+    }
+    
+    console.log('✨ Minimal test initialization complete');
+    console.log('💡 Try: window.debugLeaders()');
+});
+
+console.log('🚀 Minimal test script loaded');
+</script>
+{% endblock %}

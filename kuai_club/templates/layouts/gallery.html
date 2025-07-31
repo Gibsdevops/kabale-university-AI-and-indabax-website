@@ -136,18 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-.gallery-title {
+.gallery-section .gallery-title {
     text-align: center;
     margin-bottom: 3rem;
     font-size: 2.5rem;
     font-weight: 700;
     background: linear-gradient(135deg, #667eea, #764ba2);
-    background-clip: text;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.gallery-wrapper {
+.gallery-section .gallery-wrapper {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     position: relative;
 }
 
-.gallery-item {
+.gallery-section .gallery-item {
     position: relative;
     aspect-ratio: 1;
     border-radius: 15px;
@@ -165,23 +165,23 @@ document.addEventListener('DOMContentLoaded', () => {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.gallery-item:hover {
+.gallery-section .gallery-item:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-.gallery-item img {
+.gallery-section .gallery-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
 }
 
-.gallery-item:hover img {
+.gallery-section .gallery-item:hover img {
     transform: scale(1.1);
 }
 
-.more-btn-container {
+.gallery-section .more-btn-container {
     position: absolute;
     right: 0;
     top: 50%;
@@ -189,14 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
     z-index: 10;
 }
 
-.hide-btn-container {
+.gallery-section .hide-btn-container {
     grid-column: 1 / -1;
     display: flex;
     justify-content: center;
     margin-top: 2rem;
 }
 
-.btn {
+.gallery-section .btn {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     border: none;
@@ -211,13 +211,13 @@ document.addEventListener('DOMContentLoaded', () => {
     overflow: hidden;
 }
 
-.btn.small-btn {
+.gallery-section .btn.small-btn {
     padding: 0.5rem 1.2rem;
     font-size: 0.9rem;
     min-width: 80px;
 }
 
-.btn::before {
+.gallery-section .btn::before {
     content: '';
     position: absolute;
     top: 0;
@@ -228,25 +228,25 @@ document.addEventListener('DOMContentLoaded', () => {
     transition: left 0.5s ease;
 }
 
-.btn:hover::before {
+.gallery-section .btn:hover::before {
     left: 100%;
 }
 
-.btn:hover {
+.gallery-section .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
 }
 
-.btn:active {
+.gallery-section .btn:active {
     transform: translateY(0);
 }
 
-.extra-gallery {
+.gallery-section .extra-gallery {
     display: none;
     animation: fadeInUp 0.6s ease-out;
 }
 
-.extra-gallery.show {
+.gallery-section .extra-gallery.show {
     display: grid;
 }
 
@@ -261,28 +261,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }
 
-.hide-btn {
+.gallery-section .hide-btn {
     background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
 }
 
-.hide-btn:hover {
+.gallery-section .hide-btn:hover {
     box-shadow: 0 12px 30px rgba(255, 107, 107, 0.4);
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-    .gallery-wrapper {
+    .gallery-section .gallery-wrapper {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    .gallery-wrapper {
+    .gallery-section .gallery-wrapper {
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
     }
     
-    .gallery-title {
+    .gallery-section .gallery-title {
         font-size: 2rem;
     }
     
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         padding: 2rem 1rem;
     }
 
-    .more-btn-container {
+    .gallery-section .more-btn-container {
         position: static;
         transform: none;
         grid-column: 1 / -1;
@@ -301,17 +301,17 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
 @media (max-width: 480px) {
-    .gallery-wrapper {
+    .gallery-section .gallery-wrapper {
         grid-template-columns: 1fr;
     }
     
-    .gallery-title {
+    .gallery-section .gallery-title {
         font-size: 1.8rem;
     }
 }
 
 /* Loading animation */
-.gallery-item.loading {
+.gallery-section .gallery-item.loading {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
@@ -321,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
+
 </style>
-{% endblock styles %>
+
 {% endblock %}

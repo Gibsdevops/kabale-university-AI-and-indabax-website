@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}{{ page_title|default:"Welcome" }} - {{ site_settings.site_name }}{% endblock %}</title>
 
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+    <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
 
+    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+   
 
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'kuai_club/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'kuai_club/css/hero_section.css' %}">
     <link rel="stylesheet" href="{% static 'kuai_club/css/aboutOverview.css' %}">
@@ -21,15 +27,32 @@
     <link rel="stylesheet" href="{% static 'kuai_club/css/leaders.css' %}">
     <link rel="stylesheet" href="{% static 'kuai_club/css/News.css' %}">
     <link rel="stylesheet" href="{% static 'kuai_club/css/gallery.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/partners.css' %}">
+    <link rel="stylesheet" href="{% static 'kuai_club/css/contact.css' %}">
 
     {% if site_settings.favicon %}
         <link rel="icon" href="{{ site_settings.favicon.url }}" type="image/x-icon" />
     {% endif %}
- 
+    <style>
+        :root {
+            --primary-color: {{ site_settings.primary_color|default:'#1e3a8a' }};
+            --secondary-color: {{ site_settings.secondary_color|default:"#f59e0b" }};
+            --primary-dark: #1e40af;
+            --secondary-dark: #d97706;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
+<!-- 🔝 Top Site Content -->
 <div class="top_site_content py-2">
     <div class="container">
         <div class="row align-items-center">
@@ -49,6 +72,7 @@
             </div>
 
             <div class="col-md-6 d-flex justify-content-end align-items-center gap-3">
+                <!-- Social Media Icons -->
                 <div class="social-media-links d-flex align-items-center gap-2">
                     {% if site_settings.facebook_url %}
                         <a href="{{ site_settings.facebook_url }}" target="_blank" class="text-black social-link"><i class="fab fa-facebook-f"></i></a>
@@ -70,9 +94,10 @@
                     {% endif %}
                 </div>
 
+                <!-- Quick Links Dropdown -->
                 {% if site_settings.quick_links %}
                 <div class="dropdown">
-                    <a href="#" class="btn btn-sm btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
+                    <a href="#" class="btn btn-sm btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" >
                         Quick Links
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end quick-links-dropdown">
@@ -91,56 +116,67 @@
     </div>
 </div>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top" style="z-index: 1020;">
+<!-- ========================= NAVBAR START ============================== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
     <div class="container-fluid">
-        {# Site name and logo for small screens #}
-        {% if site_settings.logo %}
-            <a class="navbar-brand d-lg-none" href="{% url 'kuai_club:home' %}">
-                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }} Logo" style="max-height: 40px;">
-            </a>
-        {% else %}
-            <a class="navbar-brand d-lg-none" href="{% url 'kuai_club:home' %}">{{ site_settings.site_name }}</a>
-        {% endif %}
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- COLLAPSIBLE NAV CONTENT -->
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav">
+
+            <!-- NAVIGATION LINKS -->
+            <ul class="navbar-nav d-flex flex-row">
+
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'kuai_club:home' %}">Home</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'kuai_club:home' %}">Home</a>
                 </li>
+
+                <!-- About Us -->
                 <li class="nav-item nav-hover-content" data-hover-target="about-content">
-                    <a href="#" class="nav-link">About Us</a>
+                    <a href="{% url 'kuai_club:about' %}" class="nav-link">About Us</a>
                 </li>
+
+                <!-- Leaders -->
                 <li class="nav-item nav-hover-content" data-hover-target="leaders-content">
-                    <a href="{% url 'kuai_club:leaders_list' %}" class="nav-link">Leaders</a>
+                    <a href="#" class="nav-link">Leaders</a>
                 </li>
-                <li class="nav-item nav-hover-content" data-hover-target="news-content">
-                    <a href="#" class="nav-link">News</a>
+                <!-- News -->
+               <li class="nav-item nav-hover-content" data-hover-target="news-content">
+                    <a href="#news-section" class="nav-link">News</a>
                 </li>
+
+                <!-- Events -->
                 <li class="nav-item nav-hover-content" data-hover-target="events-content">
-                    <a href="#" class="nav-link">Events</a>
+                    <a href="#event-section" class="nav-link">Events</a>
                 </li>
+
+                <!-- Research -->
                 <li class="nav-item nav-hover-content" data-hover-target="research-content">
-                    <a href="#" class="nav-link">Research</a>
+                   <a href="{% url 'kuai_club:research_page' research.0.id%}" class="nav-link">Research</a>
+
                 </li>
+
+                <!-- Resources -->
                 <li class="nav-item nav-hover-content" data-hover-target="resource-content">
                     <a href="#" class="nav-link">Resources</a>
                 </li>
-                {# CORRECTLY PLACED COMMUNITIES LINK #}
+
+                <!-- Community Outreach -->
                 <li class="nav-item nav-hover-content" data-hover-target="community-content">
-                    <a class="nav-link" href="{% url 'kuai_club:community_list' %}">
-                        Communities
-                    </a>
+                    <a href="#" class="nav-link">Communities </a>
                 </li>
-                <li class="nav-item nav-hover-content" data-hover-target="partners-content">
-                    <a href="{% url 'kuai_club:partner_list' %}" class="nav-link">Partners</a>
-                </li>
+
+                <!-- Contacts -->
                 <li class="nav-item nav-hover-content" data-hover-target="projects-content">
                     <a href="#" class="nav-link">Projects</a>
                 </li>
+
+                <!-- Search Button -->
                 <li class="nav-item">
                     <button class="btn btn-outline-light ms-3" type="button" data-bs-toggle="modal" data-bs-target="#searchModal">
                         <i class="fas fa-search"></i>
@@ -151,8 +187,9 @@
     </div>
 </nav>
 
-{# Existing Hover Panels #}
-<div id="about-content" class="hover-content-panel">
+<!-- HOVER CONTENT PANELS (hidden by default, show on hover) -->
+
+<div id="about-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -160,10 +197,8 @@
                 <ul class="list-unstyled">
                     {% for page in about_pages %}
                         {% if page.column_position == 'left' %}
-                            <li><a href="{% url 'kuai_club:about_detail' page.id %}">{{ page.title }}</a></li>
+                            <li><a href="{% url 'kuai_club:about'   %}#{{ page.title|slugify }}">{{ page.title }}</a></li>
                         {% endif %}
-                    {% empty %}
-                        <li><span class="text-muted">No About Us pages here</span></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -172,10 +207,8 @@
                 <ul class="list-unstyled">
                     {% for page in about_pages %}
                         {% if page.column_position == 'right' %}
-                            <li><a href="{% url 'kuai_club:about_detail' page.id %}">{{ page.title }}</a></li>
+                            <li><a href="{% url 'kuai_club:about'  %}#{{ page.title|slugify }}">{{ page.title }}</a></li>
                         {% endif %}
-                    {% empty %}
-                        <li><span class="text-muted">No About Us pages here</span></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -183,152 +216,105 @@
     </div>
 </div>
 
-<div id="leaders-content" class="hover-content-panel">
+
+<div id="leaders-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem;">
     <ul class="list-unstyled mb-0">
-        <li><a href="{% url 'kuai_club:leaders_list' %}#student-leaders">Student Leaders</a></li>
-        <li><a href="{% url 'kuai_club:leaders_list' %}#executive-board">Executive Board</a></li>
-        <li><a href="{% url 'kuai_club:leaders_list' %}#faculty-mentors">Faculty Mentors</a></li>
-        <li><a href="{% url 'kuai_club:leaders_list' %}">All Leaders</a></li>
+        <li><a href="#category-student">Student Leaders</a></li>
+        <li><a href="#category-faculty">Faculty Mentors</a></li>
     </ul>
 </div>
 
-<div id="news-content" class="hover-content-panel">
-    <ul class="list-unstyled">
-        {% for item in news %}
-            <li class="d-flex align-items-center mb-3">
-                {% if item.image %}
-                    <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width:50px; height:50px; object-fit:cover; border-radius:4px; margin-right:10px;">
-                {% endif %}
-                <div>
-                    <a href="{% url 'kuai_club:news_detail' item.id %}" class="fw-bold text-dark">{{ item.title }}</a>
-                    <p class="mb-0 text-muted" style="font-size: 0.85rem;">
-                        {{ item.summary|truncatewords:15 }}
-                    </p>
-                </div>
-            </li>
-        {% empty %}
-            <li>No news available at the moment.</li>
-        {% endfor %}
-        <li><a href="{% url 'kuai_club:news_list' %}" class="btn btn-primary btn-sm mt-2">View All News</a></li>
-    </ul>
+
+
+<div id="news-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; max-width:400px; border-radius: 8px;">
+    {% if news %}
+        <ul class="list-unstyled mb-0">
+            {% for item in news %}
+                <li class="d-flex align-items-start mb-3">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width:50px; height:50px; object-fit:cover; border-radius:4px; margin-right:10px;">
+                    {% endif %}
+                    <div>
+                        <a href="#news-section-{{ item.slug }}" class="fw-bold text-dark text-decoration-none">{{ item.title }}</a>
+                        <p class="mb-0 text-muted" style="font-size: 0.85rem;">
+                            {{ item.summary|truncatewords:15 }}
+                        </p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="text-muted text-center py-3">
+            <i class="bi bi-info-circle" style="font-size: 1.2rem;"></i><br>
+            No news updates available at the moment.
+        </div>
+    {% endif %}
 </div>
 
-<div id="events-content" class="hover-content-panel">
+
+
+<div id="events-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
     <ul class="list-unstyled">
         {% for event in events %}
-            <li class="d-flex align-items-center mb-3">
-                {% if event.image %}
-                    <img src="{{ event.image.url }}" alt="{{ event.title }}" style="width:50px; height:50px; object-fit:cover; border-radius:4px; margin-right:10px;">
-                {% endif %}
-                <div>
-                    <a href="{% url 'kuai_club:event_detail' event.id %}" class="fw-bold text-dark">{{ event.title }}</a>
-                    <p class="mb-0 text-muted" style="font-size: 0.85rem;">
-                        {{ event.event_start|date:"F d, Y P" }} - {{ event.location }}
-                    </p>
-                </div>
-            </li>
+            <li><a href="#event-section-{{ event.slug }}">{{ event.title }}</a></li>
         {% empty %}
-            <li>No upcoming events at the moment.</li>
+            <li><em>No upcoming events available</em></li>
         {% endfor %}
-        <li><a href="{% url 'kuai_club:event_list' %}" class="btn btn-primary btn-sm mt-2">View All Events</a></li>
     </ul>
 </div>
 
-<div id="research-content" class="hover-content-panel">
+<div id="research-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
     <ul class="list-unstyled">
         {% for researchlinks in research %}
-            <li><a href="{% url 'kuai_club:research_detail' researchlinks.id %}">{{ researchlinks.title }}</a></li>
-        {% empty %}
-            <li><span class="text-muted">No research items available</span></li>
+            <li><a href="{% url 'kuai_club:research_page' researchlinks.id %}">{{ researchlinks.title }}</a></li>
         {% endfor %}
-        <li><a href="{% url 'kuai_club:research_list' %}" class="btn btn-primary btn-sm mt-2">View All Research</a></li>
     </ul>
 </div>
 
-<div id="resource-content" class="hover-content-panel">
+<div id="resource-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
     <div class="row">
         <div class="col-md-6">
             <h6 class="dropdown-header">LEARNING RESOURCES</h6>
             <ul class="list-unstyled">
-                {% for resource in learning_resources %}
-                    <li><a href="{% url 'kuai_club:resource_detail' resource.slug %}">{{ resource.title }}</a></li>
-                {% empty %}
-                    <li><span class="text-muted">No learning resources</span></li>
+                {% for resource in resources %}
+                    {% if research and research.0 and research.0.id %}
+                        <a href="{% url 'kuai_club:research_page' research.0.id %}" class="nav-link">Research</a>
+                    {% else %}
+                        <a href="#research-section" class="nav-link">Research</a>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
         <div class="col-md-6">
             <h6 class="dropdown-header">TOOLS & DOWNLOADS</h6>
             <ul class="list-unstyled">
-                {% for resource in tool_resources %}
-                    <li><a href="{% url 'kuai_club:resource_detail' resource.slug %}">{{ resource.title }}</a></li>
-                {% empty %}
-                    <li><span class="text-muted">No tools & downloads</span></li>
+                {% for resource in resources %}
+                    {% if resource.resource_type == 'tool' %}
+                        <li><a href="{% url 'kuai_club:resource_page' resource.id %}">{{ resource.title }}</a></li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
     </div>
-    <div class="text-center mt-3">
-        <a href="{% url 'kuai_club:resource_list' %}" class="btn btn-primary btn-sm">View All Resources</a>
-    </div>
 </div>
 
-{# CORRECTLY PLACED COMMUNITIES HOVER PANEL #}
-<div id="community-content" class="hover-content-panel">
+<div id="community-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
     <ul class="list-unstyled">
-        {% for community_item in all_communities_outreach %}
-            <li><a href="{{ community_item.external_url }}" target="_blank" rel="noopener noreferrer">{{ community_item.name }}</a></li>
-        {% empty %}
-            <li><span class="text-muted">No community links available.</span></li>
-        {% endfor %}
-
-        {% if all_communities_outreach %}
-            <li class="dropdown-divider"></li>
-        {% endif %}
-        <li><a href="{% url 'indabax_app:home' %}">Indabax App</a></li>
-    </ul>
-    <div class="text-center mt-3">
-        <a href="{% url 'kuai_club:community_list' %}" class="btn btn-primary btn-sm">View All Communities</a>
-    </div>
-</div>
-
-
-<div id="partners-content" class="hover-content-panel">
-    <ul class="list-unstyled">
-        {% for partner_item in partners_for_dropdown %}
-            <li>
-                {% if partner_item.website_link %}
-                    <a href="{{ partner_item.website_link }}" target="_blank" rel="noopener noreferrer">{{ partner_item.name }}</a>
-                {% else %}
-                    <span class="text-muted">{{ partner_item.name }}</span>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li><span class="text-muted">No featured partners.</span></li>
-        {% endfor %}
-        <li><a href="{% url 'kuai_club:partner_list' %}" class="btn btn-primary btn-sm mt-2">View All Partners</a></li>
-    </ul>
-</div>
-
-<div id="projects-content" class="hover-content-panel">
-    <ul class="list-unstyled">
-        {% for project_item in projects %}
-            <li>
-                {% if project_item.url %}
-                    <a href="{{ project_item.url }}" target="_blank" rel="noopener noreferrer">{{ project_item.title }}</a>
-                {% else %}
-                    <a href="{% url 'kuai_club:project_detail' slug=project_item.slug %}">{{ project_item.title }}</a>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li><span class="text-muted">No projects available.</span></li>
+        {% for outreach in community %}
+            <li><a href="{% url 'indabax_app:home'  %}">{{ outreach.title }}</a></li>
         {% endfor %}
     </ul>
-    <div class="text-center mt-3">
-        <a href="{% url 'kuai_club:project_list' %}" class="btn btn-primary btn-sm">View All Projects</a>
-    </div>
 </div>
 
+<div id="projects-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
+    <ul class="list-unstyled">
+        {% for project in projects %}
+            <li><a href="{% url 'kuai_club:project_page' project.id %}">{{ project.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Search Modal -->
 <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -349,11 +335,21 @@
         </div>
     </div>
 </div>
-<main class="py-4">
-    {% block content %}
-    {% endblock %}
-</main>
+<!-- ========================= NAVBAR END ============================== -->
 
+
+<div class="page-content">
+    {% block content %}
+    <!-- default content if needed, or empty -->
+     
+    
+    {% endblock %}
+    {% include 'layouts/footer.html' %}
+</div>
+
+
+
+<!-- JS Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'kuai_club/js/main.js' %}"></script>
 <script src="{% static 'kuai_club/js/hero_section.js' %}"></script>
@@ -362,58 +358,55 @@
 <script src="{% static 'kuai_club/js/Event.js' %}" ></script>
 <script src="{% static 'kuai_club/js/leaders.js' %}"></script>
 <script src="{% static 'kuai_club/js/News.js' %}"></script>
+<script src="{% static 'kuai_club/js/partners.js' %}"></script>
+
+{% block scripts %}
+{% endblock %}
+
+
+
+
 
 <script>
+    // Simple hover logic to show/hide content panels next to hovered nav items
     document.addEventListener('DOMContentLoaded', function() {
         const navItems = document.querySelectorAll('.nav-hover-content');
         const panels = document.querySelectorAll('.hover-content-panel');
 
-        const showPanel = (targetPanel, navItem) => {
-            const navRect = navItem.getBoundingClientRect();
-            
-            // First, remove the 'is-visible' class from all other panels
-            panels.forEach(p => p.classList.remove('is-visible'));
-
-            // Then, add it to the target panel
-            targetPanel.classList.add('is-visible');
-
-            // Position the panel below the nav item
-            targetPanel.style.top = (navRect.bottom + window.scrollY) + 'px';
-        };
-
-        const hidePanel = (panel) => {
-            panel.classList.remove('is-visible');
-        };
-
-        let timeoutId;
         navItems.forEach(item => {
-            const targetId = item.getAttribute('data-hover-target');
-            const targetPanel = document.getElementById(targetId);
-
-            if (!targetPanel) return; // Skip if a panel is not found
-
             item.addEventListener('mouseenter', () => {
-                clearTimeout(timeoutId);
-                showPanel(targetPanel, item);
+                // Hide all panels first
+                panels.forEach(panel => panel.style.display = 'none');
+
+                // Show target panel
+                const targetId = item.getAttribute('data-hover-target');
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    // Position panel below the hovered nav item
+                    const rect = item.getBoundingClientRect();
+                    targetPanel.style.display = 'block';
+                    targetPanel.style.top = rect.bottom + window.scrollY + 'px';
+                    targetPanel.style.left = rect.left + window.scrollX + 'px';
+                }
             });
 
             item.addEventListener('mouseleave', () => {
-                timeoutId = setTimeout(() => {
-                    if (!targetPanel.matches(':hover')) {
-                        hidePanel(targetPanel);
+                // Hide panel after a short delay to allow hover on panel itself
+                setTimeout(() => {
+                    // Only hide if mouse is not over panel
+                    const targetId = item.getAttribute('data-hover-target');
+                    const targetPanel = document.getElementById(targetId);
+                    if (targetPanel && !targetPanel.matches(':hover')) {
+                        targetPanel.style.display = 'none';
                     }
                 }, 200);
             });
         });
 
+        // Hide panel when mouse leaves panel itself
         panels.forEach(panel => {
-            panel.addEventListener('mouseenter', () => {
-                clearTimeout(timeoutId);
-            });
             panel.addEventListener('mouseleave', () => {
-                timeoutId = setTimeout(() => {
-                    hidePanel(panel);
-                }, 200);
+                panel.style.display = 'none';
             });
         });
     });
@@ -421,101 +414,6 @@
 
 
 
-{% block extra_js %}{% endblock %}
 
 </body>
-
-<footer class="footer bg-dark text-white py-4 mt-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-3 mb-md-0">
-                {% if site_settings.logo %}
-                    <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }} Logo" class="mb-3" style="max-height: 50px;">
-                {% else %}
-                    <h5 class="text-white">{{ site_settings.site_name|default:"Kabale University AI Club" }}</h5>
-                {% endif %}
-                <p class="text-white-50">{{ site_settings.site_description|default:"Welcome to our education platform where learning meets innovation." }}</p>
-                {% if site_settings.site_tagline %}
-                    <p class="text-white-50 fst-italic">"{{ site_settings.site_tagline }}"</p>
-                {% endif %}
-            </div>
-            <div class="col-md-4 mb-3 mb-md-0">
-                <h5>Quick Links</h5>
-                <ul class="list-unstyled">
-                    <li><a href="{% url 'kuai_club:home' %}" class="text-white-50 text-decoration-none">Home</a></li>
-                    <li><a href="{% url 'kuai_club:about_detail' page_id=1 %}" class="text-white-50 text-decoration-none">About Us</a></li>
-                    <li><a href="{% url 'kuai_club:project_list' %}" class="text-white-50 text-decoration-none">Projects</a></li>
-                    <li><a href="{% url 'kuai_club:news_list' %}" class="text-white-50 text-decoration-none">News</a></li>
-                    <li><a href="{% url 'kuai_club:event_list' %}" class="text-white-50 text-decoration-none">Events</a></li>
-                    <li><a href="{% url 'kuai_club:research_list' %}" class="text-white-50 text-decoration-none">Research</a></li>
-                    <li><a href="{% url 'kuai_club:resource_list' %}" class="text-white-50 text-decoration-none">Resources</a></li>
-                    <li><a href="{% url 'kuai_club:community_list' %}" class="text-white-50 text-decoration-none">Community</a></li>
-                    <li><a href="{% url 'kuai_club:partner_list' %}" class="text-white-50 text-decoration-none">Partners</a></li>
-                    {% if site_settings.privacy_policy_url %}
-                        <li><a href="{{ site_settings.privacy_policy_url }}" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
-                    {% endif %}
-                    {% if site_settings.terms_of_service_url %}
-                        <li><a href="{{ site_settings.terms_of_service_url }}" class="text-white-50 text-decoration-none">Terms of Service</a></li>
-                    {% endif %}
-                    {% if site_settings.portal_url %}
-                        <li><a href="{{ site_settings.portal_url }}" class="text-white-50 text-decoration-none">Student Portal</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Connect With Us</h5>
-                <ul class="list-unstyled d-flex mb-3">
-                    {% if site_settings.facebook_url %}
-                        <li class="me-3"><a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-facebook fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.twitter_url %}
-                        <li class="me-3"><a href="{{ site_settings.twitter_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-twitter fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.instagram_url %}
-                        <li class="me-3"><a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-instagram fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.linkedin_url %}
-                        <li class="me-3"><a href="{{ site_settings.linkedin_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-linkedin fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.youtube_url %}
-                        <li class="me-3"><a href="{{ site_settings.youtube_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-youtube fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.github_url %}
-                        <li class="me-3"><a href="{{ site_settings.github_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-github fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.tiktok_url %}
-                        <li class="me-3"><a href="{{ site_settings.tiktok_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-tiktok fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.whatsapp_url %}
-                        <li class="me-3"><a href="{{ site_settings.whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-whatsapp fs-4"></i></a></li>
-                    {% endif %}
-                    {% if site_settings.telegram_url %}
-                        <li class="me-3"><a href="{{ site_settings.telegram_url }}" target="_blank" rel="noopener noreferrer" class="text-white-50"><i class="bi bi-telegram fs-4"></i></a></li>
-                    {% endif %}
-                </ul>
-                
-                {% if site_settings.contact_email %}
-                    <p class="text-white-50 mt-3"><i class="bi bi-envelope-fill me-2"></i>Email: <a href="mailto:{{ site_settings.contact_email }}" class="text-white-50 text-decoration-none">{{ site_settings.contact_email }}</a></p>
-                {% endif %}
-                {% if site_settings.contact_phone %}
-                    <p class="text-white-50"><i class="bi bi-phone-fill me-2"></i>Phone: <a href="tel:{{ site_settings.contact_phone }}" class="text-white-50 text-decoration-none">{{ site_settings.contact_phone }}</a></p>
-                {% endif %}
-                {% if site_settings.contact_address %}
-                    <p class="text-white-50"><i class="bi bi-geo-alt-fill me-2"></i>Address: {{ site_settings.contact_address }}</p>
-                {% endif %}
-                {% if site_settings.working_hours %}
-                    <p class="text-white-50"><i class="bi bi-clock-fill me-2"></i>Hours: {{ site_settings.working_hours }}</p>
-                {% endif %}
-            </div>
-        </div>
-        <hr class="bg-white-50 my-3">
-        <div class="row">
-            <div class="col-12 text-center text-white-50 small">
-                <p>&copy; {% now "Y" %} {{ site_settings.site_name|default:"Kabale University AI Club" }}. All rights reserved.</p>
-                <p>Designed and Developed by Indabax Kabale</p>
-            </div>
-        </div>
-    </div>
-</footer>
-
 </html>

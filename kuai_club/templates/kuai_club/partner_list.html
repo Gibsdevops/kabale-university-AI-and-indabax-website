@@ -1,94 +1,46 @@
-{% extends 'layouts/base.html' %}
+{% extends 'kuai_club/base.html' %}
 {% load static %}
 
-{% block title %}
-    Our Partners - {{ site_settings.site_name }}
-{% endblock %}
-
-{% block extra_css %}
-    <style>
-        .partner-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            height: 100%; /* Ensure cards are same height in a row */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .partner-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        .partner-logo {
-            max-width: 120px; /* Adjust as needed */
-            max-height: 80px; /* Adjust as needed */
-            object-fit: contain; /* Ensures the logo scales nicely */
-            margin-bottom: 15px;
-        }
-        .partner-title {
-            font-size: 1.25rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-        .partner-description {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            flex-grow: 1; /* Allows description to take available space */
-            margin-bottom: 15px;
-        }
-        .partner-link {
-            display: inline-block;
-            margin-top: auto; /* Pushes button to the bottom */
-        }
-    </style>
-{% endblock %}
+{% block title %}Our Partners{% endblock title %}
 
 {% block content %}
-<section class="partners-section py-5">
-    <div class="container">
-        <h2 class="text-center mb-5 text-primary">Our Valued Partners</h2>
-        <p class="text-center lead mb-5">
-            We are proud to collaborate with leading organizations and institutions that share our vision and support our mission.
-            Our partnerships are crucial for fostering innovation, expanding our reach, and providing valuable opportunities to our members.
-        </p>
-
-        {% if partners %}
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                {% for partner in partners %}
-                    <div class="col d-flex">
-                        <div class="partner-card w-100">
-                            {% if partner.logo %}
-                                <img src="{{ partner.logo.url }}" class="partner-logo mx-auto" alt="{{ partner.name }} Logo">
-                            {% else %}
-                                <div class="partner-logo d-flex align-items-center justify-content-center border bg-light text-muted">
-                                    No Logo
-                                </div>
-                            {% endif %}
-                            <h3 class="partner-title">{{ partner.name }}</h3>
-                            {% if partner.description %}
-                                <p class="partner-description">{{ partner.description|truncatewords:30 }}</p>
-                            {% endif %}
-                            {% if partner.url %}
-                                <a href="{{ partner.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary partner-link mt-auto">
-                                    Visit Website <i class="fas fa-external-link-alt ms-1"></i>
-                                </a>
-                            {% elif partner.id %} {# Fallback if no URL, but you have a detail page #}
-                                <a href="{% url 'kuai_club:partner_detail' partner.id %}" class="btn btn-outline-primary partner-link mt-auto">
-                                    Learn More
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="alert alert-info text-center" role="alert">
-                We are currently establishing new partnerships. Please check back soon!
-            </div>
-        {% endif %}
+<section class="page-hero">
+    <div class="container text-center">
+        <h1>Our Valued Partners</h1>
+        <p class="lead">We're proud to collaborate with leading organizations and institutions that support our mission.</p>
     </div>
 </section>
-{% endblock %}
+
+<section class="partners-list container section-spacing">
+    {% if partners %}
+        <div class="partner-grid">
+            {% for partner in partners %}
+                <div class="partner-card">
+                    <a href="{{ partner.website_link }}" target="_blank" {% if not partner.website_link %}onclick="return false;"{% endif %}> {# Link to website if available #}
+                        {% if partner.logo %}
+                            <img src="{{ partner.logo.url }}" alt="{{ partner.name }} Logo" class="partner-logo">
+                        {% else %}
+                            <img src="{% static 'kuai_club/images/default_partner_logo.png' %}" alt="Default Partner Logo" class="partner-logo">
+                        {% endif %}
+                    </a>
+                    <div class="partner-info">
+                        <h3>{{ partner.name }}</h3>
+                        {% if partner.partner_type %}
+                            <p class="partner-type">{{ partner.get_partner_type_display }}</p>
+                        {% endif %}
+                        {% if partner.description %}
+                            <p class="partner-description">{{ partner.description|truncatechars:100 }}</p>
+                        {% endif %}
+                        {% if partner.website_link %}
+                            <a href="{{ partner.website_link }}" target="_blank" class="visit-website">Visit Website &rarr;</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">No partners are currently listed. Check back soon!</p>
+    {% endif %}
+</section>
+
+{% endblock content %}

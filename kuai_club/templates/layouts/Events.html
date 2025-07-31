@@ -2,10 +2,9 @@
 
 <link rel="stylesheet" href="{% static 'kuai_club/css/Events.css' %}">
 
-
 {% block content %}
 
-<section class="dual-events-section" style="background-image: url('{{ background_image_url }}'); background-size: cover; background-position: center;">
+<section id="event-section" class="dual-events-section" style="background-image: url('{{ background_image_url }}'); background-size: cover; background-position: center;">
   <div class="events-container">
     
     <!-- Previous Events Block -->
@@ -14,7 +13,7 @@
       <div class="event-slider-wrapper" id="prevEventWrapper">
         <div class="event-slider" id="prevSlider">
           {% if past_events %}
-            <div class="event-card" data-id="{{ past_events.0.id }}">
+            <div id="event-section-{{ past_events.0.slug }}" class="event-card" data-id="{{ past_events.0.id }}">
               {% if past_events.0.image %}
                 <img src="{{ past_events.0.image.url }}" alt="{{ past_events.0.title }}" />
               {% else %}
@@ -48,7 +47,7 @@
       <div class="event-slider-wrapper" id="upEventWrapper">
         <div class="event-slider" id="upSlider">
           {% for event in upcoming_events|slice:":2" %}
-            <div class="event-card" data-id="{{ event.id }}">
+            <div id="event-section-{{ event.slug }}" class="event-card" data-id="{{ event.id }}">
               {% if event.image %}
                 <img src="{{ event.image.url }}" alt="{{ event.title }}" />
               {% else %}
