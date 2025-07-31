@@ -8,17 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IndabaX Kabale AI Club</title>
     
-      {# Link to Bootstrap CSS from Indabax App's static folder #}
-    <link rel="stylesheet" href="{% static 'indabax_app/css/bootstrap.min.css' %}"> {# Adjusted to bootstrap.min based on your last clarification #}
+    {# Link to Bootstrap CSS from Indabax App's static folder #}
+    <link rel="stylesheet" href="{% static 'indabax_app/css/bootstrap.min.css' %}">
     
     {# Link to Indabax App specific custom CSS files here #}
     <link rel="stylesheet" href="{% static 'indabax_app/css/indabax_app_style.css' %}">
     <link rel="stylesheet" href="{% static 'indabax_app/css/indabax_app_leaders.css' %}">
     
-    {# Font Awesome for Icons (add this line) #}
+    {# Font Awesome for Icons #}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-     {# Add the favicon link here #}
+    {# Add the favicon link here #}
     <link rel="icon" type="image/x-icon" href="{% static 'indabax_app/images/indaba.ico' %}">
 
 
@@ -88,26 +88,99 @@
     {% block content %}
     {% endblock content %}
 
-    {# INDABAX APP UNIQUE FOOTER (You can add this below the content block) #}
-    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <footer class="indabax-footer py-5">
         <div class="container">
-            <p>&copy; 2025 IndabaX Kabale AI Club App. All rights reserved.</p>
-            <p>Email: indabaxkabale@gmail.com</p>
-            <p>Kabale University, Kikungiri Hill, Kabale, Uganda</p>
-            {# Social media icons for Indabax App, if any #}
-            <div class="social-icons mt-3">
-                {# Example icons, make sure you have Font Awesome or similar library linked if you use actual icons #}
-                <a href="#" class="text-white mx-2"><i class="fab fa-github"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-linkedin"></i></a>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="text-white mb-3">Kabale AI Club</h5>
+                    <p class="text-white-50">
+                        {# Use indabax_settings.footer_description if available, otherwise fallback to default text #}
+                        {% if indabax_settings and indabax_settings.footer_description %}
+                            {{ indabax_settings.footer_description }}
+                        {% else %}
+                            Empowering the next generation of AI innovators in Kabale, fostering education, collaboration, and impactful projects.
+                        {% endif %}
+                    </p>
+                    <p class="text-white-50">
+                        &copy; {% now "Y" %} IndabaX Kabale AI Club. All rights reserved.
+                    </p>
+                </div>
+
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'indabax_app:home' %}" class="footer-link">Home</a></li>
+                        <li><a href="{% url 'indabax_app:about' %}" class="footer-link">About Us</a></li>
+                        <li><a href="{% url 'indabax_app:tutorials' %}" class="footer-link">Tutorials</a></li>
+                        <li><a href="{% url 'indabax_app:photos' %}" class="footer-link">Gallery</a></li>
+                        <li><a href="{% url 'indabax_app:leaders' %}" class="footer-link">Leaders</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-white mb-3">Connect With Us</h5>
+                    <ul class="list-unstyled social-links">
+                        {# Use indabax_settings for social media URLs. These won't cause errors if blank in admin. #}
+                        {% if indabax_settings %}
+                            {% if indabax_settings.github_url %}
+                                <li><a href="{{ indabax_settings.github_url }}" target="_blank" class="footer-social-icon"><i class="fab fa-github me-2"></i> GitHub</a></li>
+                            {% endif %}
+                            {% if indabax_settings.twitter_url %}
+                                <li><a href="{{ indabax_settings.twitter_url }}" target="_blank" class="footer-social-icon"><i class="fab fa-twitter me-2"></i> Twitter</a></li>
+                            {% endif %}
+                            {% if indabax_settings.linkedin_url %}
+                                <li><a href="{{ indabax_settings.linkedin_url }}" target="_blank" class="footer-social-icon"><i class="fab fa-linkedin-in me-2"></i> LinkedIn</a></li>
+                            {% endif %}
+                            {% if indabax_settings.facebook_url %}
+                                <li><a href="{{ indabax_settings.facebook_url }}" target="_blank" class="footer-social-icon"><i class="fab fa-facebook-f me-2"></i> Facebook</a></li>
+                            {% endif %}
+                            {% if indabax_settings.youtube_url %}
+                                <li><a href="{{ indabax_settings.youtube_url }}" target="_blank" class="footer-social-icon"><i class="fab fa-youtube me-2"></i> YouTube</a></li>
+                            {% endif %}
+                        {% else %}
+                            {# Fallback to hardcoded placeholders if indabax_settings not available (shouldn't happen with context processor) #}
+                            <li><a href="#" target="_blank" class="footer-social-icon"><i class="fab fa-github me-2"></i> GitHub</a></li>
+                            <li><a href="#" target="_blank" class="footer-social-icon"><i class="fab fa-twitter me-2"></i> Twitter</a></li>
+                            <li><a href="#" target="_blank" class="footer-social-icon"><i class="fab fa-linkedin-in me-2"></i> LinkedIn</a></li>
+                            <li><a href="#" target="_blank" class="footer-social-icon"><i class="fab fa-facebook-f me-2"></i> Facebook</a></li>
+                            <li><a href="#" target="_blank" class="footer-social-icon"><i class="fab fa-youtube me-2"></i> YouTube</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Contact Us</h5>
+                    <p class="text-white-50">
+                        Email:
+                        {% if indabax_settings and indabax_settings.contact_email %}
+                            {{ indabax_settings.contact_email }}
+                        {% else %}
+                            indabaxkabale@gmail.com {# Fallback for email #}
+                        {% endif %}<br>
+                        {% if indabax_settings and indabax_settings.physical_address %}
+                            {{ indabax_settings.physical_address }}
+                        {% else %}
+                            Kabale University, Kikungiri Hill,<br>Kabale, Western Region, Uganda {# Fallback for address #}
+                        {% endif %}
+                        {% if indabax_settings and indabax_settings.phone_number %}
+                            <br>Phone: {{ indabax_settings.phone_number }}
+                        {% endif %}
+                    </p>
+                    {# Displays current time and date in Kabale #}
+                    <p class="text-white-50 mt-2">
+                        Current Time in Kabale: {% now "H:i:s A" %}<br>
+                        Date: {% now "F j, Y" %}
+                    </p>
+                    <p class="text-white-50 mt-3 designer-credit">
+                        Designed by <a href="#" class="footer-link">BETA-TECH LABS</a>
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
-
-
     {# Link to Bootstrap JS from Indabax App's static folder #}
     <script src="{% static 'indabax_app/js/bootstrap.bundle.min.js' %}"></script>
-    
-    
+
+
 </body>
 </html>

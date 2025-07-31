@@ -11,12 +11,17 @@ from .models import (EventImage,
                      Partner, 
                      GalleryImage, 
                      Album,
-                     HeroBackgroundImage)# Ensure GalleryImage is imported
+                     HeroBackgroundImage,
+                     Session,
+                     SessionImage)
+
+
 from datetime import date
 from django.db.models import Q
 import json
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
+
 
 
 class HomePageView(TemplateView):
@@ -52,6 +57,16 @@ class HomePageView(TemplateView):
 
         # For Partners
         context['partners'] = Partner.objects.all()
+
+        # --- NEW: Data for Latest Session Highlights --- #
+        # Fetch a few recent local session images for the homepage
+        # We order by uploaded_at to get the very latest individual images
+        context['recent_session_images'] = SessionImage.objects.filter(
+            session__is_published=True
+        ).order_by('-uploaded_at')[:6] # Get the last 6 images
+
+        # You might also want to display recent sessions if you prefer to link to sessions directly
+        context['recent_sessions'] = Session.objects.filter(is_published=True).order_by('-session_date')[:3] # Get last 3 sessions
 
         return context
     
@@ -101,23 +116,54 @@ class AllLeadersPageView(TemplateView):
     
 
 class PhotosView(ListView):
-    # This specifies the model to retrieve a list of objects from.
-    model = Album
-
-    # This tells the view which template to render.
+    model = Album # This view primarily handles Google Photo Albums
     template_name = 'indabax_app/photos.html'
+    context_object_name = 'albums' # For Google Photo Albums
 
-    # This sets the name of the context variable in the template.
-    # The template will receive a list of albums under the name 'albums'.
-    context_object_name = 'albums'
-    
-    # This method is used to specify the queryset (the list of objects)
-    # that should be passed to the template. We use it to filter and order the albums.
     def get_queryset(self):
         """
-        Returns all published albums, ordered from newest to oldest.
+        Returns all published Google Photo Albums.
         """
         return Album.objects.filter(is_published=True).order_by('-id')
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super().get_context_data(**kwargs)
+        # Add local sessions to the context
+        context['sessions'] = Session.objects.filter(is_published=True).order_by('-session_date')
+        return context
+    
+def session_detail(request, pk):
+    session = get_object_or_404(Session, pk=pk)
+    images = session.images.all() # Fetch related images
+
+    # --- NEW LOGIC TO COMBINE SPEAKERS ---
+    combined_speakers = []
+
+    # 1. Add selected Leaders from the ManyToMany field
+    for leader in session.speakers.all().order_by('name'): # Order them by name for consistent display
+        combined_speakers.append({
+            'type': 'leader',
+            'obj': leader
+        })
+
+    # 2. Add guest speakers from the TextField
+    if session.guest_speakers_info:
+        # Split by newlines, strip whitespace, and filter out empty lines
+        guest_lines = [line.strip() for line in session.guest_speakers_info.splitlines() if line.strip()]
+        for guest_name in guest_lines:
+            combined_speakers.append({
+                'type': 'guest',
+                'name': guest_name
+            })
+    # --- END NEW LOGIC ---
+
+    context = {
+        'session': session,
+        'images': images,
+        'combined_speakers': combined_speakers, # Pass the combined list to the template
+    }
+    return render(request, 'indabax_app/session_detail.html', context)
 
 
 def search(request):

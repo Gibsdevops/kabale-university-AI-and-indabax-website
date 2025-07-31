@@ -10,7 +10,17 @@ from .models import ( EventImage,
                      Partner,
                      GalleryImage, 
                      HeroBackgroundImage,
-                     Album)
+                     Album,
+                     Session, 
+                     SessionImage,
+                    SiteSettings )
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    list_display = ('contact_email', 'phone_number',)
+    # You might want to limit to a single instance from admin directly too
+    def has_add_permission(self, request):
+        return not SiteSettings.objects.exists()
 
 admin.site.register(Album)
 
@@ -90,4 +100,46 @@ class GalleryImageAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
 admin.site.register(HeroBackgroundImage)
+
+
+admin.site.register(SessionImage)
+
+class SessionImageInline(admin.TabularInline):
+    model = SessionImage
+    extra = 3 # Number of empty forms to display
+
+@admin.register(Session)
+class SessionAdmin(admin.ModelAdmin):
+    # This inline is for SessionImage, not directly for speakers.
+    class SessionImageInline(admin.TabularInline):
+        model = SessionImage
+        extra = 3 # Number of empty forms to display
+
+    inlines = [SessionImageInline]
+    list_display = (
+        'title',
+        'session_date',
+        'venue',
+        'is_published',
+        'google_photos_link'
+    )
+    list_filter = ('is_published', 'session_date')
+    search_fields = ('title', 'description', 'venue', 'guest_speakers_info')
+
+    # Define the fields shown in the add/change form
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'tagline', 'description', 'is_published', 'google_photos_link')
+        }),
+        ('Session Details', {
+            'fields': ('session_date', ('start_time', 'end_time'), 'venue')
+        }),
+        ('Speakers', { # NEW FIELDSET for speakers
+            'fields': ('speakers', 'guest_speakers_info'), # Both fields here
+            'description': 'Select existing leaders or add guest speakers manually.'
+        }),
+    )
+
+
+
 

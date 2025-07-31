@@ -1,5 +1,39 @@
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
+
+
+class SiteSettings(models.Model):
+    # Social Media Links
+    facebook_url = models.URLField(blank=True, verbose_name="Facebook URL")
+    twitter_url = models.URLField(blank=True, verbose_name="Twitter URL")
+    linkedin_url = models.URLField(blank=True, verbose_name="LinkedIn URL")
+    github_url = models.URLField(blank=True, verbose_name="GitHub URL")
+    youtube_url = models.URLField(blank=True, verbose_name="YouTube URL")
+
+    # Contact Info
+    contact_email = models.EmailField(blank=True, verbose_name="Contact Email")
+    phone_number = models.CharField(max_length=20, blank=True, verbose_name="Phone Number")
+    physical_address = models.CharField(max_length=255, blank=True, verbose_name="Physical Address")
+
+    # Other Footer/Site Content (e.g., short club description)
+    footer_description = models.TextField(blank=True, verbose_name="Footer Club Description", help_text="A short description for the footer.")
+
+    def __str__(self):
+        return "Site Settings"
+
+    # Ensure only one instance can exist (singleton pattern)
+    def save(self, *args, **kwargs):
+        if not self.pk and SiteSettings.objects.exists():
+            # If trying to create a second instance, get the existing one
+            existing = SiteSettings.objects.first()
+            self.pk = existing.pk
+            self.id = existing.id # For older Django versions
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Site Setting"
+        verbose_name_plural = "Site Settings"
 
 
 class HomePageContent(models.Model):
@@ -36,8 +70,8 @@ class Pillar(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     icon_class = models.CharField(max_length=50, blank=True, help_text="Font Awesome icon class (e.g., fas fa-graduation-cap)")
-    button_text = models.CharField(max_length=50, default="Learn More")
-    button_url = models.URLField(blank=True, null=True)
+    #button_text = models.CharField(max_length=50, default="Learn More")
+    #button_url = models.URLField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0, help_text="Order in which pillars are displayed.")
 
     class Meta:
@@ -241,3 +275,70 @@ class Album(models.Model):
 
     def __str__(self):
         return self.title
+    
+# --- Modified Session Model ---
+class Session(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Provide a general overview and detailed description of the session content."
+    )
+    session_date = models.DateField(default=timezone.now)
+    google_photos_link = models.URLField(
+        max_length=400,
+        blank=True,
+        null=True,
+        help_text="Optional: Link to the full Google Photos album for this session."
+    )
+    is_published = models.BooleanField(default=True)
+
+    tagline = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="A short, catchy phrase for the session (e.g., 'Discover Hidden Patterns')."
+    )
+    venue = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="e.g., 'New Computer Lab', 'Online via Zoom'"
+    )
+    start_time = models.TimeField(blank=True, null=True)
+    end_time = models.TimeField(blank=True, null=True)
+
+    # NEW: Many-to-Many field for existing Leaders
+    # This creates a selectable list in the admin.
+    speakers = models.ManyToManyField(
+        Leader,
+        related_name='sessions_spoken_at',
+        blank=True,
+        help_text="Select existing leaders who spoke at this session."
+    )
+
+    # NEW: TextField for manually entered guest speakers or additional speaker info
+    guest_speakers_info = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Enter names of guest speakers not listed above, or additional speaker details. Use new lines for each speaker."
+    )
+
+    class Meta:
+        ordering = ['-session_date']
+
+    def __str__(self):
+        return f"{self.title} ({self.session_date.year}-{self.session_date.month}-{self.session_date.day})"
+
+# NEW MODEL: For individual photos within a session
+class SessionImage(models.Model):
+    session = models.ForeignKey(Session, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='session_photos/') # Images will be stored in media/session_photos/
+    caption = models.CharField(max_length=255, blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"Image for {self.session.title} - {self.caption or self.image.name}"

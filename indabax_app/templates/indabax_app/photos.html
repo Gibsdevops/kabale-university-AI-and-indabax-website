@@ -3,11 +3,38 @@
 
 {% block content %}
 <div class="container my-5">
-    <h1 class="indabax-heading text-center mb-4">Our Gallery</h1>
+    <h1 class="indabax-heading text-center mb-4">Our Photo Galleries</h1>
     <p class="text-center lead">
-        Explore a collection of moments from our weekly sessions and events.
+        Explore moments from our sessions, events, and workshops.
     </p>
 
+    <h2 class="indabax-heading text-center mt-5 mb-4">Our Sessions & Events</h2>
+    <p class="text-center lead mb-4">Browse photos uploaded directly from our club's activities.</p>
+    <div class="row">
+        {% for session in sessions %}
+        <div class="col-md-6 mb-4">
+            <a href="{% url 'indabax_app:session_detail' session.pk %}" class="indabax-album-link">
+                <div class="card h-100 indabax-session-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ session.title }}</h5>
+                        <p class="card-text text-muted">{{ session.session_date|date:"F j, Y" }}</p>
+                        <p class="card-text">{{ session.description|truncatechars:150 }}</p>
+                        <div class="mt-auto">
+                            <span class="btn btn-warning">View Photos <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No local sessions have been added yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 class="indabax-heading text-center mt-5 mb-4">External Photo Albums</h2>
+    <p class="text-center lead mb-4">Discover larger collections hosted on Google Photos.</p>
     <div class="row">
         {% for album in albums %}
         <div class="col-md-6 mb-4">
@@ -15,16 +42,20 @@
                 <div class="card h-100 indabax-album-card">
                     <div class="card-body">
                         <h5 class="card-title">{{ album.title }}</h5>
-                        <p class="card-text">{{ album.description }}</p>
+                        <p class="card-text">{{ album.description|truncatechars:150 }}</p>
+                        <div class="mt-auto">
+                            <span class="btn btn-primary">View Album on Google Photos <i class="fas fa-external-link-alt"></i></span>
+                        </div>
                     </div>
                 </div>
             </a>
         </div>
         {% empty %}
         <div class="col-12 text-center">
-            <p>No albums have been added yet.</p>
+            <p>No external albums have been added yet.</p>
         </div>
         {% endfor %}
     </div>
+
 </div>
 {% endblock content %}

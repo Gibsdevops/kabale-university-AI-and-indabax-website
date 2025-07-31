@@ -2,13 +2,13 @@
 
 
 
-
+/* --indabax-light-gray: #04234d;, --indabax-light-gray: hsl(210, 29%, 95%); */
 /* Define your primary colors (keep these new color variables) */
 :root {
     --indabax-primary-yellow: #FFD700; /* Gold/Yellow */
     --indabax-secondary-green: #3CB371; /* Medium Sea Green */
     --indabax-dark-blue: #2c3e50; /* A dark blue for backgrounds/text contrast */
-    --indabax-light-gray: #04234d; /* Light background for sections */
+    --indabax-light-gray: hwb(172 62% 3%); /* Light background for sections */
     --indabax-text-color: #343a40; /* Dark grey for general text */
 
     /* Keep your existing core colors for clarity if they are used elsewhere */
@@ -350,35 +350,108 @@ body {
 
 /* Footer Styling - MERGED & Adjusted for Bootstrap 5 */
 /* Assuming the footer HTML is now in indabax_app/base.html using the `footer` tag directly */
-footer {
-    /* Use the new dark blue for the footer background, or keep your original `#0f172a` */
-    background-color: var(--indabax-dark-blue) !important; 
-    /* Or: background-color: var(--old-footer-bg); */
+/* --- Footer Styling --- */
 
-    color: #e2e8f0; /* Your original footer text color */
-    text-align: center;
-    padding: 40px 0; /* More padding as previously suggested */
-    margin-top: 40px; /* Keep margin-top */
-    font-size: 14px; /* Keep font-size */
+.indabax-footer {
+    background-color: var(--indabax-dark-blue) !important; /* A deep, dark blue/grey for a professional look */
+    color: #ffffff; /* White text for contrast */
+    padding-top: 60px; /* Make it "big" by adding significant top padding */
+    padding-bottom: 40px; /* And bottom padding */
+    border-top: 5px solid #4A205C; /* A striking line at the top, matching your pillar color */
 }
 
-footer p {
-    margin-bottom: 5px; /* Keep existing margin */
+.indabax-footer h5 {
+    font-size: 1.4rem; /* Larger headings in the footer */
+    font-weight: 700;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px; /* Space for an underline effect */
 }
 
-/* Your original .footer-content a - likely redundant now if direct text links are used in footer HTML */
-.footer-content a {
-    color: #22d3ee; /* Your original link color */
+.indabax-footer h5::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px; /* Short underline for headings */
+    height: 3px;
+    background-color: #007bff; /* Accent color for underlines, you can change to #4A205C for consistency */
+}
+
+.indabax-footer p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+.indabax-footer .text-white-50 {
+    color: rgba(255, 255, 255, 0.7) !important; /* Slightly more visible white-50 */
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.9rem;
+    padding: 3px 0; /* Add padding for clickable area */
+    display: block; /* Make the whole link block clickable */
+}
+
+.footer-link:hover {
+    color: #007bff; /* Highlight on hover, consistent with Bootstrap */
     text-decoration: none;
 }
 
-.footer-content a:hover {
+/* Social Media Icons in Footer */
+.footer-social-icon {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    display: flex; /* For icon-text alignment */
+    align-items: center;
+    margin-bottom: 8px; /* Spacing between social links */
+}
+
+.footer-social-icon:hover {
+    color: #007bff; /* Accent color on hover */
+    text-decoration: none;
+}
+
+.footer-social-icon i {
+    font-size: 1.2rem; /* Make icons slightly larger */
+    width: 25px; /* Fixed width for alignment */
+    text-align: center;
+}
+
+/* Footer bottom bar for attribution */
+.indabax-footer .designer-credit {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center; /* Center the design credit */
+}
+
+.indabax-footer .designer-credit a {
+    color: #007bff; /* Consistent link color */
+    text-decoration: none;
+}
+
+.indabax-footer .designer-credit a:hover {
     text-decoration: underline;
 }
 
-.footer-content i { /* For icons directly in footer-content */
-    margin-right: 6px;
-    color: #22d3ee;
+/* Adjustments for smaller screens if needed (Bootstrap handles much of this) */
+@media (max-width: 768px) {
+    .indabax-footer {
+        padding-top: 40px;
+        padding-bottom: 20px;
+    }
+    .indabax-footer h5 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
 }
 
 /* Social links (MERGED and styled with new colors) */
@@ -411,6 +484,17 @@ footer p {
     padding: 0 20px;
 }
 
+.tutorials-container h2 {
+    color: hsl(108, 82%, 48%);
+    align-items: center;
+}
+
+.tutorials-container h3 {
+    color: hsl(108, 82%, 48%);
+    align-items: center;
+}
+
+
 .tutorial-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -422,7 +506,7 @@ footer p {
     border: 1px solid #ddd;
     padding: 15px;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #000000;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
@@ -430,11 +514,11 @@ footer p {
 
 .tutorial-item h4 {
     margin-top: 0;
-    color: #333;
+    color: hsl(0, 12%, 97%);
 }
 
 .tutorial-item p {
-    color: #666;
+    color: #f1eeee;
     flex-grow: 1;
 }
 
@@ -612,11 +696,55 @@ footer p {
 }
 
 /* Our Core Pillars Section (already styled, just ensure consistency) */
-.indabax-pillars-section {
-    background-color: var(--indabax-dark-blue); /* Dark background */
+/* .indabax-pillars-section {
+    background-color: var(--indabax-dark-blue); 
     color: white;
-    border-radius: 15px; /* Match other sections */
+    border-radius: 15px; 
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+} */
+
+.indabax-pillars-section {
+    background-color: hsl(0, 0%, 100%); /* Light grey background for the section */
+    padding: 60px 0; /* Vertical padding */
+}
+
+.pillar-card {
+    background-color: #6d4701;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.pillar-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.pillar-icon {
+    color: #4A205C; /* Your primary brand color for icons */
+    margin-bottom: 15px;
+}
+
+/* Specific colors for different icons (optional, but can add visual variety) */
+/* You can target specific icons if you want unique colors for each */
+/*
+.fa-graduation-cap { color: #007bff; }
+.fa-users { color: #28a745; }
+.fa-lightbulb { color: #ffc107; }
+.fa-handshake { color: #17a2b8; }
+*/
+
+.pillar-title {
+    color: hsl(108, 82%, 48%); /* Darker text for titles */
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.pillar-description {
+    color: hsl(210, 27%, 96%); /* Lighter text for description */
+    font-size: 0.95rem;
+    line-height: 1.6;
 }
 
 /* Upcoming & Past Events Section */
@@ -1130,6 +1258,67 @@ footer p {
 
 /* --- Photo Gallery Styles --- */
 
+/* --- Session Card Styles (for photos.html and home.html) --- */
+
+.indabax-session-card,
+.indabax-session-highlight-card,
+.indabax-image-card {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow: hidden; /* Ensures image corners are rounded */
+}
+
+/* Hover effect for clickable session cards */
+.indabax-session-card:hover,
+.indabax-session-highlight-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* --- Session Detail Page Styling --- */
+
+/* Style for the main "Session Overview" heading */
+.session-details-card h4 {
+    color: #4A205C; /* Dark purple, similar to IndabaX branding or a professional blue */
+    font-size: 1.6rem; /* A bit larger than default h4 */
+    font-weight: 700; /* Bold */
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(74, 32, 92, 0.2); /* Subtle line underneath */
+    padding-bottom: 0.5rem;
+}
+
+/* Style for the smaller subheadings (Date, Time, Venue, Speakers) */
+.session-details-card h5 {
+    color: #4A205C; /* Same dark purple color */
+    font-size: 1.2rem; /* Consistent size for these sub-sections */
+    font-weight: 600; /* Semi-bold */
+    margin-bottom: 0.8rem;
+    display: flex; /* Helps align icons with text */
+    align-items: center; /* Vertically align icons */
+}
+
+/* Style for icons within these subheadings */
+.session-details-card h5 i {
+    color: #007bff; /* A lighter blue for icons, you can adjust */
+    margin-right: 0.5rem;
+}
+
+/* Style for the "Session Photos" heading (if you want it similar) */
+h2.indabax-heading { /* Assuming indabax-heading is already defined, this adds color */
+    color: #4A205C; /* Consistent color for major headings */
+    /* You can adjust font-size here if you want it larger/smaller than default indabax-heading */
+}
+
+.indabax-image-card .card-img-top {
+    height: 200px; /* Fixed height for consistency */
+    object-fit: cover; /* Ensures image fills the space */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
 /* Styles for the container of each album */
 .indabax-album-card {
     /* Use a similar card style to other sections */
@@ -1158,6 +1347,8 @@ footer p {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
+
+
 
 /* Ensure text on all leaders page is visible */
 /* Since the body is likely a white background, this ensures text is readable */

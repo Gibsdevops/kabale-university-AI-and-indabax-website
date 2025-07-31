@@ -12,5 +12,6 @@ urlpatterns = [
     path('leaders/all/', AllLeadersPageView.as_view(), name='all_leaders'),
     path('photos/', PhotosView.as_view(), name='photos'),
     path('search/', views.search, name='search'),
+    path('sessions/<int:pk>/', views.session_detail, name='session_detail'),
 ]
 

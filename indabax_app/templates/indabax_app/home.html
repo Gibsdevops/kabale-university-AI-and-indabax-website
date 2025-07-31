@@ -113,9 +113,35 @@
     </section>
     {% endif %}
 
+        <section class="container my-5 py-5">
+        <h2 class="indabax-heading text-center mt-5 mb-4">Latest Session Highlights</h2>
+        <div class="row">
+            {% for image in recent_session_images %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card h-100 indabax-session-highlight-card">
+                    <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.caption|default_if_none:image.image.name }}">
+                    <div class="card-body d-flex flex-column"> {# Use flex-column for sticky button #}
+                        <h5 class="card-title">{{ image.session.title }}</h5>
+                        <p class="card-text text-muted">{{ image.session.session_date|date:"F j, Y" }}</p>
+                        <p class="card-text">{{ image.caption|truncatechars:80 }}</p>
+                        <a href="{% url 'indabax_app:session_detail' image.session.pk %}" class="btn btn-sm indabax-btn-primary mt-auto">View Session</a> {# Use your primary button style #}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead text-muted">No recent session photos yet. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'indabax_app:photos' %}" class="btn indabax-btn-secondary btn-lg">View All Galleries <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </section>
+
     {# --- Our Core Pillars Section (Dynamic) --- #}
     {% if pillars %}
-    <section class="my-5 py-5 indabax-pillars-section">
+    <!-- <section class="my-5 py-5 indabax-pillars-section">
         <h2 class="text-center mb-5 display-4 fw-bold text-white indabax-heading">Our Core Pillars</h2>
         <div class="row text-center justify-content-center g-4">
             {% for pillar in pillars %}
@@ -138,6 +164,31 @@
                     </div>
                 </div>
             {% endfor %}
+        </div>
+    </section> -->
+        <section class="indabax-pillars-section py-5">
+        <div class="container">
+            <h2 class="indabax-heading text-center mb-5">Our Core Pillars</h2>
+            <div class="row justify-content-center">
+                {% for pillar in pillars %}
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="pillar-card h-100 p-4 text-center d-flex flex-column justify-content-between">
+                        {% if pillar.icon_class %}
+                            <div class="pillar-icon mb-3">
+                                <i class="{{ pillar.icon_class }} fa-3x"></i>
+                            </div>
+                        {% endif %}
+                        <h4 class="pillar-title mb-2">{{ pillar.title }}</h4>
+                        <p class="pillar-description flex-grow-1">{{ pillar.description }}</p>
+                        {# No button_text or button_url if you don't want links here #}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="lead text-muted">No pillars defined yet.</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </section>
     {% endif %}

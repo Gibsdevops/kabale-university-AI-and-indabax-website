@@ -1,0 +1,111 @@
+{% extends 'indabax_app/base.html' %}
+{% load static %}
+{# {% load indabax_filters %} -- No longer needed for split_lines if handled in view #}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="indabax-heading text-center mb-4">{{ session.title }}</h1>
+
+    {% if session.tagline %}
+        <p class="lead text-center mb-4">{{ session.tagline }}</p>
+    {% endif %}
+
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4 shadow-sm session-details-card">
+                <h4 class="mb-3">Session Overview</h4>
+                <p>{{ session.description|linebreaksbr }}</p>
+
+                <hr class="my-4">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h5 class="mb-2"><i class="far fa-calendar-alt me-2"></i>Date</h5>
+                        <p>{{ session.session_date|date:"F j, Y" }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="mb-2"><i class="far fa-clock me-2"></i>Time</h5>
+                        {% if session.start_time and session.end_time %}
+                            <p>{{ session.start_time|time:"g:i A" }} - {{ session.end_time|time:"g:i A" }}</p>
+                        {% elif session.start_time %}
+                            <p>{{ session.start_time|time:"g:i A" }}</p>
+                        {% else %}
+                            <p>Not specified</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Venue</h5>
+                        <p>{{ session.venue|default:"Online / TBD" }}</p>
+                    </div>
+
+                    {# --- Displaying Speakers with Numbering from combined_speakers --- #}
+                    {% if combined_speakers %} {# Check if the list is not empty #}
+                    <div class="col-md-6 mb-3">
+                        <h5 class="mb-2"><i class="fas fa-microphone me-2"></i>Speakers</h5>
+                        <ul class="list-unstyled">
+                            {% for speaker_item in combined_speakers %}
+                            <li class="d-flex align-items-center mb-2">
+                                {% if speaker_item.type == 'leader' %}
+                                    {% with speaker=speaker_item.obj %}
+                                    {% if speaker.photo %}
+                                    <img src="{{ speaker.photo.url }}" alt="{{ speaker.name }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                    {% endif %}
+                                    <div>
+                                        <span class="fw-bold">{{ forloop.counter }}.</span>
+                                        <a href="{{ speaker.get_absolute_url }}" class="text-decoration-none fw-bold">
+                                            {{ speaker.name }}
+                                        </a>
+                                        {% if speaker.position %} <span class="text-muted">({{ speaker.position }})</span>{% endif %}
+                                    </div>
+                                    {% endwith %}
+                                {% elif speaker_item.type == 'guest' %}
+                                    <div>
+                                        <span class="fw-bold">{{ forloop.counter }}.</span>
+                                        {{ speaker_item.name }}
+                                    </div>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {# --- END Displaying Speakers --- #}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if session.google_photos_link %}
+    <div class="text-center mb-5">
+        <a href="{{ session.google_photos_link }}" target="_blank" class="btn indabax-btn-primary btn-lg">
+            View Full Album on Google Photos <i class="fas fa-external-link-alt"></i>
+        </a>
+    </div>
+    {% endif %}
+
+    {% if images %}
+    <h2 class="indabax-heading text-center mt-5 mb-4">Session Photos</h2>
+    <div class="row">
+        {% for image in images %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 indabax-image-card">
+                <img src="{{ image.image.url }}" class="card-img-top" alt="{{ image.caption|default_if_none:image.image.name }}">
+                {% if image.caption %}
+                <div class="card-body text-center">
+                    <p class="card-text">{{ image.caption }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center">No photos available for this session yet.</p>
+    {% endif %}
+
+    <div class="text-center mt-5">
+        <a href="{% url 'indabax_app:photos' %}" class="btn indabax-btn-secondary">Back to Gallery</a>
+    </div>
+</div>
+{% endblock content %}

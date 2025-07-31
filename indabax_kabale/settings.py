@@ -68,6 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz', 
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                #processors for indabax_app
+                'indabax_app.context_processors.indabax_settings',
 
 
 
