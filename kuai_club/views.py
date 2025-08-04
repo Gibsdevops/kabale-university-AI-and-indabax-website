@@ -289,7 +289,7 @@ def project_page(request, page_id):
         page = Project.objects.get(id=page_id, is_published=True)
     except Project.DoesNotExist:
         return render(request, '404.html', status=404)
-    return render(request, 'projects/project_detail.html', {'page': page})
+    return render(request, 'kuai_club/project_detail.html', {'page': page})
 
 def community_processor(request):
     community = CommunityOutreach.objects.all().order_by('title')

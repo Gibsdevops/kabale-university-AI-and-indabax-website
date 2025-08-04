@@ -1,57 +1,760 @@
-{% extends 'kuai_club/base.html' %}
+{% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %}{{ project.title }} - Project Details{% endblock title %}
+{% block title %}{{ project.title }} - Projects{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ project.summary|truncatewords:25 }}">
+<meta property="og:title" content="{{ project.title }}">
+<meta property="og:description" content="{{ project.summary|truncatewords:25 }}">
+{% if project.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ project.image.url }}">
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --accent-color: #3b82f6;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+    --bg-light: #f9fafb;
+    --success-color: #10b981;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --border-radius: 0.5rem;
+  }
+
+  .project-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    min-height: calc(100vh - 200px);
+  }
+
+  .project-hero {
+    position: relative;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .project-hero-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .project-hero-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+    padding: 2rem;
+  }
+
+  .project-hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .project-hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .project-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .project-main-content {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  .project-section {
+    margin-bottom: 2rem;
+  }
+
+  .project-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .project-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-dark);
+    white-space: pre-line;
+  }
+
+  .project-sidebar {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .sidebar-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+  }
+
+  .sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+  }
+
+  .project-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: var(--bg-light);
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s ease;
+  }
+
+  .project-info-item:hover {
+    background: #f3f4f6;
+  }
+
+  .project-info-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .info-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+  }
+
+  .info-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    min-width: 80px;
+  }
+
+  .info-value {
+    color: var(--text-light);
+    word-break: break-word;
+  }
+
+  .contact-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .contact-button:hover {
+    background: var(--secondary-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+    color: white;
+  }
+
+  .project-link-button {
+    background: var(--success-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .project-link-button:hover {
+    background: #059669;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+  }
+
+  .back-button:hover {
+    background: var(--bg-light);
+    text-decoration: none;
+    color: var(--secondary-color);
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .project-tag {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .share-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s ease;
+  }
+
+  .share-button:hover {
+    transform: scale(1.1);
+    text-decoration: none;
+  }
+
+  .share-facebook { background: #1877f2; }
+  .share-twitter { background: #1da1f2; }
+  .share-linkedin { background: #0a66c2; }
+  .share-whatsapp { background: #25d366; }
+
+  /* People Involved Styles */
+  .people-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .people-list li {
+    background: var(--bg-light);
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--primary-color);
+    transition: all 0.2s ease;
+  }
+
+  .people-list li:hover {
+    background: #f3f4f6;
+    transform: translateX(5px);
+  }
+
+  .people-list li:before {
+    content: "👤";
+    margin-right: 0.5rem;
+  }
+
+  .leader-highlight {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white !important;
+    font-weight: 600;
+  }
+
+  .leader-highlight:before {
+    content: "⭐";
+  }
+
+  .sponsor-highlight {
+    background: linear-gradient(135deg, var(--success-color), #34d399);
+    color: white !important;
+    font-weight: 600;
+  }
+
+  .sponsor-highlight:before {
+    content: "🏢";
+  }
+
+  .people-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 968px) {
+    .project-content-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .project-sidebar {
+      position: static;
+      order: -1;
+    }
+
+    .sidebar-card {
+      margin-bottom: 1rem;
+    }
+
+    .project-hero-title {
+      font-size: 2rem;
+    }
+
+    .project-detail-container {
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .project-hero-title {
+      font-size: 1.75rem;
+    }
+
+    .project-hero-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .project-main-content {
+      padding: 1.5rem;
+    }
+
+    .contact-button {
+      padding: 1rem;
+    }
+  }
+
+  /* Animation */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .project-detail-container > * {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .project-main-content {
+    animation-delay: 0.1s;
+  }
+
+  .sidebar-card:first-child {
+    animation-delay: 0.2s;
+  }
+
+  .sidebar-card:last-child {
+    animation-delay: 0.3s;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="page-hero">
-    <div class="container text-center">
-        <h1>{{ project.title }}</h1>
-        {% if project.research_area %}
-            <p class="lead">Category: {{ project.research_area.name }}</p>
+<div class="project-detail-container">
+  <!-- Back Button -->
+  <a href="{% url 'kuai_club:home' %}#projects" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Back to Projects
+  </a>
+
+  <!-- Project Hero Section -->
+  <div class="project-hero fade-in">
+    {% if project.image %}
+      <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-hero-image">
+    {% else %}
+      <img src="{% static 'images/default-project.jpg' %}" alt="Default Project Image" class="project-hero-image">
+    {% endif %}
+    <div class="project-hero-overlay">
+      <h1 class="project-hero-title">{{ project.title }}</h1>
+      <div class="project-hero-meta">
+        <span><i class="fas fa-calendar-alt"></i> Published {{ project.publish_date|date:"F d, Y" }}</span>
+        {% if project.updated_at != project.created_at %}
+          <span><i class="fas fa-edit"></i> Updated {{ project.updated_at|date:"F d, Y" }}</span>
         {% endif %}
+        {% if project.total_people_involved > 0 %}
+          <span><i class="fas fa-users"></i> {{ project.total_people_involved }} people involved</span>
+        {% endif %}
+      </div>
     </div>
-</section>
+  </div>
 
-<section class="project-detail container section-spacing">
-    <div class="row">
-        {# Using a column layout (assuming Bootstrap-like CSS or flexbox) to center content #}
-        <div class="col-md-8 offset-md-2">
-            {% if project.project_image %}
-                <img src="{{ project.project_image.url }}" alt="{{ project.title }}" class="img-fluid mb-4 project-detail-image">
-            {% else %}
-                <img src="{% static 'kuai_club/images/default_project_image.jpg' %}" alt="Default Project Image" class="img-fluid mb-4 project-detail-image">
-            {% endif %}
+  <!-- Main Content Grid -->
+  <div class="project-content-grid">
+    <!-- Main Content -->
+    <div class="project-main-content fade-in">
+      {% if project.summary %}
+      <div class="project-section">
+        <h2 class="section-title">
+          <i class="fas fa-info-circle"></i> Project Summary
+        </h2>
+        <p class="project-description">{{ project.summary }}</p>
+      </div>
+      {% endif %}
 
-            <h2 class="mb-3">About This Project</h2>
+      <div class="project-section">
+        <h2 class="section-title">
+          <i class="fas fa-file-alt"></i> Project Details
+        </h2>
+        <div class="project-description">{{ project.description|linebreaks }}</div>
+      </div>
 
-            <p class="project-status status-{{ project.status|lower }} mb-3">{{ project.status }}</p>
+      <!-- People Involved Section -->
+      {% if project.project_leader or project.team_members or project.project_sponsor or project.collaborators %}
+      <div class="project-section">
+        <h2 class="section-title">
+          <i class="fas fa-users"></i> People Involved
+        </h2>
+        
+        {% if project.total_people_involved > 0 %}
+          <div class="people-count-badge">
+            <i class="fas fa-users"></i>
+            Total People Involved: {{ project.total_people_involved }}
+          </div>
+        {% endif %}
 
-            <div class="project-description">
-                {# Use |safe if project.description will contain HTML (e.g., from RichTextField) #}
-                {{ project.description|safe }}
-            </div>
+        {% if project.project_leader %}
+          <h3 style="color: var(--text-dark); margin-bottom: 0.5rem; font-size: 1.1rem;">
+            <i class="fas fa-star"></i> Project Leader
+          </h3>
+          <ul class="people-list">
+            <li class="leader-highlight">{{ project.project_leader }}</li>
+          </ul>
+        {% endif %}
 
-            <div class="project-meta mt-4">
-                {% if project.start_date %}
-                    <p><strong>Start Date:</strong> {{ project.start_date|date:"F j, Y" }}</p>
-                {% endif %}
-                {% if project.end_date %}
-                    <p><strong>End Date:</strong> {{ project.end_date|date:"F j, Y" }}</p>
-                {% endif %}
-                {% if project.github_link %}
-                    <p><strong>GitHub Repository:</strong> <a href="{{ project.github_link }}" target="_blank">{{ project.github_link }}</a></p>
-                {% endif %}
-                {% if project.is_featured %}
-                    <p class="featured-tag">✨ Featured Project ✨</p>
-                {% endif %}
-            </div>
+        {% if project.project_sponsor %}
+          <h3 style="color: var(--text-dark); margin: 1.5rem 0 0.5rem 0; font-size: 1.1rem;">
+            <i class="fas fa-building"></i> Project Sponsor
+          </h3>
+          <ul class="people-list">
+            <li class="sponsor-highlight">{{ project.project_sponsor }}</li>
+          </ul>
+        {% endif %}
 
-            <div class="back-link mt-5">
-                <a href="{% url 'kuai_club:project_list' %}" class="btn btn-primary">&larr; Back to All Projects</a>
-            </div>
+        {% if project.get_team_members_list %}
+          <h3 style="color: var(--text-dark); margin: 1.5rem 0 0.5rem 0; font-size: 1.1rem;">
+            <i class="fas fa-user-friends"></i> Team Members
+          </h3>
+          <ul class="people-list">
+            {% for member in project.get_team_members_list %}
+              <li>{{ member }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if project.get_collaborators_list %}
+          <h3 style="color: var(--text-dark); margin: 1.5rem 0 0.5rem 0; font-size: 1.1rem;">
+            <i class="fas fa-handshake"></i> Collaborators & Partners
+          </h3>
+          <ul class="people-list">
+            {% for collaborator in project.get_collaborators_list %}
+              <li>{{ collaborator }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="project-sidebar">
+      <!-- Project Info Card -->
+      <div class="sidebar-card fade-in">
+        <h3 class="sidebar-title">
+          <i class="fas fa-info-circle"></i> Project Information
+        </h3>
+        
+        <div class="project-info-item">
+          <i class="fas fa-calendar-plus info-icon"></i>
+          <span class="info-label">Created:</span>
+          <span class="info-value">{{ project.created_at|date:"M d, Y" }}</span>
         </div>
-    </div>
-</section>
 
-{% endblock content %}
+        <div class="project-info-item">
+          <i class="fas fa-calendar-check info-icon"></i>
+          <span class="info-label">Published:</span>
+          <span class="info-value">{{ project.publish_date|date:"M d, Y" }}</span>
+        </div>
+
+        {% if project.updated_at != project.created_at %}
+        <div class="project-info-item">
+          <i class="fas fa-sync-alt info-icon"></i>
+          <span class="info-label">Updated:</span>
+          <span class="info-value">{{ project.updated_at|date:"M d, Y" }}</span>
+        </div>
+        {% endif %}
+
+        <div class="project-info-item">
+          <i class="fas fa-eye info-icon"></i>
+          <span class="info-label">Status:</span>
+          <span class="info-value">
+            {% if project.is_published %}
+              <span style="color: var(--success-color); font-weight: 500;">Published</span>
+            {% else %}
+              <span style="color: #ef4444; font-weight: 500;">Draft</span>
+            {% endif %}
+          </span>
+        </div>
+
+        {% if project.total_people_involved > 0 %}
+        <div class="project-info-item">
+          <i class="fas fa-users info-icon"></i>
+          <span class="info-label">Team Size:</span>
+          <span class="info-value">{{ project.total_people_involved }} people</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Contact & Links Card -->
+      <div class="sidebar-card fade-in">
+        <h3 class="sidebar-title">
+          <i class="fas fa-link"></i> Get Involved
+        </h3>
+        
+        {% if project.url %}
+          <a href="{{ project.url }}" target="_blank" class="contact-button project-link-button">
+            <i class="fas fa-external-link-alt"></i>
+            Visit Project Website
+          </a>
+        {% endif %}
+
+        {% if project.contact_email %}
+          <a href="mailto:{{ project.contact_email }}?subject=Inquiry about {{ project.title }}" class="contact-button">
+            <i class="fas fa-envelope"></i>
+            Contact via Email
+          </a>
+        {% endif %}
+
+        {% if project.phone_number %}
+          <a href="tel:{{ project.phone_number }}" class="contact-button">
+            <i class="fas fa-phone"></i>
+            Call {{ project.phone_number }}
+          </a>
+        {% endif %}
+
+        <!-- Share Buttons -->
+        <div class="share-buttons">
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}" 
+             target="_blank" class="share-button share-facebook" title="Share on Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://twitter.com/intent/tweet?url={{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}&text={{ project.title }}" 
+             target="_blank" class="share-button share-twitter" title="Share on Twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}" 
+             target="_blank" class="share-button share-linkedin" title="Share on LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="https://wa.me/?text={{ project.title }} {{ request.scheme }}://{{ request.get_host }}{{ request.get_full_path }}" 
+             target="_blank" class="share-button share-whatsapp" title="Share on WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for back button
+    const backButton = document.querySelector('.back-button');
+    if (backButton) {
+        backButton.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href.includes('#')) {
+                e.preventDefault();
+                const targetId = href.split('#')[1];
+                const targetElement = document.getElementById(targetId);
+                
+                // Navigate to the page first, then scroll
+                window.location.href = href.split('#')[0];
+                
+                // Add a small delay to ensure page loads
+                setTimeout(() => {
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }, 100);
+            }
+        });
+    }
+
+    // Copy URL functionality
+    function copyToClipboard(text) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Link copied to clipboard!');
+            });
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showNotification('Link copied to clipboard!');
+        }
+    }
+
+    // Show notification
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            font-weight: 500;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Hide notification
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const backButton = document.querySelector('.back-button');
+            if (backButton) {
+                backButton.click();
+            }
+        }
+    });
+
+    // Lazy load images with intersection observer
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src || img.src;
+                img.classList.remove('lazy');
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    images.forEach(img => imageObserver.observe(img));
+
+    // Add loading states for contact buttons
+    const contactButtons = document.querySelectorAll('.contact-button');
+    contactButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            this.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.pointerEvents = 'auto';
+            }, 1000);
+        });
+    });
+
+    // Animate people list items on scroll
+    const observePeopleList = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }, index * 100);
+                observePeopleList.unobserve(entry.target);
+            }
+        });
+    });
+
+    document.querySelectorAll('.people-list li').forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        item.style.transition = 'all 0.3s ease';
+        observePeopleList.observe(item);
+    });
+});
+</script>
+{% endblock %}

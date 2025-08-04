@@ -135,25 +135,16 @@ class Aboutus(models.Model):
     why_exist_title = models.CharField(max_length=100, default="Why We Exist")
     why_exist_description = models.TextField(blank=True, null=True)
 
-    COLUMN_CHOICES = (
-        ('left', 'Left'),
-        ('right', 'Right'),
-        ('none', 'None'),
-    )
-    column_position = models.CharField(max_length=5, choices=COLUMN_CHOICES, default='none')
+    # Removed: COLUMN_CHOICES, column_position
 
-    # --- OUR IMPACT SECTION ---
+    # Impact section
     impact_subtitle = models.CharField(max_length=255, default="Making a difference in AI education and technology advancement in Uganda")
-
     impact_stat_1_label = models.CharField(max_length=100, default="Students Empowered")
     impact_stat_1_value = models.CharField(max_length=50, default="1000+")
-
     impact_stat_2_label = models.CharField(max_length=100, default="AI Projects Completed")
     impact_stat_2_value = models.CharField(max_length=50, default="75+")
-
     impact_stat_3_label = models.CharField(max_length=100, default="Partner Organizations")
     impact_stat_3_value = models.CharField(max_length=50, default="25+")
-
     impact_stat_4_label = models.CharField(max_length=100, default="Years of Innovation")
     impact_stat_4_value = models.CharField(max_length=50, default="5")
 
@@ -165,17 +156,14 @@ class Aboutus(models.Model):
         verbose_name_plural = "About Us"
 
     def save(self, *args, **kwargs):
-        # Auto-generate slug
         if not self.slug:
             self.slug = slugify(self.title)
 
-        # Ensure only one instance exists (singleton pattern)
         if not self.pk and Aboutus.objects.exists():
             raise ValidationError("Only one About Us entry is allowed.")
 
         super().save(*args, **kwargs)
 
-        # Resize images after saving
         max_width, max_height = 800, 600
         for image_field in [self.image, self.mission_image, self.vision_image, self.who_we_are_image]:
             if image_field and hasattr(image_field, 'path'):
@@ -185,13 +173,11 @@ class Aboutus(models.Model):
                         img.thumbnail((max_width, max_height))
                         img.save(image_field.path)
                 except Exception:
-                    pass  # Handle cases where image file doesn't exist
+                    pass
 
     @classmethod
     def get_instance(cls):
-        """Get or create the singleton instance."""
-        instance, created = cls.objects.get_or_create(pk=1)
-        return instance
+        return cls.objects.get_or_create(pk=1)[0]
 
     def __str__(self):
         return self.title
@@ -511,7 +497,7 @@ from PIL import Image
 import os
 
 class Project(models.Model):
-    # your existing fields ...
+    # Existing fields
     title = models.CharField(max_length=100, help_text="Project or Initiative title")
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     summary = models.TextField(blank=True, help_text="Short summary of the project")
@@ -524,6 +510,13 @@ class Project(models.Model):
     publish_date = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # New fields for people involved
+    project_leader = models.CharField(max_length=100, blank=True, null=True, help_text="Main project leader or coordinator")
+    team_members = models.TextField(blank=True, null=True, help_text="List team members (one per line or comma-separated)")
+    project_sponsor = models.CharField(max_length=100, blank=True, null=True, help_text="Project sponsor or funding organization")
+    collaborators = models.TextField(blank=True, null=True, help_text="External collaborators or partner organizations")
+    total_people_involved = models.PositiveIntegerField(default=0, help_text="Total number of people involved in this project")
 
     class Meta:
         verbose_name = "Project"
@@ -533,22 +526,38 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-
+        
         super().save(*args, **kwargs)
-
+        
         # Resize image after saving
         if self.image:
             img_path = self.image.path
             img = Image.open(img_path)
-
+            
             max_width = 800
             max_height = 600
-
+            
             # Only resize if larger than max dimensions
             if img.width > max_width or img.height > max_height:
                 img.thumbnail((max_width, max_height))
                 img.save(img_path)
-    
+
+    def get_team_members_list(self):
+        """Return team members as a list"""
+        if self.team_members:
+            # Handle both comma-separated and line-separated formats
+            members = self.team_members.replace('\n', ',').split(',')
+            return [member.strip() for member in members if member.strip()]
+        return []
+
+    def get_collaborators_list(self):
+        """Return collaborators as a list"""
+        if self.collaborators:
+            # Handle both comma-separated and line-separated formats
+            collaborators = self.collaborators.replace('\n', ',').split(',')
+            return [collab.strip() for collab in collaborators if collab.strip()]
+        return []
+
     def __str__(self):
         return self.title
 

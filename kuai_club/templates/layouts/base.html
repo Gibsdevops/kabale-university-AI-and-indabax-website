@@ -173,7 +173,7 @@
 
                 <!-- Contacts -->
                 <li class="nav-item nav-hover-content" data-hover-target="projects-content">
-                    <a href="#" class="nav-link">Projects</a>
+                    <a href="{% url 'kuai_club:project_page' 1 %}" class="nav-link">Projects</a>
                 </li>
 
                 <!-- Search Button -->
@@ -189,31 +189,14 @@
 
 <!-- HOVER CONTENT PANELS (hidden by default, show on hover) -->
 
-<div id="about-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h6 class="dropdown-header">WHO WE ARE</h6>
-                <ul class="list-unstyled">
-                    {% for page in about_pages %}
-                        {% if page.column_position == 'left' %}
-                            <li><a href="{% url 'kuai_club:about'   %}#{{ page.title|slugify }}">{{ page.title }}</a></li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <h6 class="dropdown-header">WHY WE EXIST</h6>
-                <ul class="list-unstyled">
-                    {% for page in about_pages %}
-                        {% if page.column_position == 'right' %}
-                            <li><a href="{% url 'kuai_club:about'  %}#{{ page.title|slugify }}">{{ page.title }}</a></li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
+<div id="about-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem;">
+    <ul class="list-unstyled m-0">
+        <li><a href="{% url 'kuai_club:about' %}#mission">Mission</a></li>
+        <li><a href="{% url 'kuai_club:about' %}#vision">Vision</a></li>
+        <li><a href="{% url 'kuai_club:about' %}#who-we-are">Who We Are</a></li>
+        <li><a href="{% url 'kuai_club:about' %}#why-we-exist">Why We Exist</a></li>
+    </ul>
+</div>
 </div>
 
 

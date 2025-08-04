@@ -63,8 +63,11 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 from django.contrib import admin
 from django.urls import reverse, path
 from django.http import HttpResponseRedirect
-from .models import Aboutus  # adjust import to your actual model location
-
+from .models import Aboutus  
+@admin.register(Aboutus)
+class AboutUsAdmin(admin.ModelAdmin):
+    list_display = ('title', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
 
 class SingletonAdminMixin:
     """Mixin to handle singleton models in admin."""
@@ -192,7 +195,14 @@ class CommunityOutreachAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'contact_email', 'publish_date', 'is_published')
+    list_display = (
+        'title',
+        'contact_email',
+        'project_leader',
+        'project_sponsor',
+        'publish_date',
+        'is_published'
+    )
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('created_at', 'updated_at')
 
@@ -203,10 +213,22 @@ class ProjectAdmin(admin.ModelAdmin):
         ('Contact Details', {
             'fields': ('contact_email', 'phone_number', 'url')
         }),
+        ('Team & Collaborators', {
+            'fields': (
+                'project_leader',
+                'team_members',
+                'project_sponsor',
+                'collaborators',
+                'total_people_involved',
+            )
+        }),
         ('Status & Timestamps', {
             'fields': ('is_published', 'created_at', 'updated_at')
         }),
     )
+
+    search_fields = ['title', 'project_leader', 'project_sponsor']
+    list_filter = ['is_published', 'publish_date']
 
 @admin.register(HeroSlide)
 class HeroSlideAdmin(admin.ModelAdmin):
