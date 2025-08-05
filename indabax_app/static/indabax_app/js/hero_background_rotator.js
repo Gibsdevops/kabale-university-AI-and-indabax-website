@@ -11,13 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (backgroundImages.length === 0 && defaultBackground) {
         backgroundImages.push(defaultBackground);
     }
-    // You can add more static defaults directly here if needed:
-    // if (backgroundImages.length === 0) {
-    //    backgroundImages.push('/static/indabax_app/images/default_ai_background.jfif');
-    //    backgroundImages.push('/static/indabax_app/images/another_default.jfif');
-    // }
-
-
+    
     let currentImageIndex = 0;
 
     function changeBackground() {

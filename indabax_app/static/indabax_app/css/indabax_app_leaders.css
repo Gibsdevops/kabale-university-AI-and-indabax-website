@@ -1,0 +1,111 @@
+/* indabax_app/static/indabax_app/css/indabax_app_leaders.css */
+
+/* --- Modern Leader Flip Card Styles --- */
+
+.leader-card-flip {
+    background-color: transparent;
+    width: 100%;
+    height: 350px;
+    perspective: 1000px;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.card-flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transform-style: preserve-3d;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.leader-card-flip:hover .card-flip-inner {
+    transform: rotateY(180deg);
+}
+
+.card-flip-front, .card-flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.card-flip-front {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-light);
+    align-items: center;
+    border: 1px solid var(--border-color-subtle);
+}
+
+.card-flip-front .leader-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.card-flip-front .card-body-front {
+    padding: 1rem;
+    width: 100%;
+}
+
+.card-flip-front .card-title-front {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    color: var(--primary-color);
+}
+
+.card-flip-front .card-text-front {
+    font-size: 1rem;
+    color: var(--text-color-light);
+}
+
+.card-flip-back {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    transform: rotateY(180deg);
+    padding: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--border-color-subtle);
+}
+
+.card-flip-back .card-title-back {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.card-flip-back .card-text-back {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-flip-back .social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.card-flip-back .social-icons a {
+    color: white;
+    font-size: 1.5rem;
+    transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.card-flip-back .social-icons a:hover {
+    color: var(--accent-color);
+    transform: translateY(-3px);
+}

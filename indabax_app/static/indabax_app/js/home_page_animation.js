@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         let animatedHtml = '';
         words.forEach((word, index) => {
-            // Alternating colors for words
-            const colorClass = index % 2 === 0 ? 'color-orange' : 'color-green'; 
-            animatedHtml += `<span class="animated-word ${colorClass}" style="opacity: 0; transform: translateY(20px);">${word}</span> `;
+            // Updated: Use a consistent naming scheme if you want to apply specific colors
+            // In your CSS, you can now define .word-1 { color: ... }, .word-2 { color: ... }, etc.
+            animatedHtml += `<span class="animated-word word-${index + 1}" style="opacity: 0; transform: translateY(20px);">${word}</span> `;
         });
         
         dynamicHeading.innerHTML = animatedHtml;
@@ -28,4 +28,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
