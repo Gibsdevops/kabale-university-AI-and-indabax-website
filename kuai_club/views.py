@@ -284,12 +284,40 @@ def project_processor(request):
     projects = Project.objects.all().order_by('title')
     return {'projects': projects}
 
-def project_page(request, page_id):
+# Add this new function to your views.py
+
+def project_detail(request, slug):
+    """
+    Display a single project detail page using slug
+    """
     try:
-        page = Project.objects.get(id=page_id, is_published=True)
+        # Get the project by slug, only if it's published
+        project = get_object_or_404(Project, slug=slug, is_published=True)
+        
+        # Debug logging
+        logger.info(f"Found project: {project.title} with slug: {slug}")
+        
+        context = {
+            'project': project,  # ✅ Correct context variable name
+        }
+        
+        return render(request, 'kuai_club/project_detail.html', context)
+        
+    except Project.DoesNotExist:
+        logger.error(f"Project not found with slug: {slug}")
+        return render(request, '404.html', status=404)
+
+# Keep your existing project_page function for backward compatibility if needed
+def project_page(request, page_id):
+    """
+    Legacy function - redirects to slug-based URL
+    """
+    try:
+        project = Project.objects.get(id=page_id, is_published=True)
+        # Redirect to the slug-based URL
+        return redirect('kuai_club:project_detail', slug=project.slug)
     except Project.DoesNotExist:
         return render(request, '404.html', status=404)
-    return render(request, 'kuai_club/project_detail.html', {'page': page})
 
 def community_processor(request):
     community = CommunityOutreach.objects.all().order_by('title')

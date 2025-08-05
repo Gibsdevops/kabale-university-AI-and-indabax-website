@@ -173,7 +173,12 @@
 
                 <!-- Contacts -->
                 <li class="nav-item nav-hover-content" data-hover-target="projects-content">
-                    <a href="{% url 'kuai_club:project_page' 1 %}" class="nav-link">Projects</a>
+                    {% if project.slug %}
+                        <li><a href="{% url 'kuai_club:project_detail' project.slug %}">{{ project.title }}</a></li>
+                    {% else %}
+  
+                       <li><span>{{ project.title }} (missing slug)</span></li>                     
+                    {% endif %}
                 </li>
 
                 <!-- Search Button -->
@@ -289,13 +294,14 @@
     </ul>
 </div>
 
-<div id="projects-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem; ">
+<div id="projects-content" class="hover-content-panel" style="display:none; position:absolute; background:#fff; box-shadow:var(--shadow-lg); padding:1rem;">
     <ul class="list-unstyled">
         {% for project in projects %}
             <li><a href="{% url 'kuai_club:project_page' project.id %}">{{ project.title }}</a></li>
         {% endfor %}
     </ul>
 </div>
+
 
 <!-- Search Modal -->
 <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">

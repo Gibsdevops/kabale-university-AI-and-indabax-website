@@ -17,7 +17,8 @@
               <div class="project-meta">
                 <span class="project-date">{{ project.publish_date|date:"F d, Y" }}</span>
                 {% if project.url %}
-                  <a href="{{ project.url }}" class="project-link" target="_blank">Learn More</a>
+                  <a href="{% url 'kuai_club:project_page' project.id %}" class="project-link" target="_blank">Learn More</a>
+
                 {% endif %}
               </div>
             </div>
