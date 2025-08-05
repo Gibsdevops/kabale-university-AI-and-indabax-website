@@ -173,12 +173,7 @@
 
                 <!-- Contacts -->
                 <li class="nav-item nav-hover-content" data-hover-target="projects-content">
-                    {% if project.slug %}
-                        <li><a href="{% url 'kuai_club:project_detail' project.slug %}">{{ project.title }}</a></li>
-                    {% else %}
-  
-                       <li><span>{{ project.title }} (missing slug)</span></li>                     
-                    {% endif %}
+                    <a href="#projects-section" class="nav-link">Projects</a>
                 </li>
 
                 <!-- Search Button -->
