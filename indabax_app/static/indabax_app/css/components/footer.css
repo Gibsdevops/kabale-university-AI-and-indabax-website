@@ -1,0 +1,407 @@
+/* ================================
+   INDABAX FOOTER STYLES
+   Professional Footer Design
+   ================================ */
+
+/* ========== FOOTER MAIN CONTAINER ========== */
+.indabax-footer {
+  background: linear-gradient(135deg, var(--indabax-dark) 0%, var(--indabax-primary) 50%, #1a237e 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--indabax-spacing-xxl);
+}
+
+.indabax-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--indabax-secondary) 0%, var(--indabax-accent) 50%, var(--indabax-secondary) 100%);
+}
+
+.indabax-footer::after {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: -10%;
+  width: 120%;
+  height: 100px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%23ffffff'/%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.5' fill='%23ffffff'/%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat;
+  background-size: cover;
+  z-index: 1;
+  opacity: 0.1;
+}
+
+.indabax-footer .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* ========== FOOTER HEADINGS ========== */
+.indabax-footer h5 {
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: var(--indabax-spacing-lg);
+  position: relative;
+  padding-bottom: var(--indabax-spacing-sm);
+}
+
+.indabax-footer h5::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--indabax-secondary);
+  border-radius: var(--indabax-radius-sm);
+}
+
+/* ========== FOOTER TEXT ========== */
+.indabax-footer p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+  margin-bottom: var(--indabax-spacing-md);
+}
+
+.text-white-50 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ========== FOOTER LINKS ========== */
+.footer-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: all var(--indabax-transition-normal);
+  display: inline-block;
+  position: relative;
+  padding: var(--indabax-spacing-xs) 0;
+}
+
+.footer-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--indabax-secondary);
+  transition: width var(--indabax-transition-normal);
+}
+
+.footer-link:hover {
+  color: white;
+  transform: translateX(5px);
+}
+
+.footer-link:hover::before {
+  width: 100%;
+}
+
+.footer-link:focus {
+  outline: 2px solid var(--indabax-accent);
+  outline-offset: 2px;
+  color: white;
+}
+
+/* ========== FOOTER LISTS ========== */
+.indabax-footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.indabax-footer li {
+  margin-bottom: var(--indabax-spacing-sm);
+  position: relative;
+  padding-left: var(--indabax-spacing-md);
+}
+
+.indabax-footer li::before {
+  content: '▶';
+  position: absolute;
+  left: 0;
+  color: var(--indabax-secondary);
+  font-size: 0.8rem;
+  transition: all var(--indabax-transition-fast);
+}
+
+.indabax-footer li:hover::before {
+  transform: translateX(3px);
+  color: var(--indabax-accent);
+}
+
+/* ========== SOCIAL LINKS ========== */
+.social-links {
+  margin-top: var(--indabax-spacing-lg);
+}
+
+.footer-social-icon {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: all var(--indabax-transition-normal);
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: var(--indabax-spacing-md);
+  padding: var(--indabax-spacing-sm) 0;
+  border-radius: var(--indabax-radius-sm);
+  position: relative;
+}
+
+.footer-social-icon i {
+  width: 20px;
+  font-size: 1.2rem;
+  transition: all var(--indabax-transition-normal);
+}
+
+.footer-social-icon:hover {
+  color: var(--indabax-secondary);
+  transform: translateX(8px);
+  text-decoration: none;
+}
+
+.footer-social-icon:hover i {
+  transform: scale(1.2);
+}
+
+.footer-social-icon:focus {
+  outline: 2px solid var(--indabax-accent);
+  outline-offset: 2px;
+  color: var(--indabax-secondary);
+}
+
+/* Specific social media colors on hover */
+.footer-social-icon:hover i.fa-github {
+  color: #333;
+}
+
+.footer-social-icon:hover i.fa-twitter {
+  color: #1da1f2;
+}
+
+.footer-social-icon:hover i.fa-linkedin-in {
+  color: #0077b5;
+}
+
+.footer-social-icon:hover i.fa-facebook-f {
+  color: #1877f2;
+}
+
+.footer-social-icon:hover i.fa-youtube {
+  color: #ff0000;
+}
+
+/* ========== DESIGNER CREDIT ========== */
+.designer-credit {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-top: var(--indabax-spacing-lg);
+  text-align: center;
+  padding-top: var(--indabax-spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.designer-credit .footer-link {
+  color: var(--indabax-secondary);
+  font-weight: 600;
+}
+
+.designer-credit .footer-link:hover {
+  color: var(--indabax-accent);
+}
+
+/* ========== CONTACT INFORMATION ========== */
+.indabax-footer .contact-info {
+  background: rgba(255, 255, 255, 0.05);
+  padding: var(--indabax-spacing-lg);
+  border-radius: var(--indabax-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.contact-info p {
+  margin-bottom: var(--indabax-spacing-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--indabax-spacing-sm);
+}
+
+.contact-info i {
+  color: var(--indabax-secondary);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ========== CURRENT TIME DISPLAY ========== */
+.current-time {
+  background: rgba(255, 111, 0, 0.1);
+  padding: var(--indabax-spacing-md);
+  border-radius: var(--indabax-radius-md);
+  border-left: 4px solid var(--indabax-secondary);
+  margin-top: var(--indabax-spacing-lg);
+}
+
+.current-time p {
+  margin: 0;
+  font-family: var(--indabax-font-code);
+  font-size: 0.9rem;
+}
+
+/* ========== FOOTER RESPONSIVE DESIGN ========== */
+@media (max-width: 992px) {
+  .indabax-footer {
+    text-align: center;
+  }
+  
+  .indabax-footer h5::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .indabax-footer li::before {
+    display: none;
+  }
+  
+  .indabax-footer li {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .indabax-footer {
+    padding: var(--indabax-spacing-xl) 0;
+  }
+  
+  .indabax-footer .col-lg-4,
+  .indabax-footer .col-lg-2,
+  .indabax-footer .col-lg-3 {
+    margin-bottom: var(--indabax-spacing-xl);
+  }
+  
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--indabax-spacing-md);
+  }
+  
+  .footer-social-icon {
+    margin-bottom: var(--indabax-spacing-sm);
+  }
+}
+
+@media (max-width: 576px) {
+  .indabax-footer h5 {
+    font-size: 1.1rem;
+  }
+  
+  .indabax-footer p {
+    font-size: 0.9rem;
+  }
+  
+  .footer-social-icon {
+    font-size: 0.9rem;
+  }
+  
+  .contact-info {
+    padding: var(--indabax-spacing-md);
+  }
+}
+
+/* ========== FOOTER ANIMATIONS ========== */
+@keyframes fadeInFooter {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.indabax-footer.animate-in {
+  animation: fadeInFooter 0.8s ease-out;
+}
+
+.indabax-footer .col-lg-4:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.indabax-footer .col-lg-2:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.indabax-footer .col-lg-3:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.indabax-footer .col-lg-3:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+/* ========== FOOTER ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+  .indabax-footer.animate-in,
+  .indabax-footer .col-lg-4,
+  .indabax-footer .col-lg-2,
+  .indabax-footer .col-lg-3 {
+    animation: none;
+  }
+  
+  .footer-link:hover,
+  .footer-social-icon:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .indabax-footer {
+    background: black;
+    color: white;
+    border-top: 2px solid white;
+  }
+  
+  .footer-link,
+  .footer-social-icon {
+    color: white;
+    border: 1px solid transparent;
+  }
+  
+  .footer-link:hover,
+  .footer-social-icon:hover {
+    border-color: white;
+    background: white;
+    color: black;
+  }
+}
+
+/* ========== FOOTER UTILITIES ========== */
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  margin: var(--indabax-spacing-xl) 0;
+}
+
+.footer-highlight {
+  background: rgba(255, 111, 0, 0.1);
+  padding: var(--indabax-spacing-sm) var(--indabax-spacing-md);
+  border-radius: var(--indabax-radius-sm);
+  border-left: 3px solid var(--indabax-secondary);
+}
+
+.footer-badge {
+  background: var(--indabax-secondary);
+  color: white;
+  padding: var(--indabax-spacing-xs) var(--indabax-spacing-sm);
+  border-radius: var(--indabax-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-left: var(--indabax-spacing-sm);
+}

@@ -1,0 +1,580 @@
+/* ================================
+   TUTORIALS PAGE STYLES
+   Professional Tutorial Layout - Updated 3x3 Grid
+   ================================ */
+
+/* ========== TUTORIALS MAIN CONTAINER ========== */
+.tutorials-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--indabax-spacing-xl);
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* ========== PAGE HEADER ========== */
+.tutorials-container > h2 {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: var(--indabax-spacing-xl);
+    background: linear-gradient(135deg, var(--indabax-primary) 0%, var(--indabax-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+.tutorials-container > h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(135deg, var(--indabax-secondary) 0%, var(--indabax-accent) 100%);
+    border-radius: 2px;
+}
+
+/* ========== CATEGORY SECTIONS ========== */
+.category-section {
+    margin-bottom: 4rem;
+    background: white;
+    border-radius: var(--indabax-radius-lg);
+    padding: var(--indabax-spacing-xl);
+    box-shadow: var(--indabax-shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.category-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--indabax-primary) 0%, var(--indabax-secondary) 100%);
+}
+
+.category-section h3 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: var(--indabax-spacing-xl);
+    color: var(--indabax-dark);
+    display: flex;
+    align-items: center;
+    gap: var(--indabax-spacing-md);
+}
+
+/* Default category icon */
+.category-section h3::before {
+    content: var(--category-icon, '📚');
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--indabax-secondary) 0%, var(--indabax-accent) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* Category-specific icons - Enhanced with more variations */
+.category-python h3::before,
+.category-python-basics h3::before,
+.category-python-programming h3::before { content: '🐍'; }
+
+.category-ml h3::before,
+.category-machine-learning h3::before,
+.category-machine-learning-basics h3::before { content: '🤖'; }
+
+.category-data h3::before,
+.category-data-science h3::before,
+.category-data-analysis h3::before,
+.category-data-visualization h3::before { content: '📊'; }
+
+.category-ai h3::before,
+.category-artificial-intelligence h3::before,
+.category-deep-learning h3::before,
+.category-neural-networks h3::before { content: '🧠'; }
+
+.category-web h3::before,
+.category-web-development h3::before,
+.category-web-design h3::before,
+.category-frontend h3::before,
+.category-backend h3::before { content: '🌐'; }
+
+/* Additional category icons */
+.category-database h3::before,
+.category-sql h3::before { content: '🗄️'; }
+
+.category-algorithms h3::before,
+.category-programming h3::before { content: '⚡'; }
+
+.category-statistics h3::before,
+.category-math h3::before,
+.category-mathematics h3::before { content: '📈'; }
+
+.category-nlp h3::before,
+.category-natural-language-processing h3::before { content: '💬'; }
+
+.category-computer-vision h3::before,
+.category-cv h3::before,
+.category-image-processing h3::before { content: '👁️'; }
+
+.category-tutorial h3::before,
+.category-tutorials h3::before { content: '🎓'; }
+
+.category-beginner h3::before,
+.category-basics h3::before { content: '🌱'; }
+
+.category-advanced h3::before,
+.category-expert h3::before { content: '🚀'; }
+
+/* ========== TUTORIAL GRID - OPTIMIZED 3x3 LAYOUT ========== */
+.tutorial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--indabax-spacing-xl);
+    margin-top: var(--indabax-spacing-xl);
+    max-width: 100%;
+}
+
+/* Grid rows - show 3 rows at a time for 3x3 layout */
+.tutorial-grid .tutorial-item:nth-child(n+10) {
+    display: none; /* Hide items beyond first 9 for clean 3x3 display */
+}
+
+/* Show more button for categories with more than 9 tutorials */
+.show-more-tutorials {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: var(--indabax-spacing-lg);
+}
+
+.show-more-btn {
+    background: linear-gradient(135deg, var(--indabax-primary) 0%, var(--indabax-secondary) 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--indabax-radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--indabax-transition-normal);
+    box-shadow: var(--indabax-shadow-sm);
+}
+
+.show-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--indabax-shadow-md);
+}
+
+/* When expanded, show all tutorials */
+.tutorial-grid.expanded .tutorial-item {
+    display: block;
+}
+
+/* ========== TUTORIAL ITEMS ========== */
+.tutorial-item {
+    background: white;
+    border-radius: var(--indabax-radius-md);
+    padding: var(--indabax-spacing-lg);
+    box-shadow: var(--indabax-shadow-sm);
+    transition: all var(--indabax-transition-normal);
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+    height: fit-content;
+}
+
+.tutorial-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, var(--indabax-accent) 0%, var(--indabax-secondary) 100%);
+    transform: scaleX(0);
+    transition: transform var(--indabax-transition-normal);
+}
+
+.tutorial-item:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--indabax-shadow-lg);
+}
+
+.tutorial-item:hover::before {
+    transform: scaleX(1);
+}
+
+.tutorial-item h4 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: var(--indabax-spacing-md);
+    color: var(--indabax-dark);
+    line-height: 1.3;
+    min-height: 2.8rem; /* Ensure consistent height for titles */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ========== VIDEO WRAPPER ========== */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    margin: var(--indabax-spacing-md) 0;
+    border-radius: var(--indabax-radius-sm);
+    overflow: hidden;
+    box-shadow: var(--indabax-shadow-sm);
+    background: #000;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: var(--indabax-radius-sm);
+}
+
+.video-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 0%, rgba(255,111,0,0.1) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--indabax-transition-normal);
+}
+
+.tutorial-item:hover .video-wrapper::after {
+    opacity: 1;
+}
+
+/* ========== TUTORIAL DESCRIPTION ========== */
+.tutorial-item p {
+    font-size: 1rem;
+    color: #6c757d;
+    line-height: 1.6;
+    margin-top: var(--indabax-spacing-md);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 4.8rem; /* Ensure consistent height for descriptions */
+}
+
+/* ========== ERROR STATES ========== */
+.tutorial-error {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-radius: var(--indabax-radius-sm);
+    padding: var(--indabax-spacing-md);
+    color: #c53030;
+    font-size: 0.9rem;
+    margin: var(--indabax-spacing-md) 0;
+    text-align: center;
+}
+
+.tutorial-error::before {
+    content: '⚠️';
+    display: block;
+    font-size: 2rem;
+    margin-bottom: var(--indabax-spacing-sm);
+}
+
+/* ========== CATEGORY STATS ========== */
+.category-stats {
+    position: absolute;
+    top: var(--indabax-spacing-lg);
+    right: var(--indabax-spacing-lg);
+    background: linear-gradient(135deg, var(--indabax-accent) 0%, var(--indabax-secondary) 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: var(--indabax-shadow-sm);
+}
+
+/* ========== PAGINATION FOR LARGE CATEGORY SETS ========== */
+.category-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: var(--indabax-spacing-xl);
+    grid-column: 1 / -1;
+}
+
+.pagination-btn {
+    background: var(--indabax-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--indabax-radius-sm);
+    cursor: pointer;
+    transition: all var(--indabax-transition-normal);
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--indabax-secondary);
+    transform: translateY(-1px);
+}
+
+.pagination-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 1200px) {
+    .tutorial-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--indabax-spacing-lg);
+    }
+    
+    /* Show 6 items in 2x3 grid for medium screens */
+    .tutorial-grid .tutorial-item:nth-child(n+7) {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .tutorials-container {
+        padding: var(--indabax-spacing-lg);
+    }
+    
+    .tutorials-container > h2 {
+        font-size: 2.2rem;
+    }
+    
+    .category-section {
+        padding: var(--indabax-spacing-lg);
+        margin-bottom: 2.5rem;
+    }
+    
+    .category-section h3 {
+        font-size: 1.8rem;
+        flex-direction: column;
+        text-align: center;
+        gap: var(--indabax-spacing-sm);
+    }
+    
+    .tutorial-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--indabax-spacing-md);
+    }
+    
+    .tutorial-item {
+        padding: var(--indabax-spacing-md);
+    }
+    
+    .tutorial-item h4 {
+        font-size: 1.2rem;
+        min-height: 2.4rem;
+    }
+    
+    .tutorial-item p {
+        font-size: 0.9rem;
+        -webkit-line-clamp: 2;
+        min-height: 3.6rem;
+    }
+    
+    .category-stats {
+        position: static;
+        display: inline-block;
+        margin-bottom: var(--indabax-spacing-md);
+    }
+    
+    /* Show 4 items in 2x2 grid for tablets */
+    .tutorial-grid .tutorial-item:nth-child(n+5) {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .tutorials-container {
+        padding: var(--indabax-spacing-md);
+    }
+    
+    .tutorials-container > h2 {
+        font-size: 1.8rem;
+    }
+    
+    .category-section h3 {
+        font-size: 1.5rem;
+    }
+    
+    .tutorial-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tutorial-item h4 {
+        font-size: 1.1rem;
+        min-height: auto;
+        -webkit-line-clamp: none;
+        overflow: visible;
+    }
+    
+    .tutorial-item p {
+        -webkit-line-clamp: none;
+        min-height: auto;
+        overflow: visible;
+    }
+    
+    /* Show 3 items in single column for mobile */
+    .tutorial-grid .tutorial-item:nth-child(n+4) {
+        display: none;
+    }
+}
+
+/* ========== LOADING ANIMATION ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tutorial-item {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.tutorial-item:nth-child(1) { animation-delay: 0.1s; }
+.tutorial-item:nth-child(2) { animation-delay: 0.2s; }
+.tutorial-item:nth-child(3) { animation-delay: 0.3s; }
+.tutorial-item:nth-child(4) { animation-delay: 0.4s; }
+.tutorial-item:nth-child(5) { animation-delay: 0.5s; }
+.tutorial-item:nth-child(6) { animation-delay: 0.6s; }
+.tutorial-item:nth-child(7) { animation-delay: 0.7s; }
+.tutorial-item:nth-child(8) { animation-delay: 0.8s; }
+.tutorial-item:nth-child(9) { animation-delay: 0.9s; }
+
+/* ========== GRID HELPER CLASSES ========== */
+.tutorial-grid-3x3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.tutorial-grid-2x3 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.tutorial-grid-1x3 {
+    grid-template-columns: 1fr;
+}
+
+/* ========== ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+    .tutorial-item {
+        animation: none;
+    }
+    
+    .tutorial-item:hover {
+        transform: none;
+    }
+    
+    .video-wrapper::after {
+        display: none;
+    }
+    
+    .show-more-btn:hover {
+        transform: none;
+    }
+}
+
+/* ========== CATEGORY HOVER EFFECTS ========== */
+.category-section:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--indabax-shadow-lg);
+    transition: all var(--indabax-transition-normal);
+}
+
+/* ========== EMPTY STATE ========== */
+.tutorial-grid:empty::after {
+    content: 'No tutorials available in this category yet.';
+    display: block;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: var(--indabax-spacing-xl);
+    background: #f8f9fa;
+    border-radius: var(--indabax-radius-md);
+    border: 2px dashed #dee2e6;
+    grid-column: 1 / -1;
+}
+
+/* ========== CATEGORY ORGANIZATION IMPROVEMENTS ========== */
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--indabax-spacing-lg);
+}
+
+.category-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.view-toggle {
+    display: flex;
+    background: #f8f9fa;
+    border-radius: var(--indabax-radius-sm);
+    padding: 0.25rem;
+}
+
+.view-toggle button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--indabax-radius-sm);
+    cursor: pointer;
+    transition: all var(--indabax-transition-normal);
+}
+
+.view-toggle button.active {
+    background: var(--indabax-primary);
+    color: white;
+}
+
+/* ========== IMPROVED VISUAL HIERARCHY ========== */
+.tutorial-item {
+    border-left: 4px solid transparent;
+    transition: all var(--indabax-transition-normal);
+}
+
+.tutorial-item:hover {
+    border-left-color: var(--indabax-accent);
+}
+
+/* Different border colors for different categories */
+.category-python .tutorial-item:hover { border-left-color: #3776ab; }
+.category-ml .tutorial-item:hover { border-left-color: #ff6f00; }
+.category-data .tutorial-item:hover { border-left-color: #2e7d32; }
+.category-ai .tutorial-item:hover { border-left-color: #6a1b9a; }
+.category-web .tutorial-item:hover { border-left-color: #1976d2; }

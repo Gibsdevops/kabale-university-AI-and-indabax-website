@@ -1,0 +1,131 @@
+{% extends 'indabax_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold indabax-heading text-center mb-5">Our Sessions</h1>
+            <p class="lead text-center mb-5 indabax-text">
+                Explore our comprehensive collection of AI workshops, tutorials, and learning sessions.
+            </p>
+        </div>
+    </div>
+
+    {% if sessions %}
+        <div class="row">
+            {% for session in sessions %}
+                <div class="col-lg-6 col-md-6 mb-4">
+                    <div class="card h-100 indabax-session-card shadow-sm">
+                        {% if session.images.first %}
+                            <img src="{{ session.images.first.image.url }}" 
+                                 class="card-img-top" 
+                                 alt="{{ session.title }}"
+                                 style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-chalkboard-teacher fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title indabax-card-title">{{ session.title }}</h5>
+                            
+                            {% if session.tagline %}
+                                <p class="card-text text-muted mb-2">
+                                    <em>"{{ session.tagline }}"</em>
+                                </p>
+                            {% endif %}
+                            
+                            <p class="card-text text-muted mb-2">
+                                <i class="far fa-calendar-alt me-2"></i>
+                                {{ session.session_date|date:"F j, Y" }}
+                            </p>
+                            
+                            {% if session.venue %}
+                                <p class="card-text text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    {{ session.venue }}
+                                </p>
+                            {% endif %}
+                            
+                            {% if session.start_time and session.end_time %}
+                                <p class="card-text text-muted mb-2">
+                                    <i class="far fa-clock me-2"></i>
+                                    {{ session.start_time|time:"g:i A" }} - {{ session.end_time|time:"g:i A" }}
+                                </p>
+                            {% endif %}
+                            
+                            <p class="card-text indabax-text">
+                                {{ session.description|truncatewords:20|default:"Session details coming soon..." }}
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <a href="{% url 'indabax_app:session_detail' session.pk %}" 
+                                   class="btn indabax-btn-primary">
+                                    View Details <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                                
+                                {% if session.google_photos_link %}
+                                    <a href="{{ session.google_photos_link }}" 
+                                       target="_blank" 
+                                       class="btn btn-outline-secondary ms-2">
+                                        <i class="fas fa-images me-2"></i>Photos
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% comment %} Pagination (if you want it) {% endcomment %}
+        {% if is_paginated %}
+            <nav aria-label="Sessions pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <div class="p-5 rounded-3" style="background: linear-gradient(135deg, rgba(26, 35, 126, 0.05) 0%, rgba(0, 172, 193, 0.05) 100%);">
+                    <i class="fas fa-chalkboard-teacher fa-4x indabax-icon-primary mb-4"></i>
+                    <h4 class="indabax-subheading mb-3">No Sessions Available</h4>
+                    <p class="lead indabax-text mb-4">
+                        We're preparing amazing AI sessions for you. Check back soon!
+                    </p>
+                    <a href="{% url 'indabax_app:home' %}" class="btn indabax-btn-primary btn-lg">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

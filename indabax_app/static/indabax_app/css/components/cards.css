@@ -1,0 +1,575 @@
+/* ================================
+   INDABAX CARD COMPONENTS STYLES
+   Professional Card Design System
+   ================================ */
+
+/* ========== BASE CARD STYLES ========== */
+.card {
+  border: none;
+  border-radius: var(--indabax-radius-lg);
+  box-shadow: var(--indabax-shadow-sm);
+  transition: all var(--indabax-transition-normal);
+  overflow: hidden;
+  background: white;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--indabax-gradient-secondary);
+  transform: scaleX(0);
+  transition: transform var(--indabax-transition-normal);
+}
+
+.card:hover::before {
+  transform: scaleX(1);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--indabax-shadow-lg);
+}
+
+/* ========== SESSION HIGHLIGHT CARDS ========== */
+.indabax-session-highlight-card {
+  background: linear-gradient(145deg, white 0%, #f8f9ff 100%);
+  border: 1px solid rgba(26, 35, 126, 0.1);
+}
+
+.indabax-session-highlight-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+  transition: all var(--indabax-transition-normal);
+}
+
+.indabax-session-highlight-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.indabax-session-highlight-card .card-body {
+  padding: var(--indabax-spacing-lg);
+  background: white;
+}
+
+.indabax-session-highlight-card .card-title {
+  color: var(--indabax-primary);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: var(--indabax-spacing-md);
+}
+
+.indabax-session-highlight-card .card-text.text-muted {
+  color: var(--indabax-muted);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: var(--indabax-spacing-sm);
+}
+
+.indabax-session-highlight-card .card-text.text-muted i {
+  color: var(--indabax-secondary);
+}
+
+/* ========== EVENT CARDS ========== */
+.indabax-event-card {
+  background: white;
+  border: 1px solid rgba(0, 172, 193, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.indabax-event-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 40px 40px 0;
+  border-color: transparent var(--indabax-accent) transparent transparent;
+  opacity: 0;
+  transition: opacity var(--indabax-transition-normal);
+}
+
+.indabax-event-card:hover::after {
+  opacity: 1;
+}
+
+.indabax-event-card .card-img-top {
+  height: 220px;
+  object-fit: cover;
+  transition: all var(--indabax-transition-normal);
+  filter: brightness(0.9);
+}
+
+.indabax-event-card:hover .card-img-top {
+  filter: brightness(1);
+  transform: scale(1.02);
+}
+
+.indabax-event-card .card-body {
+  padding: var(--indabax-spacing-lg);
+  background: linear-gradient(145deg, white 0%, #f0fffe 100%);
+}
+
+.indabax-event-card .card-title {
+  color: var(--indabax-primary);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: var(--indabax-spacing-md);
+  line-height: 1.3;
+}
+
+.indabax-event-card .indabax-text-sm {
+  font-size: 0.9rem;
+  color: var(--indabax-muted);
+  margin-bottom: var(--indabax-spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--indabax-spacing-sm);
+}
+
+.indabax-event-card .indabax-text-sm i {
+  color: var(--indabax-secondary);
+  width: 16px;
+}
+
+/* ========== PAST EVENT CARDS ========== */
+.past-event-card {
+  opacity: 0.85;
+  filter: grayscale(30%);
+  position: relative;
+}
+
+.past-event-card::before {
+  content: 'PAST EVENT';
+  position: absolute;
+  top: var(--indabax-spacing-md);
+  right: var(--indabax-spacing-md);
+  background: rgba(108, 117, 125, 0.9);
+  color: white;
+  padding: var(--indabax-spacing-xs) var(--indabax-spacing-sm);
+  border-radius: var(--indabax-radius-sm);
+  font-size: 0.7rem;
+  font-weight: 600;
+  z-index: 10;
+  backdrop-filter: blur(5px);
+}
+
+.past-event-card:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+}
+
+.past-event-card:hover::before {
+  background: rgba(46, 125, 50, 0.9);
+  content: 'VIEW DETAILS';
+}
+
+/* ========== PILLAR CARDS ========== */
+.indabax-pillar-card {
+  background: linear-gradient(145deg, white 0%, #f0f4ff 100%);
+  border: 1px solid rgba(26, 35, 126, 0.1);
+  text-align: center;
+  padding: var(--indabax-spacing-xl);
+  height: 100%;
+}
+
+.pillar-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--indabax-radius-lg);
+  color: white;
+  transition: all var(--indabax-transition-normal);
+  padding: var(--indabax-spacing-xl);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pillar-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--indabax-secondary), var(--indabax-accent), var(--indabax-secondary));
+  border-radius: var(--indabax-radius-lg);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--indabax-transition-normal);
+}
+
+.pillar-card:hover::before {
+  opacity: 1;
+}
+
+.pillar-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+  box-shadow: var(--indabax-shadow-xl);
+}
+
+.pillar-icon {
+  color: var(--indabax-secondary);
+  margin-bottom: var(--indabax-spacing-lg);
+  transition: all var(--indabax-transition-normal);
+}
+
+.pillar-card:hover .pillar-icon {
+  color: var(--indabax-accent);
+  transform: scale(1.1) rotate(5deg);
+}
+
+.pillar-title {
+  color: white;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: var(--indabax-spacing-md);
+}
+
+.pillar-description {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* ========== CARD IMAGES ========== */
+.card-img-top {
+  transition: all var(--indabax-transition-normal);
+  border-top-left-radius: var(--indabax-radius-lg);
+  border-top-right-radius: var(--indabax-radius-lg);
+}
+
+.event-image-fit {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.indabax-event-img {
+  height: 220px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* ========== CARD TITLES ========== */
+.indabax-card-title {
+  color: var(--indabax-primary);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: var(--indabax-spacing-md);
+  line-height: 1.3;
+  transition: color var(--indabax-transition-fast);
+}
+
+.card:hover .indabax-card-title {
+  color: var(--indabax-secondary);
+}
+
+/* ========== CARD TEXT STYLES ========== */
+.indabax-text-short {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--indabax-dark);
+  margin-bottom: var(--indabax-spacing-md);
+}
+
+.indabax-text-sm {
+  font-size: 0.9rem;
+  color: var(--indabax-muted);
+  margin-bottom: var(--indabax-spacing-sm);
+}
+
+/* ========== CARD HOVER EFFECTS ========== */
+.card-hover-lift {
+  transition: all var(--indabax-transition-normal);
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-12px) rotate(1deg);
+  box-shadow: var(--indabax-shadow-xl);
+}
+
+.card-hover-glow {
+  position: relative;
+}
+
+.card-hover-glow::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--indabax-primary), var(--indabax-secondary), var(--indabax-accent));
+  border-radius: var(--indabax-radius-lg);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--indabax-transition-normal);
+}
+
+.card-hover-glow:hover::after {
+  opacity: 0.3;
+}
+
+/* ========== CARD BADGES ========== */
+.card-badge {
+  position: absolute;
+  top: var(--indabax-spacing-md);
+  right: var(--indabax-spacing-md);
+  background: var(--indabax-gradient-secondary);
+  color: white;
+  padding: var(--indabax-spacing-xs) var(--indabax-spacing-sm);
+  border-radius: var(--indabax-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 10;
+  box-shadow: var(--indabax-shadow-sm);
+}
+
+.card-badge-new {
+  background: var(--indabax-gradient-primary);
+}
+
+.card-badge-featured {
+  background: var(--indabax-success);
+}
+
+.card-badge-upcoming {
+  background: var(--indabax-warning);
+  color: var(--indabax-dark);
+}
+
+/* ========== CARD BUTTONS ========== */
+.card .btn {
+  border-radius: var(--indabax-radius-md);
+  font-weight: 600;
+  transition: all var(--indabax-transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.card .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--indabax-transition-slow);
+}
+
+.card .btn:hover::before {
+  left: 100%;
+}
+
+/* ========== CARD LAYOUTS ========== */
+.card-horizontal {
+  flex-direction: row;
+}
+
+.card-horizontal .card-img-top {
+  width: 200px;
+  height: auto;
+  border-radius: var(--indabax-radius-lg) 0 0 var(--indabax-radius-lg);
+}
+
+.card-minimal {
+  background: transparent;
+  border: 2px solid rgba(26, 35, 126, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.card-minimal:hover {
+  border-color: var(--indabax-secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ========== CARD GRID LAYOUTS ========== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--indabax-spacing-xl);
+  padding: var(--indabax-spacing-lg) 0;
+}
+
+.cards-masonry {
+  columns: 3;
+  column-gap: var(--indabax-spacing-xl);
+}
+
+.cards-masonry .card {
+  break-inside: avoid;
+  margin-bottom: var(--indabax-spacing-xl);
+}
+
+/* ========== RESPONSIVE CARD DESIGN ========== */
+@media (max-width: 992px) {
+  .cards-masonry {
+    columns: 2;
+  }
+  
+  .card-horizontal {
+    flex-direction: column;
+  }
+  
+  .card-horizontal .card-img-top {
+    width: 100%;
+    border-radius: var(--indabax-radius-lg) var(--indabax-radius-lg) 0 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: var(--indabax-spacing-lg);
+  }
+  
+  .cards-masonry {
+    columns: 1;
+  }
+  
+  .card {
+    margin-bottom: var(--indabax-spacing-lg);
+  }
+  
+  .event-image-fit,
+  .indabax-event-img {
+    height: 180px;
+  }
+  
+  .indabax-session-highlight-card .card-img-top {
+    height: 160px;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    padding: var(--indabax-spacing-md);
+  }
+  
+  .pillar-card {
+    padding: var(--indabax-spacing-lg);
+  }
+  
+  .indabax-card-title {
+    font-size: 1.1rem;
+  }
+  
+  .card-badge {
+    font-size: 0.7rem;
+    padding: 2px var(--indabax-spacing-xs);
+  }
+}
+
+/* ========== CARD ANIMATIONS ========== */
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-animate-in {
+  animation: cardSlideIn 0.6s ease-out forwards;
+}
+
+.card-animate-in:nth-child(1) { animation-delay: 0.1s; }
+.card-animate-in:nth-child(2) { animation-delay: 0.2s; }
+.card-animate-in:nth-child(3) { animation-delay: 0.3s; }
+.card-animate-in:nth-child(4) { animation-delay: 0.4s; }
+
+/* ========== CARD ACCESSIBILITY ========== */
+.card:focus-within {
+  outline: 3px solid var(--indabax-accent);
+  outline-offset: 2px;
+}
+
+.card .btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 172, 193, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card-img-top,
+  .pillar-icon,
+  .card .btn {
+    transition: none;
+  }
+  
+  .card:hover {
+    transform: none;
+  }
+  
+  .card-animate-in {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid black;
+    background: white;
+  }
+  
+  .card:hover {
+    border-color: blue;
+    background: yellow;
+  }
+  
+  .indabax-card-title {
+    color: black;
+  }
+}
+
+/* ========== CARD LOADING STATES ========== */
+.card-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--indabax-radius-lg);
+  height: 300px;
+}
+
+.card-skeleton-content {
+  padding: var(--indabax-spacing-lg);
+}
+
+.card-skeleton-title {
+  height: 24px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--indabax-radius-sm);
+  margin-bottom: var(--indabax-spacing-md);
+}
+
+.card-skeleton-text {
+  height: 16px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--indabax-radius-sm);
+  margin-bottom: var(--indabax-spacing-sm);
+  width: 80%;
+}
+
+.card-skeleton-text:last-child {
+  width: 60%;
+}

@@ -3,59 +3,302 @@
 
 {% block content %}
 <div class="container my-5">
-    <h1 class="indabax-heading text-center mb-4">Our Photo Galleries</h1>
-    <p class="text-center lead">
-        Explore moments from our sessions, events, and workshops.
+    <h1 class="indabax-heading text-center mb-4">Our Photo Gallery</h1>
+    <p class="text-center lead mb-5">
+        Explore moments captured from our AI sessions, workshops, and community events.
     </p>
 
-    <h2 class="indabax-heading text-center mt-5 mb-4">Our Sessions & Events</h2>
-    <p class="text-center lead mb-4">Browse photos uploaded directly from our club's activities.</p>
-    <div class="row">
-        {% for session in sessions %}
-        <div class="col-md-6 mb-4">
-            <a href="{% url 'indabax_app:session_detail' session.pk %}" class="indabax-album-link">
-                <div class="card h-100 indabax-session-card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ session.title }}</h5>
-                        <p class="card-text text-muted">{{ session.session_date|date:"F j, Y" }}</p>
-                        <p class="card-text">{{ session.description|truncatechars:150 }}</p>
-                        <div class="mt-auto">
-                            <span class="btn btn-warning">View Photos <i class="fas fa-arrow-right"></i></span>
+    {# --- Main Photo Gallery Section --- #}
+    <section class="mb-5">
+        {% if session_images or recent_session_images %}
+            <div class="row g-3" id="photoGallery">
+                {# Display all session images #}
+                {% for image in session_images %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                        <div class="gallery-item">
+                            <img src="{{ image.image.url }}" 
+                                 alt="{{ image.caption|default:'Session Photo' }}" 
+                                 class="img-fluid gallery-image"
+                                 data-bs-toggle="modal" 
+                                 data-bs-target="#imageModal"
+                                 data-image-src="{{ image.image.url }}"
+                                 data-image-caption="{{ image.caption|default:'Session Photo' }}"
+                                 data-session-title="{{ image.session.title }}"
+                                 data-session-date="{{ image.session.session_date|date:'F j, Y' }}">
+                            <div class="gallery-overlay">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </a>
-        </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <p>No local sessions have been added yet.</p>
-        </div>
-        {% endfor %}
-    </div>
-
-    <h2 class="indabax-heading text-center mt-5 mb-4">External Photo Albums</h2>
-    <p class="text-center lead mb-4">Discover larger collections hosted on Google Photos.</p>
-    <div class="row">
-        {% for album in albums %}
-        <div class="col-md-6 mb-4">
-            <a href="{{ album.link }}" target="_blank" class="indabax-album-link">
-                <div class="card h-100 indabax-album-card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ album.title }}</h5>
-                        <p class="card-text">{{ album.description|truncatechars:150 }}</p>
-                        <div class="mt-auto">
-                            <span class="btn btn-primary">View Album on Google Photos <i class="fas fa-external-link-alt"></i></span>
+                {% endfor %}
+                
+                {# If you have additional recent images not in session_images #}
+                {% for image in recent_session_images %}
+                    {% if image not in session_images %}
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="gallery-item">
+                                <img src="{{ image.image.url }}" 
+                                     alt="{{ image.caption|default:'Session Photo' }}" 
+                                     class="img-fluid gallery-image"
+                                     data-bs-toggle="modal" 
+                                     data-bs-target="#imageModal"
+                                     data-image-src="{{ image.image.url }}"
+                                     data-image-caption="{{ image.caption|default:'Session Photo' }}"
+                                     data-session-title="{{ image.session.title }}"
+                                     data-session-date="{{ image.session.session_date|date:'F j, Y' }}">
+                                <div class="gallery-overlay">
+                                    <i class="fas fa-search-plus"></i>
+                                </div>
+                            </div>
                         </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            {# Empty state for no photos #}
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="empty-gallery-state p-5">
+                        <i class="fas fa-camera fa-4x indabax-icon-primary mb-4"></i>
+                        <h3 class="indabax-subheading mb-3">Gallery Coming Soon!</h3>
+                        <p class="indabax-text">
+                            We're working on uploading amazing photos from our AI sessions and workshops. 
+                            Check back soon to see our community in action!
+                        </p>
                     </div>
                 </div>
-            </a>
-        </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <p>No external albums have been added yet.</p>
-        </div>
-        {% endfor %}
-    </div>
+            </div>
+        {% endif %}
+    </section>
 
+    {# --- Photo Albums Section --- #}
+    {% if albums %}
+    <section class="mt-5 pt-5 border-top">
+        <h2 class="indabax-heading text-center mb-4">Photo Albums</h2>
+        <p class="text-center lead mb-5">
+            Browse our complete photo collections on Google Photos for more memories and moments.
+        </p>
+        
+        <div class="row justify-content-center">
+            {% for album in albums %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="album-card">
+                    <a href="{{ album.link }}" target="_blank" class="album-link">
+                        <div class="album-card-body">
+                            <div class="album-icon">
+                                <i class="fab fa-google fa-3x"></i>
+                            </div>
+                            <h5 class="album-title">{{ album.title }}</h5>
+                            <p class="album-description">{{ album.description|truncatechars:100 }}</p>
+                            <div class="album-action">
+                                <span class="album-btn">
+                                    View Album <i class="fas fa-external-link-alt ms-2"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {# --- Additional Info Section --- #}
+    <section class="mt-5 pt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="info-section p-4">
+                    <h4 class="indabax-subheading mb-3">Share Your Moments</h4>
+                    <p class="indabax-text mb-4">
+                        Have photos from our events? We'd love to feature them in our gallery! 
+                        Send your best shots to our team.
+                    </p>
+                    <a href="mailto:contact@indabaxkabale.org" class="btn indabax-btn-secondary">
+                        <i class="fas fa-share-alt me-2"></i>Share Photos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+{# --- Image Modal for Lightbox Effect --- #}
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-0">
+                <img id="modalImage" src="" alt="" class="img-fluid rounded">
+                <div class="modal-caption mt-3">
+                    <h5 id="modalSessionTitle" class="text-white"></h5>
+                    <p id="modalSessionDate" class="text-white-50 mb-2"></p>
+                    <p id="modalImageCaption" class="text-white-50"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# --- Custom Styles for Gallery --- #}
+<style>
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--indabax-radius-lg);
+    cursor: pointer;
+    transition: all var(--indabax-transition-normal);
+}
+
+.gallery-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: all var(--indabax-transition-normal);
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 35, 126, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all var(--indabax-transition-normal);
+}
+
+.gallery-overlay i {
+    color: white;
+    font-size: 2rem;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-item:hover .gallery-image {
+    transform: scale(1.05);
+}
+
+.album-card {
+    background: white;
+    border-radius: var(--indabax-radius-lg);
+    box-shadow: var(--indabax-shadow-sm);
+    transition: all var(--indabax-transition-normal);
+    overflow: hidden;
+    height: 100%;
+}
+
+.album-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--indabax-shadow-lg);
+}
+
+.album-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.album-card-body {
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.album-icon {
+    color: var(--indabax-primary);
+    margin-bottom: 1rem;
+}
+
+.album-title {
+    color: var(--indabax-primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.album-description {
+    color: var(--indabax-muted);
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.album-btn {
+    background: var(--indabax-gradient-secondary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--indabax-radius-lg);
+    font-weight: 600;
+    transition: all var(--indabax-transition-normal);
+}
+
+.album-card:hover .album-btn {
+    transform: translateY(-2px);
+    box-shadow: var(--indabax-shadow-md);
+}
+
+.empty-gallery-state {
+    background: linear-gradient(135deg, rgba(26, 35, 126, 0.05) 0%, rgba(0, 172, 193, 0.05) 100%);
+    border-radius: var(--indabax-radius-xl);
+    border: 1px solid rgba(0, 172, 193, 0.1);
+}
+
+.info-section {
+    background: var(--indabax-gradient-section);
+    border-radius: var(--indabax-radius-xl);
+    border: 1px solid rgba(26, 35, 126, 0.1);
+}
+
+@media (max-width: 768px) {
+    .gallery-image {
+        height: 200px;
+    }
+    
+    .album-card-body {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .gallery-image {
+        height: 150px;
+    }
+}
+</style>
+
+{# --- JavaScript for Modal --- #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalSessionTitle = document.getElementById('modalSessionTitle');
+    const modalSessionDate = document.getElementById('modalSessionDate');
+    const modalImageCaption = document.getElementById('modalImageCaption');
+
+    imageModal.addEventListener('show.bs.modal', function(event) {
+        const trigger = event.relatedTarget;
+        const imageSrc = trigger.getAttribute('data-image-src');
+        const imageCaption = trigger.getAttribute('data-image-caption');
+        const sessionTitle = trigger.getAttribute('data-session-title');
+        const sessionDate = trigger.getAttribute('data-session-date');
+
+        modalImage.src = imageSrc;
+        modalImage.alt = imageCaption;
+        modalSessionTitle.textContent = sessionTitle;
+        modalSessionDate.textContent = sessionDate;
+        modalImageCaption.textContent = imageCaption;
+    });
+});
+</script>
+
 {% endblock content %}

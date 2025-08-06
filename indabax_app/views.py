@@ -133,6 +133,18 @@ class PhotosView(ListView):
         context['sessions'] = Session.objects.filter(is_published=True).order_by('-session_date')
         return context
     
+class SessionsListView(ListView):
+    model = Session
+    template_name = 'indabax_app/sessions.html'
+    context_object_name = 'sessions'
+    paginate_by = 10  # Optional: Add pagination
+
+    def get_queryset(self):
+        """
+        Returns all published sessions, ordered by date (most recent first).
+        """
+        return Session.objects.filter(is_published=True).order_by('-session_date')
+    
 def session_detail(request, pk):
     session = get_object_or_404(Session, pk=pk)
     images = session.images.all() # Fetch related images
@@ -181,9 +193,13 @@ def search(request):
             Q(title__icontains=query) | Q(description__icontains=query)
         )
 
-        # Combine all the querysets into a single list
-        all_results = list(leader_results) + list(album_results)
+        # Add this to your search function
+        session_results = Session.objects.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
 
+            # Then add to your all_results
+        all_results = list(leader_results) + list(album_results) + list(session_results)
     context = {
         'query': query,
         'results': all_results

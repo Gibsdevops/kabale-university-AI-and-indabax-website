@@ -1,40 +1,415 @@
 {% extends "indabax_app/base.html" %}
-{% load static %} {# Make sure static is loaded if you link custom CSS here #}
-{% load tutorial_filters %} {# Load your custom template filters #}
+{% load static %}
+{% load tutorial_filters %}
 
 {% block content %}
-<div class="tutorials-container"> {# Added a container for styling #}
-    <h2>AI & Python Tutorials</h2>
+<!-- Link the tutorials CSS file -->
+<link rel="stylesheet" href="{% static 'indabax_app/css/tutorials.css' %}">
+
+<div class="tutorials-container">
+    <h2>Our Tutorials</h2>
 
     {% for category in categories %}
-        <h3>{{ category.name }}</h3>
-        <div class="tutorial-grid"> {# Container for the 2x2 grid for each category #}
-            {% for tutorial in category.tutorial_set.all %} {# Use tutorial_set.all to access related tutorials #}
-                {% comment %} Extract YouTube video ID using the custom filter {% endcomment %}
-                {% with tutorial.video_url|youtube_video_id as video_id %}
-                {% if video_id %}
-                    <div class="tutorial-item">
-                        <h4>{{ tutorial.title }}</h4>
-                        <div class="video-wrapper">
-                            <iframe
-                                src="http://www.youtube.com/embed/{{ video_id }}"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                        <p>{{ tutorial.description }}</p>
+        {% comment %} Create category class based on category name {% endcomment %}
+        {% with category_class=category.name|lower|slugify %}
+        <div class="category-section category-{{ category_class }}">
+            {# Category stats - show number of tutorials #}
+            <div class="category-stats">
+                {{ category.tutorial_set.all|length }} Video{{ category.tutorial_set.all|length|pluralize }}
+            </div>
+            
+            <div class="category-header">
+                <h3 data-category="{{ category_class }}">{{ category.name }}</h3>
+                
+                {% comment %} Optional: Add view controls for categories with many tutorials {% endcomment %}
+                {% if category.tutorial_set.all|length > 9 %}
+                <div class="category-controls">
+                    <div class="view-toggle">
+                        <button type="button" class="grid-view active" data-category="{{ category.id }}">
+                            Grid View
+                        </button>
+                        <button type="button" class="list-view" data-category="{{ category.id }}">
+                            All ({{ category.tutorial_set.all|length }})
+                        </button>
                     </div>
-                {% else %}
-                    <div class="tutorial-item">
-                        <h4>{{ tutorial.title }}</h4>
-                        <p>Could not load video. Invalid URL: {{ tutorial.video_url }}</p>
-                        <p>{{ tutorial.description }}</p>
-                    </div>
+                </div>
                 {% endif %}
-                {% endwith %}
-            {% endfor %}
+            </div>
+            
+            <div class="tutorial-grid" id="grid-{{ category.id }}">
+                {% for tutorial in category.tutorial_set.all %}
+                    {% comment %} Extract YouTube video ID using the custom filter {% endcomment %}
+                    {% with tutorial.video_url|youtube_video_id as video_id %}
+                        {% if video_id %}
+                            <div class="tutorial-item" data-index="{{ forloop.counter }}">
+                                <h4>{{ tutorial.title }}</h4>
+                                <div class="video-wrapper">
+                                    <iframe
+                                        src="https://www.youtube-nocookie.com/embed/{{ video_id }}?controls=1&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=1&cc_load_policy=0&enablejsapi=0"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+                                        allowfullscreen
+                                        loading="lazy"
+                                        title="{{ tutorial.title }}"
+                                        referrerpolicy="strict-origin-when-cross-origin">
+                                    </iframe>
+                                </div>
+                                <p>{{ tutorial.description|truncatewords:25 }}</p>
+                            </div>
+                        {% else %}
+                            <div class="tutorial-item" data-index="{{ forloop.counter }}">
+                                <h4>{{ tutorial.title }}</h4>
+                                <div class="tutorial-error">
+                                    Could not load video. Invalid URL format.
+                                </div>
+                                <p>{{ tutorial.description|truncatewords:25 }}</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% empty %}
+                    <div class="tutorial-empty">
+                        <p>No tutorials available in this category yet.</p>
+                    </div>
+                {% endfor %}
+                
+                {% comment %} Show more button for categories with more than 9 tutorials {% endcomment %}
+                {% if category.tutorial_set.all|length > 9 %}
+                <div class="show-more-tutorials">
+                    <button type="button" class="show-more-btn" data-category="{{ category.id }}">
+                        Show All {{ category.tutorial_set.all|length }} Tutorials
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endwith %}
+    {% empty %}
+        <div class="no-categories">
+            <h3>No tutorial categories found</h3>
+            <p>Please add some categories and tutorials in the admin panel.</p>
         </div>
     {% endfor %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Dynamic icon assignment based on category name keywords
+    const assignCategoryIcons = () => {
+        const categories = document.querySelectorAll('.category-section');
+        
+        categories.forEach(category => {
+            const categoryName = category.querySelector('h3').textContent.toLowerCase();
+            const h3Element = category.querySelector('h3');
+            
+            // Icon mapping based on keywords in category names
+            const iconMap = {
+                'python': '🐍',
+                'machine learning': '🤖',
+                'ml': '🤖',
+                'artificial intelligence': '🧠',
+                'ai': '🧠',
+                'deep learning': '🧠',
+                'neural': '🧠',
+                'data': '📊',
+                'statistics': '📈',
+                'math': '📈',
+                'web': '🌐',
+                'frontend': '🌐',
+                'backend': '🌐',
+                'database': '🗄️',
+                'sql': '🗄️',
+                'algorithm': '⚡',
+                'programming': '⚡',
+                'nlp': '💬',
+                'natural language': '💬',
+                'computer vision': '👁️',
+                'image': '👁️',
+                'cv': '👁️',
+                'beginner': '🌱',
+                'basic': '🌱',
+                'advanced': '🚀',
+                'expert': '🚀',
+                'tutorial': '🎓'
+            };
+            
+            // Find matching icon
+            let assignedIcon = '📚'; // default icon
+            for (const [keyword, icon] of Object.entries(iconMap)) {
+                if (categoryName.includes(keyword)) {
+                    assignedIcon = icon;
+                    break;
+                }
+            }
+            
+            // Apply the icon via CSS custom property
+            h3Element.style.setProperty('--category-icon', `"${assignedIcon}"`);
+        });
+    };
+
+    // Call the function
+    assignCategoryIcons();
+
+    // Disable picture-in-picture for all videos
+    const disablePictureInPicture = () => {
+        const iframes = document.querySelectorAll('iframe[src*="youtube.com"]');
+        iframes.forEach(iframe => {
+            try {
+                // Try to disable picture-in-picture via postMessage
+                iframe.addEventListener('load', function() {
+                    try {
+                        if (iframe.contentWindow) {
+                            iframe.contentWindow.postMessage('{"event":"command","func":"disablePictureInPicture","args":""}', '*');
+                        }
+                    } catch(e) {
+                        // Silently ignore cross-origin issues
+                    }
+                });
+            } catch(e) {
+                // Silently ignore any errors
+            }
+        });
+    };
+
+    // Call the function
+    disablePictureInPicture();
+
+    // Handle show more/less functionality
+    const showMoreBtns = document.querySelectorAll('.show-more-btn');
+    const viewToggleBtns = document.querySelectorAll('.view-toggle button');
+    
+    showMoreBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const categoryId = this.getAttribute('data-category');
+            const grid = document.getElementById(`grid-${categoryId}`);
+            const isExpanded = grid.classList.contains('expanded');
+            
+            if (isExpanded) {
+                grid.classList.remove('expanded');
+                this.textContent = `Show All ${grid.querySelectorAll('.tutorial-item').length} Tutorials`;
+                // Scroll to category top
+                grid.closest('.category-section').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            } else {
+                grid.classList.add('expanded');
+                this.textContent = 'Show Less';
+            }
+        });
+    });
+    
+    // Handle view toggle functionality
+    viewToggleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const categoryId = this.getAttribute('data-category');
+            const grid = document.getElementById(`grid-${categoryId}`);
+            const toggleGroup = this.parentElement;
+            
+            // Update active state
+            toggleGroup.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (this.classList.contains('grid-view')) {
+                grid.classList.remove('expanded');
+                const showMoreBtn = grid.querySelector('.show-more-btn');
+                if (showMoreBtn) {
+                    showMoreBtn.textContent = `Show All ${grid.querySelectorAll('.tutorial-item').length} Tutorials`;
+                }
+            } else {
+                grid.classList.add('expanded');
+                const showMoreBtn = grid.querySelector('.show-more-btn');
+                if (showMoreBtn) {
+                    showMoreBtn.textContent = 'Show Less';
+                }
+            }
+        });
+    });
+    
+    // Lazy loading for better performance
+    const iframes = document.querySelectorAll('iframe[loading="lazy"]');
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const iframe = entry.target;
+                // Iframe will load automatically due to loading="lazy"
+                observer.unobserve(iframe);
+            }
+        });
+    });
+    
+    iframes.forEach(iframe => imageObserver.observe(iframe));
+    
+    // Add smooth scroll behavior for better UX
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add keyboard navigation support
+    document.addEventListener('keydown', function(e) {
+        // ESC key to collapse expanded grids
+        if (e.key === 'Escape') {
+            const expandedGrids = document.querySelectorAll('.tutorial-grid.expanded');
+            expandedGrids.forEach(grid => {
+                grid.classList.remove('expanded');
+                const showMoreBtn = grid.querySelector('.show-more-btn');
+                if (showMoreBtn) {
+                    showMoreBtn.textContent = `Show All ${grid.querySelectorAll('.tutorial-item').length} Tutorials`;
+                }
+            });
+        }
+    });
+});
+</script>
+
+<style>
+/* Additional inline styles for enhanced functionality */
+.tutorial-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: var(--indabax-radius-md);
+    color: #6c757d;
+    font-style: italic;
+    border: 2px dashed #dee2e6;
+}
+
+.tutorial-empty::before {
+    content: '📚';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-categories {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: var(--indabax-radius-lg);
+    box-shadow: var(--indabax-shadow-md);
+    margin-top: 2rem;
+}
+
+.no-categories::before {
+    content: '🎓';
+    display: block;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.no-categories h3 {
+    color: var(--indabax-dark);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.no-categories p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Enhanced visual feedback */
+.tutorial-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.tutorial-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 0%, rgba(255,111,0,0.03) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--indabax-transition-normal);
+}
+
+.tutorial-item:hover::after {
+    opacity: 1;
+}
+
+/* Simplified video loading and error suppression */
+.video-wrapper {
+    position: relative;
+    background: #f8f9fa;
+    isolation: isolate; /* Create new stacking context */
+}
+
+.video-wrapper iframe {
+    background: #000;
+    contain: layout style paint; /* Optimize rendering */
+}
+
+/* Preload critical fonts to avoid slow network warnings */
+@font-face {
+    font-family: 'Roboto-Fallback';
+    src: local('Arial'), local('Helvetica'), local('sans-serif');
+    font-display: swap;
+}
+
+/* Focus styles for accessibility */
+.show-more-btn:focus,
+.view-toggle button:focus {
+    outline: 2px solid var(--indabax-primary);
+    outline-offset: 2px;
+}
+
+/* Smooth transitions for grid changes */
+.tutorial-grid {
+    transition: all 0.3s ease;
+}
+
+.tutorial-grid .tutorial-item {
+    transition: all 0.3s ease;
+}
+
+/* Print styles */
+@media print {
+    .category-controls,
+    .show-more-tutorials {
+        display: none;
+    }
+    
+    .tutorial-grid .tutorial-item {
+        display: block !important;
+        break-inside: avoid;
+        margin-bottom: 1rem;
+    }
+    
+    .video-wrapper {
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .video-wrapper::after {
+        content: 'Video content available online';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .video-wrapper iframe {
+        display: none;
+    }
+}
+</style>
 {% endblock %}

@@ -1,0 +1,618 @@
+/* ================================
+   INDABAX BUTTON COMPONENTS STYLES
+   Professional Button Design System
+   ================================ */
+
+/* ========== BASE BUTTON STYLES ========== */
+.btn {
+  border-radius: var(--indabax-radius-lg);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--indabax-spacing-sm);
+  transition: all var(--indabax-transition-normal);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  font-family: var(--indabax-font-primary);
+  letter-spacing: 0.025em;
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 172, 193, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Button shine effect */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--indabax-transition-slow);
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:disabled::before {
+  display: none;
+}
+
+/* ========== PRIMARY BUTTONS ========== */
+.indabax-btn-primary,
+.btn-primary {
+  background: var(--indabax-gradient-primary);
+  border: none;
+  color: white;
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-md);
+  font-size: 1rem;
+}
+
+.indabax-btn-primary:hover,
+.btn-primary:hover {
+  background: linear-gradient(135deg, #3949ab 0%, #1a237e 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-lg);
+  color: white;
+}
+
+.indabax-btn-primary:active,
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--indabax-shadow-sm);
+}
+
+/* ========== SECONDARY BUTTONS ========== */
+.indabax-btn-secondary,
+.btn-secondary {
+  background: var(--indabax-gradient-secondary);
+  border: none;
+  color: white;
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-md);
+  font-size: 1rem;
+}
+
+.indabax-btn-secondary:hover,
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-lg);
+  color: white;
+}
+
+.indabax-btn-secondary:active,
+.btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: var(--indabax-shadow-sm);
+}
+
+/* ========== OUTLINE BUTTONS ========== */
+.btn-outline-primary,
+.btn-outline-indabax {
+  border: 2px solid var(--indabax-primary);
+  color: var(--indabax-primary);
+  background: transparent;
+  padding: calc(var(--indabax-spacing-md) - 2px) calc(var(--indabax-spacing-xl) - 2px);
+  font-size: 1rem;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-indabax:hover {
+  background: var(--indabax-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-md);
+}
+
+.btn-outline-secondary {
+  border: 2px solid var(--indabax-secondary);
+  color: var(--indabax-secondary);
+  background: transparent;
+  padding: calc(var(--indabax-spacing-md) - 2px) calc(var(--indabax-spacing-xl) - 2px);
+  font-size: 1rem;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--indabax-secondary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-md);
+}
+
+/* ========== ACCENT BUTTONS ========== */
+.btn-accent {
+  background: var(--indabax-accent);
+  border: none;
+  color: white;
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-md);
+  font-size: 1rem;
+}
+
+.btn-accent:hover {
+  background: #0097a7;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-lg);
+  color: white;
+}
+
+/* ========== SUCCESS BUTTONS ========== */
+.btn-success {
+  background: var(--indabax-success);
+  border: none;
+  color: white;
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-md);
+  font-size: 1rem;
+}
+
+.btn-success:hover {
+  background: #1b5e20;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-lg);
+  color: white;
+}
+
+/* ========== WARNING BUTTONS ========== */
+.btn-warning {
+  background: var(--indabax-warning);
+  border: none;
+  color: var(--indabax-dark);
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-md);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.btn-warning:hover {
+  background: #ef6c00;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-lg);
+  color: var(--indabax-dark);
+}
+
+/* ========== DANGER BUTTONS ========== */
+.btn-danger {
+  background: var(--indabax-danger);
+  border: none;
+  color: white;
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-md);
+  font-size: 1rem;
+}
+
+.btn-danger:hover {
+  background: #b71c1c;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-lg);
+  color: white;
+}
+
+/* ========== LIGHT BUTTONS ========== */
+.btn-light {
+  background: var(--indabax-light);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--indabax-dark);
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-sm);
+  font-size: 1rem;
+}
+
+.btn-light:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-md);
+  color: var(--indabax-dark);
+}
+
+/* ========== DARK BUTTONS ========== */
+.btn-dark {
+  background: var(--indabax-dark);
+  border: none;
+  color: white;
+  padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+  box-shadow: var(--indabax-shadow-md);
+  font-size: 1rem;
+}
+
+.btn-dark:hover {
+  background: #000;
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-lg);
+  color: white;
+}
+
+/* ========== BUTTON SIZES ========== */
+.btn-sm {
+  padding: var(--indabax-spacing-sm) var(--indabax-spacing-lg);
+  font-size: 0.9rem;
+  border-radius: var(--indabax-radius-md);
+}
+
+.btn-lg {
+  padding: var(--indabax-spacing-lg) var(--indabax-spacing-xxl);
+  font-size: 1.2rem;
+  border-radius: var(--indabax-radius-xl);
+}
+
+.btn-xl {
+  padding: var(--indabax-spacing-xl) 3rem;
+  font-size: 1.4rem;
+  border-radius: var(--indabax-radius-xl);
+  font-weight: 700;
+}
+
+/* ========== BUTTON GROUPS ========== */
+.btn-group {
+  display: inline-flex;
+  border-radius: var(--indabax-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--indabax-shadow-sm);
+}
+
+.btn-group .btn {
+  border-radius: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-group .btn:first-child {
+  border-top-left-radius: var(--indabax-radius-lg);
+  border-bottom-left-radius: var(--indabax-radius-lg);
+}
+
+.btn-group .btn:last-child {
+  border-top-right-radius: var(--indabax-radius-lg);
+  border-bottom-right-radius: var(--indabax-radius-lg);
+  border-right: none;
+}
+
+.btn-group .btn:hover {
+  z-index: 1;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ========== FLOATING ACTION BUTTONS ========== */
+.btn-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: var(--indabax-spacing-xl);
+  right: var(--indabax-spacing-xl);
+  z-index: 1000;
+  font-size: 1.5rem;
+  box-shadow: var(--indabax-shadow-lg);
+}
+
+.btn-fab:hover {
+  transform: scale(1.1);
+}
+
+.btn-fab-sm {
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+}
+
+.btn-fab-lg {
+  width: 72px;
+  height: 72px;
+  font-size: 1.8rem;
+}
+
+/* ========== ICON BUTTONS ========== */
+.btn-icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--indabax-radius-md);
+}
+
+.btn-icon i {
+  font-size: 1.2rem;
+}
+
+.btn-icon-lg {
+  width: 56px;
+  height: 56px;
+}
+
+.btn-icon-lg i {
+  font-size: 1.5rem;
+}
+
+.btn-icon-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.btn-icon-sm i {
+  font-size: 1rem;
+}
+
+/* ========== GRADIENT BUTTONS ========== */
+.btn-gradient-primary {
+  background: linear-gradient(45deg, var(--indabax-primary), var(--indabax-accent));
+  border: none;
+  color: white;
+  position: relative;
+}
+
+.btn-gradient-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--indabax-accent), var(--indabax-primary));
+  opacity: 0;
+  transition: opacity var(--indabax-transition-normal);
+  border-radius: inherit;
+}
+
+.btn-gradient-primary:hover::after {
+  opacity: 1;
+}
+
+.btn-gradient-secondary {
+  background: linear-gradient(45deg, var(--indabax-secondary), var(--indabax-warning));
+  border: none;
+  color: white;
+}
+
+/* ========== ANIMATED BUTTONS ========== */
+.btn-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(26, 35, 126, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(26, 35, 126, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(26, 35, 126, 0);
+  }
+}
+
+.btn-bounce:hover {
+  animation: bounce-btn 0.6s ease;
+}
+
+@keyframes bounce-btn {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+
+.btn-shake:hover {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* ========== LOADING BUTTONS ========== */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  color: white;
+}
+
+.btn-loading.btn-outline-primary::after,
+.btn-loading.btn-outline-secondary::after {
+  color: var(--indabax-primary);
+}
+
+/* ========== SOCIAL MEDIA BUTTONS ========== */
+.btn-social {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--indabax-radius-md);
+  color: white;
+  border: none;
+}
+
+.btn-social i {
+  font-size: 1.3rem;
+}
+
+.btn-social-facebook { background: #1877f2; }
+.btn-social-twitter { background: #1da1f2; }
+.btn-social-linkedin { background: #0077b5; }
+.btn-social-github { background: #333; }
+.btn-social-youtube { background: #ff0000; }
+.btn-social-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+
+.btn-social:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--indabax-shadow-md);
+  color: white;
+}
+
+/* ========== RESPONSIVE BUTTON DESIGN ========== */
+@media (max-width: 768px) {
+  .btn {
+    padding: var(--indabax-spacing-sm) var(--indabax-spacing-lg);
+    font-size: 0.9rem;
+  }
+  
+  .btn-lg {
+    padding: var(--indabax-spacing-md) var(--indabax-spacing-xl);
+    font-size: 1.1rem;
+  }
+  
+  .btn-xl {
+    padding: var(--indabax-spacing-lg) var(--indabax-spacing-xxl);
+    font-size: 1.2rem;
+  }
+  
+  .btn-fab {
+    bottom: var(--indabax-spacing-lg);
+    right: var(--indabax-spacing-lg);
+  }
+}
+
+@media (max-width: 576px) {
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+  }
+  
+  .btn-group .btn:first-child {
+    border-top-left-radius: var(--indabax-radius-lg);
+    border-top-right-radius: var(--indabax-radius-lg);
+    border-bottom-left-radius: 0;
+  }
+  
+  .btn-group .btn:last-child {
+    border-bottom-left-radius: var(--indabax-radius-lg);
+    border-bottom-right-radius: var(--indabax-radius-lg);
+    border-top-right-radius: 0;
+    border-bottom: none;
+  }
+  
+  .btn-responsive {
+    width: 100%;
+    margin-bottom: var(--indabax-spacing-sm);
+  }
+}
+
+/* ========== BUTTON ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+  .btn::before {
+    display: none;
+  }
+  
+  .btn:hover {
+    transform: none;
+  }
+  
+  .btn-pulse,
+  .btn-bounce:hover,
+  .btn-shake:hover {
+    animation: none;
+  }
+  
+  .btn-loading::after {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .btn {
+    border: 2px solid;
+  }
+  
+  .btn-primary {
+    background: blue;
+    border-color: blue;
+    color: white;
+  }
+  
+  .btn-secondary {
+    background: orange;
+    border-color: orange;
+    color: black;
+  }
+  
+  .btn:focus {
+    outline: 3px solid yellow;
+    outline-offset: 2px;
+  }
+}
+
+/* ========== BUTTON UTILITIES ========== */
+.btn-block {
+  width: 100%;
+  display: flex;
+}
+
+.btn-rounded {
+  border-radius: 50px;
+}
+
+.btn-square {
+  border-radius: 0;
+}
+
+.btn-shadow-none {
+  box-shadow: none !important;
+}
+
+.btn-shadow-lg {
+  box-shadow: var(--indabax-shadow-lg) !important;
+}
+
+.btn-no-hover:hover {
+  transform: none !important;
+  box-shadow: var(--indabax-shadow-md) !important;
+}
+
+.btn-uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.9em;
+  font-weight: 700;
+}
